@@ -28,6 +28,7 @@ path: index.html
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
   <script src="https://cdn.sheetjs.com/xlsx-0.19.3/package/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
     html, body { height: 100%; }
     body { font-family: 'Inter', sans-serif; min-height: 100vh; }
@@ -50,9 +51,10 @@ path: index.html
     ::selection { background: #0F766E33; }
     .input-duplo input, .input-duplo select { width: 48%; }
     
-    /* Estilos de Input/Select Universal */
     input[type="text"],
     input[type="number"],
+    input[type="date"],
+    input[type="time"],
     input[type="file"],
     select,
     textarea {
@@ -61,6 +63,8 @@ path: index.html
     
     [data-theme='careka-light'] input[type="text"],
     [data-theme='careka-light'] input[type="number"],
+    [data-theme='careka-light'] input[type="date"],
+    [data-theme='careka-light'] input[type="time"],
     [data-theme='careka-light'] input[type="file"],
     [data-theme='careka-light'] select,
     [data-theme='careka-light'] textarea {
@@ -71,6 +75,8 @@ path: index.html
     
     [data-theme='careka-light'] input[type="text"]:focus,
     [data-theme='careka-light'] input[type="number"]:focus,
+    [data-theme='careka-light'] input[type="date"]:focus,
+    [data-theme='careka-light'] input[type="time"]:focus,
     [data-theme='careka-light'] input[type="file"]:focus,
     [data-theme='careka-light'] select:focus,
     [data-theme='careka-light'] textarea:focus {
@@ -82,6 +88,8 @@ path: index.html
     
     [data-theme='careka-dark'] input[type="text"],
     [data-theme='careka-dark'] input[type="number"],
+    [data-theme='careka-dark'] input[type="date"],
+    [data-theme='careka-dark'] input[type="time"],
     [data-theme='careka-dark'] input[type="file"],
     [data-theme='careka-dark'] select,
     [data-theme='careka-dark'] textarea {
@@ -92,6 +100,8 @@ path: index.html
     
     [data-theme='careka-dark'] input[type="text"]:focus,
     [data-theme='careka-dark'] input[type="number"]:focus,
+    [data-theme='careka-dark'] input[type="date"]:focus,
+    [data-theme='careka-dark'] input[type="time"]:focus,
     [data-theme='careka-dark'] input[type="file"]:focus,
     [data-theme='careka-dark'] select:focus,
     [data-theme='careka-dark'] textarea:focus {
@@ -111,7 +121,6 @@ path: index.html
       color: #9CA3AF;
     }
 
-    /* Labels com contraste correto */
     [data-theme='careka-light'] label {
       color: #374151;
     }
@@ -120,7 +129,6 @@ path: index.html
       color: #D1D5DB;
     }
 
-    /* Cards de Lead no Kanban */
     [data-theme='careka-light'] .lead-card {
       background: #FFFFFF;
       color: #1F2937;
@@ -133,7 +141,6 @@ path: index.html
       border: 1px solid #334155;
     }
 
-    /* Badges com contraste WCAG AA */
     .badge-alta {
       background-color: #FEE2E2;
       color: #7F1D1D;
@@ -164,7 +171,6 @@ path: index.html
       color: #BBF7D0;
     }
 
-    /* Score badge */
     .badge-score {
       background-color: #E0F2FE;
       color: #0C4A6E;
@@ -175,7 +181,6 @@ path: index.html
       color: #BAE6FD;
     }
 
-    /* Stage counter badge */
     .badge-stage {
       background-color: #0F766E;
       color: #FFFFFF;
@@ -186,8 +191,7 @@ path: index.html
       color: #0B1220;
     }
 
-    /* Preview CSV */
-    [data-theme='careka-light'] .preview-area {
+    .preview-area {
       background-color: #F9FAFB;
       border-color: #E5E7EB;
       color: #1F2937;
@@ -199,13 +203,56 @@ path: index.html
       color: #D1D5DB;
     }
 
-    /* Diálogo - garantir contraste */
     [data-theme='careka-light'] dialog {
       color: #1F2937;
     }
     
     [data-theme='careka-dark'] dialog {
       color: #E5E7EB;
+    }
+
+    .nav-tab {
+      cursor: pointer;
+      padding: 0.75rem 1.5rem;
+      border-bottom: 3px solid transparent;
+      transition: all 0.2s;
+    }
+
+    [data-theme='careka-light'] .nav-tab.active {
+      border-color: #0F766E;
+      color: #0F766E;
+    }
+
+    [data-theme='careka-dark'] .nav-tab.active {
+      border-color: #2DD4BF;
+      color: #2DD4BF;
+    }
+
+    .event-item {
+      padding: 0.75rem;
+      border-left: 4px solid #0F766E;
+      cursor: pointer;
+    }
+
+    [data-theme='careka-dark'] .event-item {
+      border-left-color: #2DD4BF;
+    }
+
+    .top-company {
+      padding: 1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      border-left: 4px solid transparent;
+    }
+
+    [data-theme='careka-light'] .top-company:hover {
+      background-color: #F3F4F6;
+      border-left-color: #0F766E;
+    }
+
+    [data-theme='careka-dark'] .top-company:hover {
+      background-color: #1E293B;
+      border-left-color: #2DD4BF;
     }
   </style>
 </head>
@@ -222,7 +269,7 @@ path: index.html
   </aside>
 
   <!-- Main Content -->
-  <main class="flex-1 ml-[220px] py-8 px-8 w-0 transition-all duration-300">
+  <main class="flex-1 ml-[220px] py-8 px-8 w-0 transition-all duration-300 overflow-y-auto">
     <!-- Top Controls -->
     <div class="flex items-center justify-between gap-2 mb-6 flex-wrap">
       <div class="flex gap-2 flex-wrap">
@@ -238,29 +285,59 @@ path: index.html
       </div>
     </div>
 
-    <!-- Métricas Cards -->
-    <div class="mb-8 grid grid-cols-2 sm:grid-cols-4 gap-4 select-none">
-      <div class="card flex flex-col p-5">
-        <span class="text-sm font-medium text-gray-600 dark:text-gray-400">TOTAL LEADS</span>
-        <span id="metric-leads" class="text-3xl font-bold mt-2 text-gray-900 dark:text-white">0</span>
+    <!-- Navigation Tabs -->
+    <div class="flex gap-0 mb-6 border-b border-gray-200 dark:border-slate-700">
+      <div class="nav-tab active" data-tab="dashboard">📊 Dashboard</div>
+      <div class="nav-tab" data-tab="top10">🏆 Top 10 Semana</div>
+      <div class="nav-tab" data-tab="timeline">📅 Timeline Eventos</div>
+    </div>
+
+    <!-- DASHBOARD TAB -->
+    <div id="tab-dashboard" class="tab-content">
+      <!-- Métricas Cards -->
+      <div class="mb-8 grid grid-cols-2 sm:grid-cols-4 gap-4 select-none">
+        <div class="card flex flex-col p-5">
+          <span class="text-sm font-medium text-gray-600 dark:text-gray-400">TOTAL LEADS</span>
+          <span id="metric-leads" class="text-3xl font-bold mt-2 text-gray-900 dark:text-white">0</span>
+        </div>
+        <div class="card flex flex-col p-5">
+          <span class="text-sm font-medium text-gray-600 dark:text-gray-400">R$ VALOR PIPELINE</span>
+          <span id="metric-valor" class="text-3xl font-bold mt-2 text-gray-900 dark:text-white">0</span>
+        </div>
+        <div class="card flex flex-col p-5">
+          <span class="text-sm font-medium text-gray-600 dark:text-gray-400">TAXA CONVERSÃO</span>
+          <span id="metric-conv" class="text-3xl font-bold mt-2 text-gray-900 dark:text-white">0%</span>
+        </div>
+        <div class="card flex flex-col p-5">
+          <span class="text-sm font-medium text-gray-600 dark:text-gray-400">ALTA PRIORIDADE</span>
+          <span id="metric-alta" class="text-3xl font-bold mt-2 text-gray-900 dark:text-white">0</span>
+        </div>
       </div>
-      <div class="card flex flex-col p-5">
-        <span class="text-sm font-medium text-gray-600 dark:text-gray-400">R$ VALOR PIPELINE</span>
-        <span id="metric-valor" class="text-3xl font-bold mt-2 text-gray-900 dark:text-white">0</span>
-      </div>
-      <div class="card flex flex-col p-5">
-        <span class="text-sm font-medium text-gray-600 dark:text-gray-400">TAXA CONVERSÃO</span>
-        <span id="metric-conv" class="text-3xl font-bold mt-2 text-gray-900 dark:text-white">0%</span>
-      </div>
-      <div class="card flex flex-col p-5">
-        <span class="text-sm font-medium text-gray-600 dark:text-gray-400">ALTA PRIORIDADE</span>
-        <span id="metric-alta" class="text-3xl font-bold mt-2 text-gray-900 dark:text-white">0</span>
+
+      <!-- Kanban Pipeline -->
+      <div id="pipeline" class="flex gap-6 w-full overflow-x-auto pb-8">
+        <!-- Colunas inseridas por JS -->
       </div>
     </div>
 
-    <!-- Kanban Pipeline -->
-    <div id="pipeline" class="flex gap-6 w-full overflow-x-auto pb-8">
-      <!-- Colunas inseridas por JS -->
+    <!-- TOP 10 TAB -->
+    <div id="tab-top10" class="tab-content hidden">
+      <div class="card p-6">
+        <h2 class="text-xl font-bold mb-4 text-gray-900 dark:text-white">Top 10 Empresas da Semana</h2>
+        <div id="top10-list" class="flex flex-col gap-2">
+          <!-- Preenchido por JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- TIMELINE TAB -->
+    <div id="tab-timeline" class="tab-content hidden">
+      <div class="card p-6">
+        <h2 class="text-xl font-bold mb-4 text-gray-900 dark:text-white">Timeline de Eventos</h2>
+        <div id="timeline-list" class="flex flex-col gap-2 max-h-96 overflow-y-auto">
+          <!-- Preenchido por JS -->
+        </div>
+      </div>
     </div>
   </main>
 
@@ -309,6 +386,88 @@ path: index.html
       <div class="flex gap-2 items-center mt-4">
         <button class="bg-careka-primary-light text-white px-4 py-2 rounded font-medium hover:bg-teal-800 focus:outline-none focus:ring-2 focus:ring-careka-primary-light focus:ring-offset-2 dark:focus:ring-offset-careka-dark transition" type="submit">Salvar</button>
         <button class="text-gray-600 dark:text-gray-400 px-4 py-2 hover:text-gray-900 dark:hover:text-gray-200 focus:outline-none focus:underline transition" type="button" onclick="dlgLead.close()">Cancelar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Dialog: Editar Lead -->
+  <dialog id="dlg-edit" class="card p-0 w-[90vw] max-w-lg mx-auto mt-12">
+    <form method="dialog" class="p-6 flex flex-col gap-4" id="form-edit">
+      <h2 class="text-xl font-bold mb-2">Editar Lead</h2>
+      <input type="hidden" id="edit-lead-id" />
+      <label class="flex flex-col mb-2">
+        <span class="mb-2 text-sm font-medium">Nome</span>
+        <input type="text" name="nome" required class="rounded border py-2 px-3"/>
+      </label>
+      <label class="flex flex-col mb-2">
+        <span class="mb-2 text-sm font-medium">Segmento</span>
+        <input type="text" name="segmento" required class="rounded border py-2 px-3"/>
+      </label>
+      <div class="flex gap-4 input-duplo">
+        <label class="flex flex-col mb-2 flex-1">
+          <span class="mb-2 text-sm font-medium">Valor (R$)</span>
+          <input type="number" min="0" step="100" name="valor" required class="rounded border py-2 px-3"/>
+        </label>
+        <label class="flex flex-col mb-2 flex-1">
+          <span class="mb-2 text-sm font-medium">Score</span>
+          <input type="number" min="0" max="100" name="score" required class="rounded border py-2 px-3"/>
+        </label>
+      </div>
+      <div class="flex gap-4 input-duplo">
+        <label class="flex flex-col mb-2 flex-1">
+          <span class="mb-2 text-sm font-medium">Prioridade</span>
+          <select name="prioridade" class="rounded border py-2 px-3">
+            <option>Média</option>
+            <option>Alta</option>
+            <option>Baixa</option>
+          </select>
+        </label>
+        <label class="flex flex-col mb-2 flex-1">
+          <span class="mb-2 text-sm font-medium">Estágio</span>
+          <select name="estagio" class="rounded border py-2 px-3">
+            <option>Novo</option>
+            <option>Qualificar</option>
+            <option>Diagnóstico</option>
+            <option>Proposta</option>
+            <option>Ganho</option>
+          </select>
+        </label>
+      </div>
+      <label class="flex flex-col mb-2">
+        <span class="mb-2 text-sm font-medium">Último Contato (evento)</span>
+        <input type="date" name="ultimo-evento" class="rounded border py-2 px-3"/>
+      </label>
+      <div class="flex gap-2 items-center mt-4">
+        <button class="bg-careka-primary-light text-white px-4 py-2 rounded font-medium hover:bg-teal-800 focus:outline-none focus:ring-2 focus:ring-careka-primary-light focus:ring-offset-2 dark:focus:ring-offset-careka-dark transition" type="submit">Atualizar</button>
+        <button class="text-gray-600 dark:text-gray-400 px-4 py-2 hover:text-gray-900 dark:hover:text-gray-200 focus:outline-none focus:underline transition" type="button" onclick="dlgEdit.close()">Cancelar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Dialog: Criar Evento -->
+  <dialog id="dlg-evento" class="card p-0 w-[90vw] max-w-lg mx-auto mt-12">
+    <form method="dialog" class="p-6 flex flex-col gap-4" id="form-evento">
+      <h2 class="text-xl font-bold mb-2">Novo Evento do Lead</h2>
+      <input type="hidden" id="evento-lead-id" />
+      <label class="flex flex-col mb-2">
+        <span class="mb-2 text-sm font-medium">Título do Evento</span>
+        <input type="text" name="titulo" required class="rounded border py-2 px-3" placeholder="Ex: Reunião, Proposta, Contato"/>
+      </label>
+      <label class="flex flex-col mb-2">
+        <span class="mb-2 text-sm font-medium">Data</span>
+        <input type="date" name="data" required class="rounded border py-2 px-3"/>
+      </label>
+      <label class="flex flex-col mb-2">
+        <span class="mb-2 text-sm font-medium">Hora</span>
+        <input type="time" name="hora" class="rounded border py-2 px-3"/>
+      </label>
+      <label class="flex flex-col mb-2">
+        <span class="mb-2 text-sm font-medium">Descrição</span>
+        <textarea name="descricao" rows="3" class="rounded border py-2 px-3"></textarea>
+      </label>
+      <div class="flex gap-2 items-center mt-4">
+        <button class="bg-careka-primary-light text-white px-4 py-2 rounded font-medium hover:bg-teal-800 focus:outline-none focus:ring-2 focus:ring-careka-primary-light focus:ring-offset-2 dark:focus:ring-offset-careka-dark transition" type="submit">Criar Evento</button>
+        <button class="text-gray-600 dark:text-gray-400 px-4 py-2 hover:text-gray-900 dark:hover:text-gray-200 focus:outline-none focus:underline transition" type="button" onclick="dlgEvento.close()">Cancelar</button>
       </div>
     </form>
   </dialog>
@@ -389,21 +548,20 @@ path: index.html
     alta: el('metric-alta')
   };
 
-  // Utilitários
   function el(id) { return document.getElementById(id) }
   function dlg(id) { return document.getElementById('dlg-' + id) }
   function sum(arr, fn) { return arr.reduce((a,b) => a + (fn(b)||0), 0); }
   function toReal(v) { return "R$ " + Number(v || 0).toLocaleString('pt-BR'); }
   function uuid() { return Math.random().toString(16).slice(2) + Date.now().toString(16); }
   function nowISO() { return new Date().toISOString(); }
+  function getPastWeek() { const d = new Date(); d.setDate(d.getDate() - 7); return d; }
 
-  // LocalStorage
   function loadState() {
     try { 
       const data = localStorage.getItem(STATE_KEY);
-      return data ? JSON.parse(data) : {leads: []} 
+      return data ? JSON.parse(data) : {leads: [], eventos: []} 
     } catch { 
-      return {leads: []}; 
+      return {leads: [], eventos: []}; 
     }
   }
   function saveState(state) {
@@ -439,9 +597,10 @@ path: index.html
   // ============================================
   let state = loadState();
   if (!state.leads || !Array.isArray(state.leads) || state.leads.length < 1) {
-    state = {leads: JSON.parse(JSON.stringify(LEAD_SEED))};
+    state = {leads: JSON.parse(JSON.stringify(LEAD_SEED)), eventos: []};
     saveState(state);
   }
+  if (!state.eventos) state.eventos = [];
 
   // ============================================
   // RENDERIZAÇÃO
@@ -474,10 +633,12 @@ path: index.html
         <div class="flex-1 flex flex-col gap-2" id="pl-${stage}">`;
       
       leads.forEach(l => {
+        const eventos = state.eventos.filter(e => e.leadId === l.id) || [];
+        const ultimoEvento = eventos.length > 0 ? new Date(eventos[eventos.length-1].data).toLocaleDateString("pt-BR") : "—";
         html += `
         <div class="lead-card p-3 my-1 flex flex-col cursor-grab active:cursor-grabbing rounded hover:shadow-md transition" data-id="${l.id}">
           <div class="flex justify-between items-center">
-            <span class="font-medium text-sm truncate">${l.nome}</span>
+            <span class="font-medium text-sm truncate cursor-pointer hover:underline" onclick="editarLead('${l.id}')">${l.nome}</span>
             <span class="badge-score rounded text-xs px-2 py-1 ml-1 font-medium">${l.score}</span>
           </div>
           <div class="flex justify-between items-center mt-2">
@@ -486,15 +647,15 @@ path: index.html
           </div>
           <div class="flex justify-between items-center mt-2 text-xs">
             <span class="rounded px-2 py-0.5 ${badgeColor(l.prioridade)} font-medium">${l.prioridade}</span>
-            <span class="text-gray-500 dark:text-gray-400">${(new Date(l.dt)).toLocaleDateString("pt-BR")}</span>
+            <span class="text-gray-500 dark:text-gray-400">${ultimoEvento}</span>
           </div>
+          <button onclick="abrirEvento('${l.id}')" class="mt-2 text-xs bg-cyan-100 dark:bg-cyan-900 text-cyan-900 dark:text-cyan-100 px-2 py-1 rounded hover:bg-cyan-200 dark:hover:bg-cyan-800">+ Evento</button>
         </div>`;
       });
       html += '</div></div>';
       wrap.innerHTML += html;
     });
 
-    // Inicializar Drag & Drop
     STAGE_LIST.forEach(stage => {
       new Sortable(document.getElementById("pl-"+stage), {
         group: 'pipeline',
@@ -505,9 +666,73 @@ path: index.html
     });
   }
 
+  function renderTop10() {
+    const pastWeek = getPastWeek();
+    const leadsComEventoSemana = state.leads.map(lead => {
+      const eventosLead = state.eventos.filter(e => e.leadId === lead.id && new Date(e.data) >= pastWeek);
+      return {...lead, contatos: eventosLead.length};
+    }).sort((a,b) => b.contatos - a.contatos).slice(0,10);
+    
+    const list = document.getElementById('top10-list');
+    list.innerHTML = "";
+    if (leadsComEventoSemana.length === 0) {
+      list.innerHTML = '<div class="text-center text-gray-500 dark:text-gray-400 py-6">Nenhum contato na semana</div>';
+      return;
+    }
+    
+    leadsComEventoSemana.forEach((l, idx) => {
+      const html = `
+        <div class="top-company card" onclick="editarLead('${l.id}')">
+          <div class="flex justify-between items-start">
+            <div>
+              <span class="font-bold text-lg">#${idx+1}</span>
+              <p class="font-bold text-gray-900 dark:text-white mt-1">${l.nome}</p>
+              <p class="text-xs text-gray-600 dark:text-gray-400">${l.segmento}</p>
+            </div>
+            <div class="text-right">
+              <span class="badge-stage rounded px-3 py-1 text-xs font-bold">${l.contatos} contato${l.contatos !== 1 ? 's' : ''}</span>
+              <p class="text-sm font-bold text-cyan-600 dark:text-cyan-400 mt-2">${toReal(l.valor)}</p>
+              <span class="text-xs rounded px-2 py-1 ${badgeColor(l.prioridade)} inline-block mt-1 font-medium">${l.prioridade}</span>
+            </div>
+          </div>
+        </div>
+      `;
+      list.innerHTML += html;
+    });
+  }
+
+  function renderTimeline() {
+    const eventosOrdenados = [...state.eventos].sort((a,b) => new Date(b.data) - new Date(a.data));
+    const list = document.getElementById('timeline-list');
+    list.innerHTML = "";
+    
+    if (eventosOrdenados.length === 0) {
+      list.innerHTML = '<div class="text-center text-gray-500 dark:text-gray-400 py-6">Nenhum evento registrado</div>';
+      return;
+    }
+    
+    eventosOrdenados.slice(0, 50).forEach(ev => {
+      const lead = state.leads.find(l => l.id === ev.leadId);
+      const dataFormatada = new Date(ev.data).toLocaleDateString("pt-BR");
+      const horaFormatada = ev.hora ? ev.hora : "—";
+      
+      const html = `
+        <div class="event-item card">
+          <div class="font-bold text-gray-900 dark:text-white">${ev.titulo}</div>
+          <div class="text-sm text-gray-600 dark:text-gray-400 mt-1">${lead ? lead.nome : 'Lead desconhecido'}</div>
+          <div class="text-xs text-gray-500 dark:text-gray-500 mt-1">📅 ${dataFormatada} ${horaFormatada}</div>
+          ${ev.descricao ? `<div class="text-xs text-gray-700 dark:text-gray-300 mt-2 italic">"${ev.descricao}"</div>` : ''}
+        </div>
+      `;
+      list.innerHTML += html;
+    });
+  }
+
   function renderAll() {
     renderMetrics();
     renderPipeline();
+    renderTop10();
+    renderTimeline();
     updateTheme();
   }
 
@@ -527,6 +752,39 @@ path: index.html
     saveState(state);
     renderAll();
     return true;
+  }
+
+  function updateLead(id, updates) {
+    const lead = state.leads.find(l => l.id === id);
+    if (lead) {
+      Object.assign(lead, updates);
+      saveState(state);
+      renderAll();
+      return true;
+    }
+    return false;
+  }
+
+  function editarLead(id) {
+    const lead = state.leads.find(l => l.id === id);
+    if (!lead) return;
+    
+    const form = dlgEdit.querySelector('form');
+    el('edit-lead-id').value = id;
+    form.nome.value = lead.nome;
+    form.segmento.value = lead.segmento;
+    form.valor.value = lead.valor;
+    form.score.value = lead.score;
+    form.prioridade.value = lead.prioridade;
+    form.estagio.value = lead.estagio;
+    
+    dlgEdit.showModal();
+  }
+
+  function abrirEvento(leadId) {
+    el('evento-lead-id').value = leadId;
+    dlgEvento.querySelector('form').reset();
+    dlgEvento.showModal();
   }
 
   function handleDragMove(evt) {
@@ -709,6 +967,7 @@ path: index.html
         const newState = JSON.parse(e.target.result);
         if (!Array.isArray(newState.leads)) throw new Error('Formato inválido');
         state = newState;
+        if (!state.eventos) state.eventos = [];
         saveState(state);
         renderAll();
         dlgBackup.close();
@@ -747,6 +1006,59 @@ path: index.html
     })) {
       dlgLead.close();
     }
+    return false;
+  };
+
+  // ============================================
+  // EDITAR LEAD
+  // ============================================
+  const dlgEdit = dlg('edit');
+  dlgEdit.querySelector('form').onsubmit = function(ev) {
+    ev.preventDefault();
+    const id = el('edit-lead-id').value;
+    const fd = new FormData(this);
+    if (updateLead(id, {
+      nome: fd.get('nome'),
+      segmento: fd.get('segmento'),
+      valor: Number(fd.get('valor')),
+      score: Number(fd.get('score')),
+      prioridade: fd.get('prioridade'),
+      estagio: fd.get('estagio')
+    })) {
+      dlgEdit.close();
+    }
+    return false;
+  };
+
+  // ============================================
+  // EVENTOS DE LEAD
+  // ============================================
+  const dlgEvento = dlg('evento');
+  dlgEvento.querySelector('form').onsubmit = function(ev) {
+    ev.preventDefault();
+    const leadId = el('evento-lead-id').value;
+    const fd = new FormData(this);
+    
+    if (!fd.get('titulo') || !fd.get('data')) {
+      alert('Preencha título e data do evento');
+      return false;
+    }
+    
+    const evento = {
+      id: uuid(),
+      leadId: leadId,
+      titulo: fd.get('titulo'),
+      data: fd.get('data'),
+      hora: fd.get('hora') || '',
+      descricao: fd.get('descricao') || '',
+      criadoEm: nowISO()
+    };
+    
+    state.eventos.push(evento);
+    saveState(state);
+    renderAll();
+    dlgEvento.close();
+    alert('✓ Evento criado com sucesso!');
     return false;
   };
 
@@ -797,11 +1109,11 @@ path: index.html
 
   dlgReset.querySelector('form').onsubmit = function(e) {
     e.preventDefault();
-    state = {leads: []};
+    state = {leads: [], eventos: []};
     saveState(state);
     renderAll();
     dlgReset.close();
-    alert('⚠️ Todos os leads foram apagados permanentemente!');
+    alert('⚠️ Todos os leads e eventos foram apagados permanentemente!');
     return false;
   };
 
@@ -849,6 +1161,26 @@ path: index.html
   };
 
   // ============================================
+  // NAVEGAÇÃO POR ABAS
+  // ============================================
+  document.querySelectorAll('.nav-tab').forEach(tab => {
+    tab.addEventListener('click', function() {
+      const tabName = this.dataset.tab;
+      
+      // Remove active de todos
+      document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(tc => tc.classList.add('hidden'));
+      
+      // Ativa novo
+      this.classList.add('active');
+      el(`tab-${tabName}`).classList.remove('hidden');
+      
+      if (tabName === 'top10') renderTop10();
+      if (tabName === 'timeline') renderTimeline();
+    });
+  });
+
+  // ============================================
   // INICIALIZAÇÃO
   // ============================================
   const dlgImport = dlg('import');
@@ -857,9 +1189,9 @@ path: index.html
   document.addEventListener("DOMContentLoaded", () => {
     updateTheme();
     renderAll();
+    document.querySelectorAll('.nav-tab')[0].classList.add('active');
   });
 
-  // Sincronizar tema ao trocar preferência do SO
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
     if (!localStorage.getItem(THEME_KEY)) {
       updateTheme();
