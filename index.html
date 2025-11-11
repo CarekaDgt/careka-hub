@@ -31,31 +31,190 @@ path: index.html
   <style>
     html, body { height: 100%; }
     body { font-family: 'Inter', sans-serif; min-height: 100vh; }
-    [data-theme='careka-dark'] { background: #0B1220; color: #fff; }
+    [data-theme='careka-dark'] { background: #0B1220; color: #E5E7EB; }
     [data-theme='careka-dark'] .card, [data-theme='careka-dark'] dialog, [data-theme='careka-dark'] .sidebar {
       background: #0F172A !important;
-      color: #fff !important;
+      color: #E5E7EB !important;
     }
-    [data-theme='careka-light'] { background: #F7F7F5; color: #111; }
+    [data-theme='careka-light'] { background: #F7F7F5; color: #1F2937; }
     [data-theme='careka-light'] .card, [data-theme='careka-light'] dialog, [data-theme='careka-light'] .sidebar {
-      background: #fff !important;
-      color: #222 !important;
+      background: #FFFFFF !important;
+      color: #1F2937 !important;
     }
     .card { border-radius: 1rem; box-shadow: 0 2px 12px 0 rgba(0,0,0,.04); }
     .kanban-list { min-width: 300px; width: 100%; }
     .kanban-list .sortable-ghost { opacity: 0.3 }
-    dialog::backdrop { background: rgba(0, 0, 0, 0.4); }
+    dialog::backdrop { background: rgba(0, 0, 0, 0.5); }
     .sidebar { min-width: 200px; width: 220px; }
     .active { font-weight: 700; color: #0F766E; }
     ::selection { background: #0F766E33; }
-    .input-duplo input { width: 40%; }
+    .input-duplo input, .input-duplo select { width: 48%; }
+    
+    /* Estilos de Input/Select Universal */
+    input[type="text"],
+    input[type="number"],
+    input[type="file"],
+    select,
+    textarea {
+      transition: all 0.2s ease;
+    }
+    
+    [data-theme='careka-light'] input[type="text"],
+    [data-theme='careka-light'] input[type="number"],
+    [data-theme='careka-light'] input[type="file"],
+    [data-theme='careka-light'] select,
+    [data-theme='careka-light'] textarea {
+      background-color: #FFFFFF;
+      color: #1F2937;
+      border-color: #D1D5DB;
+    }
+    
+    [data-theme='careka-light'] input[type="text"]:focus,
+    [data-theme='careka-light'] input[type="number"]:focus,
+    [data-theme='careka-light'] input[type="file"]:focus,
+    [data-theme='careka-light'] select:focus,
+    [data-theme='careka-light'] textarea:focus {
+      background-color: #F3F4F6;
+      border-color: #0F766E;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1);
+    }
+    
+    [data-theme='careka-dark'] input[type="text"],
+    [data-theme='careka-dark'] input[type="number"],
+    [data-theme='careka-dark'] input[type="file"],
+    [data-theme='careka-dark'] select,
+    [data-theme='careka-dark'] textarea {
+      background-color: #1E293B;
+      color: #E5E7EB;
+      border-color: #475569;
+    }
+    
+    [data-theme='careka-dark'] input[type="text"]:focus,
+    [data-theme='careka-dark'] input[type="number"]:focus,
+    [data-theme='careka-dark'] input[type="file"]:focus,
+    [data-theme='careka-dark'] select:focus,
+    [data-theme='careka-dark'] textarea:focus {
+      background-color: #0F172A;
+      border-color: #2DD4BF;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(45, 212, 191, 0.1);
+    }
+    
+    [data-theme='careka-light'] input::placeholder,
+    [data-theme='careka-light'] select {
+      color: #6B7280;
+    }
+    
+    [data-theme='careka-dark'] input::placeholder,
+    [data-theme='careka-dark'] select {
+      color: #9CA3AF;
+    }
+
+    /* Labels com contraste correto */
+    [data-theme='careka-light'] label {
+      color: #374151;
+    }
+    
+    [data-theme='careka-dark'] label {
+      color: #D1D5DB;
+    }
+
+    /* Cards de Lead no Kanban */
+    [data-theme='careka-light'] .lead-card {
+      background: #FFFFFF;
+      color: #1F2937;
+      border: 1px solid #E5E7EB;
+    }
+    
+    [data-theme='careka-dark'] .lead-card {
+      background: #1E293B;
+      color: #E5E7EB;
+      border: 1px solid #334155;
+    }
+
+    /* Badges com contraste WCAG AA */
+    .badge-alta {
+      background-color: #FEE2E2;
+      color: #7F1D1D;
+    }
+    
+    [data-theme='careka-dark'] .badge-alta {
+      background-color: #7F1D1D;
+      color: #FECACA;
+    }
+
+    .badge-media {
+      background-color: #FEF3C7;
+      color: #78350F;
+    }
+    
+    [data-theme='careka-dark'] .badge-media {
+      background-color: #78350F;
+      color: #FCD34D;
+    }
+
+    .badge-baixa {
+      background-color: #DCFCE7;
+      color: #166534;
+    }
+    
+    [data-theme='careka-dark'] .badge-baixa {
+      background-color: #166534;
+      color: #BBF7D0;
+    }
+
+    /* Score badge */
+    .badge-score {
+      background-color: #E0F2FE;
+      color: #0C4A6E;
+    }
+    
+    [data-theme='careka-dark'] .badge-score {
+      background-color: #0C4A6E;
+      color: #BAE6FD;
+    }
+
+    /* Stage counter badge */
+    .badge-stage {
+      background-color: #0F766E;
+      color: #FFFFFF;
+    }
+    
+    [data-theme='careka-dark'] .badge-stage {
+      background-color: #2DD4BF;
+      color: #0B1220;
+    }
+
+    /* Preview CSV */
+    [data-theme='careka-light'] .preview-area {
+      background-color: #F9FAFB;
+      border-color: #E5E7EB;
+      color: #1F2937;
+    }
+    
+    [data-theme='careka-dark'] .preview-area {
+      background-color: #111827;
+      border-color: #374151;
+      color: #D1D5DB;
+    }
+
+    /* Diálogo - garantir contraste */
+    [data-theme='careka-light'] dialog {
+      color: #1F2937;
+    }
+    
+    [data-theme='careka-dark'] dialog {
+      color: #E5E7EB;
+    }
   </style>
 </head>
 <body class="w-screen min-h-screen flex">
   <!-- Sidebar -->
-  <aside class="sidebar fixed left-0 top-0 h-full z-10 flex flex-col py-8 px-6 card border-r border-gray-200 shadow-md transition-all duration-300">
+  <aside class="sidebar fixed left-0 top-0 h-full z-10 flex flex-col py-8 px-6 card border-r shadow-md transition-all duration-300"
+         style="border-color: rgba(0,0,0,0.1);">
     <h1 class="text-2xl font-bold mb-8 tracking-tight select-none" style="letter-spacing:-.5px;">CAREKA HUB</h1>
-    <ul class="flex-1 flex flex-col gap-3 text-base text-gray-700 font-medium">
+    <ul class="flex-1 flex flex-col gap-3 text-base font-medium">
       <li class="active">Dashboard</li>
       <li class="text-gray-400 select-none">v4.2.1</li>
     </ul>
@@ -67,147 +226,162 @@ path: index.html
     <!-- Top Controls -->
     <div class="flex items-center justify-between gap-2 mb-6 flex-wrap">
       <div class="flex gap-2 flex-wrap">
-        <button id="btn-novo-lead" class="bg-careka-primary-light text-white px-4 py-2 rounded font-medium hover:bg-teal-700 transition" type="button">+ Novo Lead</button>
-        <button id="btn-import-csv" class="bg-gray-200 dark:bg-careka-card-dark text-gray-800 dark:text-white px-4 py-2 rounded font-medium hover:bg-gray-300 dark:hover:bg-careka-dark transition" type="button">Importar CSV</button>
-        <button id="btn-rodada-diaria" class="bg-blue-50 dark:bg-blue-950 text-careka-primary-light dark:text-careka-primary-dark px-4 py-2 rounded font-medium border border-blue-100 dark:border-blue-800 hover:bg-blue-100 dark:hover:bg-blue-900 transition" type="button">Rodada Diária</button>
-        <button id="btn-reset" class="bg-red-50 dark:bg-red-800 text-red-700 dark:text-red-200 px-4 py-2 rounded font-medium border border-red-200 dark:border-red-700 hover:bg-red-100 dark:hover:bg-red-700 transition" type="button">HARD RESET LEADS</button>
-        <button id="btn-theme" class="bg-gray-100 dark:bg-careka-card-dark text-gray-800 dark:text-white px-4 py-2 rounded font-medium hover:bg-gray-200 dark:hover:bg-careka-dark transition" type="button">Tema</button>
+        <button id="btn-novo-lead" class="bg-careka-primary-light text-white px-4 py-2 rounded font-medium hover:bg-teal-800 focus:outline-none focus:ring-2 focus:ring-careka-primary-light focus:ring-offset-2 dark:focus:ring-offset-careka-dark transition" type="button">+ Novo Lead</button>
+        <button id="btn-import-csv" class="bg-gray-200 dark:bg-slate-700 text-gray-900 dark:text-gray-100 px-4 py-2 rounded font-medium hover:bg-gray-300 dark:hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-slate-500 transition" type="button">Importar CSV</button>
+        <button id="btn-rodada-diaria" class="bg-blue-100 dark:bg-blue-900 text-blue-900 dark:text-blue-100 px-4 py-2 rounded font-medium border border-blue-300 dark:border-blue-700 hover:bg-blue-200 dark:hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 transition" type="button">Rodada Diária</button>
+        <button id="btn-reset" class="bg-red-100 dark:bg-red-900 text-red-900 dark:text-red-100 px-4 py-2 rounded font-medium border border-red-300 dark:border-red-700 hover:bg-red-200 dark:hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-red-500 transition" type="button">HARD RESET LEADS</button>
+        <button id="btn-theme" class="bg-gray-200 dark:bg-slate-700 text-gray-900 dark:text-gray-100 px-4 py-2 rounded font-medium hover:bg-gray-300 dark:hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-slate-500 transition" type="button">Tema</button>
       </div>
       <div>
-        <button id="btn-backup" class="bg-cyan-50 dark:bg-careka-card-dark text-careka-primary-light dark:text-careka-primary-dark px-4 py-2 rounded font-medium border border-cyan-200 dark:border-careka-primary-dark hover:bg-cyan-100 dark:hover:bg-careka-dark transition" type="button">Backup/Export</button>
-        <button id="btn-test-pers" class="ml-2 bg-gray-50 dark:bg-careka-card-dark text-gray-500 dark:text-white border border-gray-200 dark:border-gray-700 px-3 py-2 rounded font-medium hover:bg-gray-100 dark:hover:bg-careka-dark transition" type="button">Teste Persistência</button>
+        <button id="btn-backup" class="bg-cyan-100 dark:bg-cyan-900 text-cyan-900 dark:text-cyan-100 px-4 py-2 rounded font-medium border border-cyan-300 dark:border-cyan-700 hover:bg-cyan-200 dark:hover:bg-cyan-800 focus:outline-none focus:ring-2 focus:ring-cyan-500 transition" type="button">Backup/Export</button>
+        <button id="btn-test-pers" class="ml-2 bg-gray-200 dark:bg-slate-700 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-slate-600 px-3 py-2 rounded font-medium hover:bg-gray-300 dark:hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-slate-500 transition" type="button">Teste Persistência</button>
       </div>
     </div>
+
     <!-- Métricas Cards -->
     <div class="mb-8 grid grid-cols-2 sm:grid-cols-4 gap-4 select-none">
       <div class="card flex flex-col p-5">
-        <span class="text-sm text-gray-400">TOTAL LEADS</span>
-        <span id="metric-leads" class="text-2xl font-bold mt-1">0</span>
+        <span class="text-sm font-medium text-gray-600 dark:text-gray-400">TOTAL LEADS</span>
+        <span id="metric-leads" class="text-3xl font-bold mt-2 text-gray-900 dark:text-white">0</span>
       </div>
       <div class="card flex flex-col p-5">
-        <span class="text-sm text-gray-400">R$ VALOR PIPELINE</span>
-        <span id="metric-valor" class="text-2xl font-bold mt-1">0</span>
+        <span class="text-sm font-medium text-gray-600 dark:text-gray-400">R$ VALOR PIPELINE</span>
+        <span id="metric-valor" class="text-3xl font-bold mt-2 text-gray-900 dark:text-white">0</span>
       </div>
       <div class="card flex flex-col p-5">
-        <span class="text-sm text-gray-400">TAXA CONVERSÃO</span>
-        <span id="metric-conv" class="text-2xl font-bold mt-1">0%</span>
+        <span class="text-sm font-medium text-gray-600 dark:text-gray-400">TAXA CONVERSÃO</span>
+        <span id="metric-conv" class="text-3xl font-bold mt-2 text-gray-900 dark:text-white">0%</span>
       </div>
       <div class="card flex flex-col p-5">
-        <span class="text-sm text-gray-400">ALTA PRIORIDADE</span>
-        <span id="metric-alta" class="text-2xl font-bold mt-1">0</span>
+        <span class="text-sm font-medium text-gray-600 dark:text-gray-400">ALTA PRIORIDADE</span>
+        <span id="metric-alta" class="text-3xl font-bold mt-2 text-gray-900 dark:text-white">0</span>
       </div>
     </div>
+
     <!-- Kanban Pipeline -->
     <div id="pipeline" class="flex gap-6 w-full overflow-x-auto pb-8">
       <!-- Colunas inseridas por JS -->
     </div>
   </main>
 
-  <!-- Dialogs -->
+  <!-- Dialog: Novo Lead -->
   <dialog id="dlg-lead" class="card p-0 w-[90vw] max-w-lg mx-auto mt-12">
     <form method="dialog" class="p-6 flex flex-col gap-4" id="form-lead">
       <h2 class="text-xl font-bold mb-2">Novo Lead</h2>
-        <label class="flex flex-col mb-2">
-          <span class="mb-1 text-sm font-medium">Nome</span>
-          <input type="text" name="nome" required class="rounded border py-2 px-3 bg-gray-50" />
+      <label class="flex flex-col mb-2">
+        <span class="mb-2 text-sm font-medium">Nome</span>
+        <input type="text" name="nome" required class="rounded border py-2 px-3"/>
+      </label>
+      <label class="flex flex-col mb-2">
+        <span class="mb-2 text-sm font-medium">Segmento</span>
+        <input type="text" name="segmento" required class="rounded border py-2 px-3"/>
+      </label>
+      <div class="flex gap-4 input-duplo">
+        <label class="flex flex-col mb-2 flex-1">
+          <span class="mb-2 text-sm font-medium">Valor (R$)</span>
+          <input type="number" min="0" step="100" name="valor" required class="rounded border py-2 px-3"/>
         </label>
-        <label class="flex flex-col mb-2">
-          <span class="mb-1 text-sm font-medium">Segmento</span>
-          <input type="text" name="segmento" required class="rounded border py-2 px-3 bg-gray-50" />
+        <label class="flex flex-col mb-2 flex-1">
+          <span class="mb-2 text-sm font-medium">Score</span>
+          <input type="number" min="0" max="100" name="score" value="60" required class="rounded border py-2 px-3"/>
         </label>
-        <div class="flex gap-2 input-duplo">
-          <label class="flex flex-col mb-2 flex-1">
-            <span class="mb-1 text-sm font-medium">Valor (R$)</span>
-            <input type="number" min="0" step="100" name="valor" required class="rounded border py-2 px-3 bg-gray-50" />
-          </label>
-          <label class="flex flex-col mb-2 flex-1">
-            <span class="mb-1 text-sm font-medium">Score</span>
-            <input type="number" min="0" max="100" name="score" value="60" required class="rounded border py-2 px-3 bg-gray-50" />
-          </label>
-        </div>
-        <div class="flex gap-2 input-duplo">
-          <label class="flex flex-col mb-2 flex-1">
-            <span class="mb-1 text-sm font-medium">Prioridade</span>
-            <select name="prioridade" class="rounded border py-2 px-3 bg-gray-50">
-              <option>Média</option>
-              <option>Alta</option>
-              <option>Baixa</option>
-            </select>
-          </label>
-          <label class="flex flex-col mb-2 flex-1">
-            <span class="mb-1 text-sm font-medium">Estágio</span>
-            <select name="estagio" class="rounded border py-2 px-3 bg-gray-50">
-              <option>Novo</option>
-              <option>Qualificar</option>
-              <option>Diagnóstico</option>
-              <option>Proposta</option>
-              <option>Ganho</option>
-            </select>
-          </label>
-        </div>
+      </div>
+      <div class="flex gap-4 input-duplo">
+        <label class="flex flex-col mb-2 flex-1">
+          <span class="mb-2 text-sm font-medium">Prioridade</span>
+          <select name="prioridade" class="rounded border py-2 px-3">
+            <option>Média</option>
+            <option>Alta</option>
+            <option>Baixa</option>
+          </select>
+        </label>
+        <label class="flex flex-col mb-2 flex-1">
+          <span class="mb-2 text-sm font-medium">Estágio</span>
+          <select name="estagio" class="rounded border py-2 px-3">
+            <option>Novo</option>
+            <option>Qualificar</option>
+            <option>Diagnóstico</option>
+            <option>Proposta</option>
+            <option>Ganho</option>
+          </select>
+        </label>
+      </div>
       <div class="flex gap-2 items-center mt-4">
-        <button class="bg-careka-primary-light text-white px-4 py-2 rounded font-medium hover:bg-teal-700 transition" type="submit">Salvar</button>
-        <button class="ml-2 text-gray-400 px-4 py-2" type="button" onclick="dlgLead.close()">Cancelar</button>
+        <button class="bg-careka-primary-light text-white px-4 py-2 rounded font-medium hover:bg-teal-800 focus:outline-none focus:ring-2 focus:ring-careka-primary-light focus:ring-offset-2 dark:focus:ring-offset-careka-dark transition" type="submit">Salvar</button>
+        <button class="text-gray-600 dark:text-gray-400 px-4 py-2 hover:text-gray-900 dark:hover:text-gray-200 focus:outline-none focus:underline transition" type="button" onclick="dlgLead.close()">Cancelar</button>
       </div>
     </form>
   </dialog>
+
+  <!-- Dialog: Importar CSV -->
   <dialog id="dlg-import" class="card p-0 w-[90vw] max-w-lg mx-auto mt-12">
     <form method="dialog" class="p-6 flex flex-col gap-4" id="form-import">
       <h2 class="text-xl font-bold mb-2">Importar CSV</h2>
-      <input type="file" accept=".csv" id="input-csv" class="mb-2"/>
-      <div id="preview-csv" class="text-xs max-h-28 overflow-auto font-mono bg-gray-50 p-2 rounded border border-gray-200 hidden"></div>
+      <label class="flex flex-col mb-2">
+        <span class="mb-2 text-sm font-medium">Selecione arquivo CSV</span>
+        <input type="file" accept=".csv" id="input-csv" class="rounded border py-2 px-3"/>
+      </label>
+      <div id="preview-csv" class="text-xs max-h-32 overflow-auto font-mono preview-area p-3 rounded border hidden"></div>
       <div class="flex gap-2 items-center mt-4">
-        <button id="btn-importar-preview" class="bg-careka-primary-light text-white px-4 py-2 rounded font-medium hover:bg-teal-700 transition" type="button" disabled>Importar</button>
-        <button class="ml-2 text-gray-400 px-4 py-2" type="button" onclick="dlgImport.close()">Cancelar</button>
+        <button id="btn-importar-preview" class="bg-careka-primary-light text-white px-4 py-2 rounded font-medium hover:bg-teal-800 focus:outline-none focus:ring-2 focus:ring-careka-primary-light focus:ring-offset-2 dark:focus:ring-offset-careka-dark transition" type="button" disabled>Importar</button>
+        <button class="text-gray-600 dark:text-gray-400 px-4 py-2 hover:text-gray-900 dark:hover:text-gray-200 focus:outline-none focus:underline transition" type="button" onclick="dlgImport.close()">Cancelar</button>
       </div>
     </form>
   </dialog>
+
+  <!-- Dialog: Backup & Export -->
   <dialog id="dlg-backup" class="card p-0 w-[90vw] max-w-lg mx-auto mt-12">
     <form method="dialog" class="p-6 flex flex-col gap-4">
       <h2 class="text-xl font-bold mb-2">Backup & Export</h2>
-      <div class="flex gap-2 mb-2">
-        <button id="btn-exp-csv" class="bg-careka-primary-light text-white px-4 py-2 rounded font-medium hover:bg-teal-700 transition" type="button">Exportar CSV</button>
-        <button id="btn-exp-xlsx" class="bg-blue-500 text-white px-4 py-2 rounded font-medium hover:bg-blue-700 transition" type="button">Exportar XLSX</button>
-        <button id="btn-exp-json" class="bg-cyan-500 text-white px-4 py-2 rounded font-medium hover:bg-cyan-700 transition" type="button">Salvar JSON</button>
+      <div class="flex gap-2 mb-2 flex-wrap">
+        <button id="btn-exp-csv" class="bg-careka-primary-light text-white px-4 py-2 rounded font-medium hover:bg-teal-800 focus:outline-none focus:ring-2 focus:ring-careka-primary-light focus:ring-offset-2 dark:focus:ring-offset-careka-dark transition" type="button">Exportar CSV</button>
+        <button id="btn-exp-xlsx" class="bg-blue-600 text-white px-4 py-2 rounded font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-careka-dark transition" type="button">Exportar XLSX</button>
+        <button id="btn-exp-json" class="bg-cyan-600 text-white px-4 py-2 rounded font-medium hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 dark:focus:ring-offset-careka-dark transition" type="button">Salvar JSON</button>
       </div>
       <label class="mt-2 block">
-        Restauro: <input type="file" id="input-json-backup" accept=".json" class="my-2"/>
+        <span class="text-sm font-medium">Restaurar de JSON:</span>
+        <input type="file" id="input-json-backup" accept=".json" class="my-2 rounded border py-2 px-3 w-full"/>
       </label>
-      <button class="text-gray-400 px-4 py-2 mt-2" type="button" onclick="dlgBackup.close()">Fechar</button>
+      <button class="text-gray-600 dark:text-gray-400 px-4 py-2 hover:text-gray-900 dark:hover:text-gray-200 focus:outline-none focus:underline transition mt-2" type="button" onclick="dlgBackup.close()">Fechar</button>
     </form>
   </dialog>
+
+  <!-- Dialog: Hard Reset -->
   <dialog id="dlg-reset" class="card p-0 w-[90vw] max-w-sm mx-auto mt-12">
     <form method="dialog" class="p-6 flex flex-col gap-4" id="form-reset">
-      <h2 class="text-xl font-bold mb-2 text-red-600">HARD RESET!</h2>
-      <p class="text-sm">Digite <b>RESET</b> para apagar todos os leads. <br>Esta ação é irreversível!</p>
-      <input type="text" id="confirm-reset" maxlength="6" class="rounded border py-2 px-3 bg-gray-50"/>
-      <button id="btn-confirm-reset" disabled type="submit" class="bg-red-500 text-white px-4 py-2 rounded font-medium hover:bg-red-700 transition">RESET</button>
-      <button class="text-gray-400 px-4 py-2 mt-2" type="button" onclick="dlgReset.close()">Cancelar</button>
+      <h2 class="text-xl font-bold mb-2 text-red-700 dark:text-red-400">HARD RESET!</h2>
+      <p class="text-sm text-gray-700 dark:text-gray-300">Digite <strong>RESET</strong> para apagar todos os leads. <br/>Esta ação é irreversível!</p>
+      <input type="text" id="confirm-reset" maxlength="6" placeholder="Digite RESET aqui" class="rounded border py-2 px-3"/>
+      <button id="btn-confirm-reset" disabled type="submit" class="bg-red-600 text-white px-4 py-2 rounded font-medium hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 dark:focus:ring-offset-careka-dark disabled:opacity-50 disabled:cursor-not-allowed transition">CONFIRMAR RESET</button>
+      <button class="text-gray-600 dark:text-gray-400 px-4 py-2 hover:text-gray-900 dark:hover:text-gray-200 focus:outline-none focus:underline transition" type="button" onclick="dlgReset.close()">Cancelar</button>
     </form>
   </dialog>
+
+  <!-- Dialog: Teste Persistência -->
   <dialog id="dlg-teste" class="card p-0 w-[90vw] max-w-lg mx-auto mt-12">
     <form method="dialog" class="p-6 flex flex-col gap-4">
       <h2 class="text-xl font-bold mb-2">Teste Persistência</h2>
-      <div>
-        <span class="font-medium">Tamanho do estado:</span>
-        <span id="tamanho-local" class="ml-2 text-blue-600 font-mono"></span>
+      <div class="p-3 rounded border bg-gray-50 dark:bg-slate-800 border-gray-200 dark:border-slate-700">
+        <span class="font-medium text-gray-700 dark:text-gray-300">Tamanho do estado:</span>
+        <span id="tamanho-local" class="ml-2 text-blue-700 dark:text-blue-400 font-mono font-bold"></span>
       </div>
       <div class="flex gap-2 mt-2">
-        <button id="btn-salvar" class="bg-careka-primary-light text-white px-4 py-2 rounded font-medium hover:bg-teal-700 transition" type="button">Salvar Estado</button>
-        <button id="btn-restaurar" class="bg-blue-500 text-white px-4 py-2 rounded font-medium hover:bg-blue-700 transition" type="button">Restaurar Estado</button>
+        <button id="btn-salvar" class="bg-careka-primary-light text-white px-4 py-2 rounded font-medium hover:bg-teal-800 focus:outline-none focus:ring-2 focus:ring-careka-primary-light focus:ring-offset-2 dark:focus:ring-offset-careka-dark transition" type="button">Salvar Estado</button>
+        <button id="btn-restaurar" class="bg-blue-600 text-white px-4 py-2 rounded font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-careka-dark transition" type="button">Restaurar Estado</button>
       </div>
-      <button class="text-gray-400 px-4 py-2 mt-2" type="button" onclick="dlgTeste.close()">Fechar</button>
+      <button class="text-gray-600 dark:text-gray-400 px-4 py-2 hover:text-gray-900 dark:hover:text-gray-200 focus:outline-none focus:underline transition mt-2" type="button" onclick="dlgTeste.close()">Fechar</button>
     </form>
   </dialog>
 
-  <input type="file" id="input-hidden-xlsx" class="hidden" accept=".xlsx,.xls" />
-
   <script>
-  // Constantes e Utilitários
+  // ============================================
+  // CONSTANTES E UTILITÁRIOS
+  // ============================================
   const STAGE_LIST = ['Novo','Qualificar','Diagnóstico','Proposta','Ganho'];
   const STATE_KEY = "careka-hub";
   const THEME_KEY = "careka-theme";
   const STORAGE_TEST = "careka-test-state";
+
   const METRIC = {
     leads: el('metric-leads'),
     valor: el('metric-valor'),
@@ -215,12 +389,22 @@ path: index.html
     alta: el('metric-alta')
   };
 
+  // Utilitários
   function el(id) { return document.getElementById(id) }
   function dlg(id) { return document.getElementById('dlg-' + id) }
   function sum(arr, fn) { return arr.reduce((a,b) => a + (fn(b)||0), 0); }
   function toReal(v) { return "R$ " + Number(v || 0).toLocaleString('pt-BR'); }
+  function uuid() { return Math.random().toString(16).slice(2) + Date.now().toString(16); }
+  function nowISO() { return new Date().toISOString(); }
+
+  // LocalStorage
   function loadState() {
-    try { return JSON.parse(localStorage.getItem(STATE_KEY)) || {leads: []} } catch { return {leads: []}; }
+    try { 
+      const data = localStorage.getItem(STATE_KEY);
+      return data ? JSON.parse(data) : {leads: []} 
+    } catch { 
+      return {leads: []}; 
+    }
   }
   function saveState(state) {
     localStorage.setItem(STATE_KEY, JSON.stringify(state));
@@ -231,19 +415,10 @@ path: index.html
   function getTheme() {
     return localStorage.getItem(THEME_KEY) || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'careka-dark' : 'careka-light')
   }
-  function persistTestSet() {
-    localStorage.setItem(STORAGE_TEST, localStorage.getItem(STATE_KEY));
-  }
-  function persistTestGet() {
-    let v = localStorage.getItem(STORAGE_TEST); if (v) localStorage.setItem(STATE_KEY, v);
-  }
-  function uuid() {
-    return Math.random().toString(16).slice(2) + Date.now().toString(16);
-  }
-  function nowISO() {
-    return new Date().toISOString();
-  }
-  // Dados Iniciais (Seed)
+
+  // ============================================
+  // DADOS INICIAIS (SEED)
+  // ============================================
   const LEAD_SEED = [
     {nome:"Dr. Martinez Odontologia",segmento:"Clínica Odontológica",score:78,valor:15000,estagio:"Novo",prioridade:"Alta",dt:nowISO(),id:uuid()},
     {nome:"Restaurante Sabor",segmento:"Restaurante",score:61,valor:9000,estagio:"Novo",prioridade:"Média",dt:nowISO(),id:uuid()},
@@ -259,46 +434,59 @@ path: index.html
     {nome:"Clínica Alpha",segmento:"Clínica Odontológica",score:76,valor:14000,estagio:"Novo",prioridade:"Alta",dt:nowISO(),id:uuid()}
   ];
 
-  // Estado
+  // ============================================
+  // ESTADO GLOBAL
+  // ============================================
   let state = loadState();
   if (!state.leads || !Array.isArray(state.leads) || state.leads.length < 1) {
     state = {leads: JSON.parse(JSON.stringify(LEAD_SEED))};
     saveState(state);
   }
 
-  // Renderização
+  // ============================================
+  // RENDERIZAÇÃO
+  // ============================================
   function renderMetrics() {
     METRIC.leads.textContent = state.leads.length;
     METRIC.valor.textContent = toReal(sum(state.leads, l => l.valor));
-    // Conversão = Ganho/total
     const ganhos = state.leads.filter(l => l.estagio === 'Ganho').length;
-    METRIC.conv.textContent = state.leads.length ? ((ganhos/state.leads.length*100).toFixed(1).replace('.0','')) + "%" : "0%";
+    const total = state.leads.length;
+    METRIC.conv.textContent = total ? ((ganhos/total*100).toFixed(1).replace('.0','')) + "%" : "0%";
     METRIC.alta.textContent = state.leads.filter(l => l.prioridade === 'Alta').length;
   }
+
+  function badgeColor(p) {
+    if (p === 'Alta') return "badge-alta";
+    if (p === 'Média') return "badge-media";
+    return "badge-baixa";
+  }
+
   function renderPipeline() {
-    const wrap = document.getElementById("pipeline"); wrap.innerHTML = "";
+    const wrap = document.getElementById("pipeline");
+    wrap.innerHTML = "";
     STAGE_LIST.forEach(stage => {
       const leads = state.leads.filter(l => l.estagio === stage);
-      let html = `<div class="kanban-list flex flex-col bg-gray-50 dark:bg-careka-card-dark card p-4 min-w-[260px] max-w-[320px] transition-all">
-        <div class="flex justify-between items-center mb-2">
-          <span class="font-bold tracking-tight text-lg">${stage}</span>
-          <span class="bg-careka-primary-light dark:bg-careka-primary-dark text-white rounded-full px-3 py-1 text-xs ml-2">${leads.length}</span>
+      let html = `<div class="kanban-list flex flex-col bg-gray-100 dark:bg-slate-800 card p-4 min-w-[280px] transition-all">
+        <div class="flex justify-between items-center mb-3">
+          <span class="font-bold tracking-tight text-base text-gray-900 dark:text-white">${stage}</span>
+          <span class="badge-stage rounded-full px-3 py-1 text-xs font-medium">${leads.length}</span>
         </div>
         <div class="flex-1 flex flex-col gap-2" id="pl-${stage}">`;
+      
       leads.forEach(l => {
         html += `
-        <div class="card p-3 my-1 flex flex-col cursor-grab" data-id="${l.id}">
+        <div class="lead-card p-3 my-1 flex flex-col cursor-grab active:cursor-grabbing rounded hover:shadow-md transition" data-id="${l.id}">
           <div class="flex justify-between items-center">
-            <span class="font-medium text-base truncate">${l.nome}</span>
-            <span class="text-xs px-2 py-1 rounded bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 ml-1">${l.score}</span>
+            <span class="font-medium text-sm truncate">${l.nome}</span>
+            <span class="badge-score rounded text-xs px-2 py-1 ml-1 font-medium">${l.score}</span>
           </div>
-          <div class="flex justify-between items-center mt-1">
-            <span class="text-xs text-gray-400 truncate">${l.segmento}</span>
+          <div class="flex justify-between items-center mt-2">
+            <span class="text-xs truncate">${l.segmento}</span>
             <span class="text-xs font-bold text-cyan-600 dark:text-cyan-400 ml-1">${toReal(l.valor)}</span>
           </div>
           <div class="flex justify-between items-center mt-2 text-xs">
-            <span class="rounded px-2 py-0.5 ${badgeColor(l.prioridade)}">${l.prioridade}</span>
-            <span class="text-gray-300">${(new Date(l.dt)).toLocaleDateString("pt-BR")}</span>
+            <span class="rounded px-2 py-0.5 ${badgeColor(l.prioridade)} font-medium">${l.prioridade}</span>
+            <span class="text-gray-500 dark:text-gray-400">${(new Date(l.dt)).toLocaleDateString("pt-BR")}</span>
           </div>
         </div>`;
       });
@@ -306,19 +494,15 @@ path: index.html
       wrap.innerHTML += html;
     });
 
-    // Drag & Drop por coluna
+    // Inicializar Drag & Drop
     STAGE_LIST.forEach(stage => {
       new Sortable(document.getElementById("pl-"+stage), {
         group: 'pipeline',
         animation: 160,
+        ghostClass: 'sortable-ghost',
         onEnd: handleDragMove
       });
     });
-  }
-  function badgeColor(p) {
-    if (p === 'Alta') return "bg-red-100 text-red-600 dark:bg-red-900 dark:text-red-200";
-    if (p === 'Média') return "bg-yellow-100 text-yellow-600 dark:bg-yellow-950 dark:text-yellow-100";
-    return "bg-green-100 text-green-700 dark:bg-green-800 dark:text-green-200";
   }
 
   function renderAll() {
@@ -327,206 +511,361 @@ path: index.html
     updateTheme();
   }
 
-  // Funções de Leads
+  // ============================================
+  // FUNÇÕES DE NEGÓCIO
+  // ============================================
   function addLead(ld) {
-    ld.id = uuid(); ld.dt = nowISO();
+    if (!ld.nome || !ld.valor || !ld.estagio) {
+      alert('Preencha todos os campos obrigatórios: Nome, Valor e Estágio');
+      return false;
+    }
+    ld.id = uuid();
+    ld.dt = nowISO();
+    ld.valor = Number(ld.valor);
+    ld.score = Number(ld.score || 60);
     state.leads.unshift(ld);
     saveState(state);
     renderAll();
+    return true;
   }
 
-  // Drag & Drop para mudar estágio
   function handleDragMove(evt) {
-    let id = evt.item.dataset.id;
-    let newStage = evt.to.id.replace('pl-', '');
-    let lead = state.leads.find(l => l.id === id);
-    if (lead) {
+    const id = evt.item.dataset.id;
+    const newStage = evt.to.id.replace('pl-', '');
+    const lead = state.leads.find(l => l.id === id);
+    if (lead && STAGE_LIST.includes(newStage)) {
       lead.estagio = newStage;
       saveState(state);
       renderAll();
     }
   }
 
-  // --- Nova Lead
-  el('btn-novo-lead').onclick = () => {
-    dlgLead.showModal();
-    let f = dlgLead.querySelector('form');
-    f.reset();
-    f.score.value = 60; f.prioridade.value = "Média"; f.estagio.value = "Novo";
-  };
-  dlgLead = dlg('lead');
-  dlgLead.querySelector('form').onsubmit = function(ev) {
-    ev.preventDefault();
-    let fd = new FormData(this);
-    addLead({
-        nome:fd.get('nome'),
-        segmento:fd.get('segmento'),
-        valor:Number(fd.get('valor')),
-        score:Number(fd.get('score')),
-        prioridade:fd.get('prioridade'),
-        estagio:fd.get('estagio')
-    });
-    dlgLead.close();
-    return false;
+  // ============================================
+  // IMPORTAÇÃO DE CSV
+  // ============================================
+  let previewCSVRows = [];
+
+  function validarLinhaCSV(row) {
+    return row.nome && String(row.nome).trim() && 
+           row.valor && !isNaN(Number(row.valor)) && 
+           row.estagio && STAGE_LIST.includes(String(row.estagio).trim());
   }
 
-  // --- Import CSV
   el('btn-import-csv').onclick = () => {
     dlgImport.showModal();
     el('input-csv').value = "";
     el('preview-csv').classList.add('hidden');
+    el('preview-csv').innerHTML = "";
     el('btn-importar-preview').disabled = true;
     previewCSVRows = [];
-  }
-  dlgImport = dlg('import');
-  let previewCSVRows = [];
+  };
+
   el('input-csv').onchange = function(ev) {
     if (!this.files[0]) return;
-    Papa.parse(this.files[0], {
-      header:true,
-      skipEmptyLines:true,
+    const file = this.files[0];
+    Papa.parse(file, {
+      header: true,
+      skipEmptyLines: true,
+      dynamicTyping: false,
+      transformHeader: h => h.toLowerCase().trim(),
       complete: function(res) {
-        let rows = res.data.filter(r=>r.nome && r.valor && r.estagio);
-        if (!rows.length) { el('preview-csv').innerHTML="Erro: Nenhuma linha válida!"; return; }
-        previewCSVRows = rows;
-        let prev = rows.slice(0,6).map(r=>JSON.stringify(r)).join("<br>");
-        el('preview-csv').innerHTML = prev + (rows.length>6?"<br>...":"");
+        const dados = res.data || [];
+        const linhasValidas = dados.filter(validarLinhaCSV);
+        
+        if (!linhasValidas.length) {
+          el('preview-csv').innerHTML = '<span class="text-red-600 dark:text-red-400 font-medium">❌ Nenhuma linha válida encontrada!</span><br/><span class="text-xs">Obrigatório: nome, valor, estágio</span>';
+          el('preview-csv').classList.remove('hidden');
+          el('btn-importar-preview').disabled = true;
+          return;
+        }
+        
+        previewCSVRows = linhasValidas;
+        let previewHTML = `<span class="font-bold text-green-600 dark:text-green-400">✓ ${linhasValidas.length} linha(s) válida(s)</span><br/><br/>`;
+        previewHTML += '<table class="w-full text-xs border-collapse"><tr class="border-b border-gray-300 dark:border-gray-600"><td class="px-1 py-1 font-bold">Nome</td><td class="px-1 py-1 font-bold">Segmento</td><td class="px-1 py-1 font-bold">Valor</td><td class="px-1 py-1 font-bold">Estágio</td></tr>';
+        
+        linhasValidas.slice(0, 8).forEach(r => {
+          previewHTML += `<tr class="border-b border-gray-200 dark:border-gray-700"><td class="px-1 py-1 truncate">${r.nome}</td><td class="px-1 py-1 truncate">${r.segmento||'-'}</td><td class="px-1 py-1">R$ ${Number(r.valor).toLocaleString('pt-BR')}</td><td class="px-1 py-1">${r.estagio}</td></tr>`;
+        });
+        
+        if (linhasValidas.length > 8) {
+          previewHTML += `<tr><td colspan="4" class="px-1 py-1 text-center font-bold">... mais ${linhasValidas.length - 8} linha(s)</td></tr>`;
+        }
+        previewHTML += '</table>';
+        
+        el('preview-csv').innerHTML = previewHTML;
         el('preview-csv').classList.remove('hidden');
         el('btn-importar-preview').disabled = false;
+      },
+      error: function(err) {
+        el('preview-csv').innerHTML = '<span class="text-red-600 dark:text-red-400 font-medium">❌ Erro ao ler arquivo:</span> ' + err.message;
+        el('preview-csv').classList.remove('hidden');
+        el('btn-importar-preview').disabled = true;
       }
-    })
-  }
+    });
+  };
+
   el('btn-importar-preview').onclick = function() {
+    let contador = 0;
     previewCSVRows.forEach(r => {
-      addLead({
-        nome: r.nome, segmento: r.segmento, valor:Number(r.valor),
-        score: Number(r.score||'60'), prioridade:r.prioridade||'Média',
-        estagio: r.estagio||'Novo'
-      });
+      if (addLead({
+        nome: String(r.nome).trim(),
+        segmento: String(r.segmento||'').trim(),
+        valor: Number(r.valor),
+        score: Number(r.score || 60),
+        prioridade: String(r.prioridade || 'Média').trim(),
+        estagio: String(r.estagio).trim()
+      })) {
+        contador++;
+      }
     });
     dlgImport.close();
-  }
+    alert(`✓ Importado ${contador}/${previewCSVRows.length} leads`);
+  };
 
-  // --- Exportações (CSV, XLSX, JSON)
-  el('btn-backup').onclick = ()=> dlgBackup.showModal();
-  dlgBackup = dlg('backup');
-  el('btn-exp-csv').onclick = ()=> exportCSV();
-  el('btn-exp-xlsx').onclick = ()=> exportXLSX();
-  el('btn-exp-json').onclick = ()=> exportJSON();
-
-  function exportCSV() {
-    const rows = state.leads.map(l=>({
-      nome:l.nome,segmento:l.segmento,valor:l.valor,score:l.score,
-      prioridade:l.prioridade,estagio:l.estagio,dt:l.dt
-    }));
-    let csv = Papa.unparse(rows);
-    let blob = new Blob([csv],{type:"text/csv"});
-    downloadBlob(blob, 'careka-leads.csv');
-  }
-  function exportXLSX() {
-    const ws = XLSX.utils.json_to_sheet(state.leads.map(l=>({
-      nome:l.nome,segmento:l.segmento,valor:l.valor,score:l.score,
-      prioridade:l.prioridade,estagio:l.estagio,dt:l.dt
-    })));
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Leads");
-    let wbout = XLSX.write(wb, {bookType:'xlsx', type:'array'});
-    let blob = new Blob([wbout], {type:"application/octet-stream"});
-    downloadBlob(blob,'careka-leads.xlsx');
-  }
-  function exportJSON() {
-    let blob = new Blob([JSON.stringify(state)], {type:"application/json"});
-    downloadBlob(blob, "careka-hub-backup.json");
-  }
+  // ============================================
+  // EXPORTAÇÃO (CSV, XLSX, JSON)
+  // ============================================
   function downloadBlob(blob, filename) {
-    let a = document.createElement('a');
+    const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
     a.download = filename;
+    document.body.appendChild(a);
     a.click();
-    setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
   }
+
+  function exportCSV() {
+    try {
+      const rows = state.leads.map(l => ({
+        nome: l.nome,
+        segmento: l.segmento,
+        valor: l.valor,
+        score: l.score,
+        prioridade: l.prioridade,
+        estagio: l.estagio,
+        data: l.dt
+      }));
+      const csv = Papa.unparse(rows);
+      const blob = new Blob([csv], {type: "text/csv;charset=utf-8;"});
+      downloadBlob(blob, `careka-leads-${new Date().toISOString().split('T')[0]}.csv`);
+      alert('✓ CSV exportado com sucesso!');
+    } catch (e) {
+      alert('✗ Erro ao exportar CSV: ' + e.message);
+    }
+  }
+
+  function exportXLSX() {
+    try {
+      const dados = state.leads.map(l => ({
+        Nome: l.nome,
+        Segmento: l.segmento,
+        Valor: l.valor,
+        Score: l.score,
+        Prioridade: l.prioridade,
+        Estágio: l.estagio,
+        Data: l.dt
+      }));
+      const ws = XLSX.utils.json_to_sheet(dados);
+      ws['!cols'] = [
+        {wch: 25},
+        {wch: 20},
+        {wch: 12},
+        {wch: 8},
+        {wch: 10},
+        {wch: 12},
+        {wch: 20}
+      ];
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Leads");
+      XLSX.write(wb, {bookType: 'xlsx', type: 'binary', filename: `careka-leads-${new Date().toISOString().split('T')[0]}.xlsx`});
+      alert('✓ Excel exportado com sucesso!');
+    } catch (e) {
+      alert('✗ Erro ao exportar XLSX: ' + e.message);
+    }
+  }
+
+  function exportJSON() {
+    try {
+      const blob = new Blob([JSON.stringify(state, null, 2)], {type: "application/json;charset=utf-8;"});
+      downloadBlob(blob, `careka-hub-backup-${new Date().toISOString().split('T')[0]}.json`);
+      alert('✓ Backup JSON salvo com sucesso!');
+    } catch (e) {
+      alert('✗ Erro ao salvar backup: ' + e.message);
+    }
+  }
+
+  el('btn-backup').onclick = () => dlgBackup.showModal();
+  el('btn-exp-csv').onclick = exportCSV;
+  el('btn-exp-xlsx').onclick = exportXLSX;
+  el('btn-exp-json').onclick = exportJSON;
+
   el('input-json-backup').onchange = function(ev) {
-    let f = this.files[0];
+    const f = this.files[0];
     if (!f) return;
-    let fr = new FileReader();
-    fr.onload = function() {
+    const fr = new FileReader();
+    fr.onload = function(e) {
       try {
-        let newState = JSON.parse(fr.result);
-        if (!Array.isArray(newState.leads)) throw "";
+        const newState = JSON.parse(e.target.result);
+        if (!Array.isArray(newState.leads)) throw new Error('Formato inválido');
         state = newState;
         saveState(state);
         renderAll();
-        alert('Backup restaurado.');
-      } catch { alert('Arquivo inválido.'); }
-    }
+        dlgBackup.close();
+        alert('✓ Backup restaurado com sucesso!');
+      } catch (err) {
+        alert('✗ Erro ao restaurar arquivo: ' + err.message);
+      }
+    };
     fr.readAsText(f);
-    this.value="";
-    dlgBackup.close();
-  }
-
-  // --- Rodada Diária
-  el('btn-rodada-diaria').onclick = () => {
-    let mudanca = false, agora = Date.now();
-    state.leads.forEach(l => {
-      let last = new Date(l.dt).getTime();
-      if ((agora - last) / (3600 * 1000) > 48) {
-        l.score = Number(l.score||60) + 2;
-        l.dt = nowISO(); mudanca = true;
-      }
-      if (l.score >= 80 && l.valor > 10000 && l.estagio!=='Proposta' && l.estagio!=='Ganho') {
-        l.estagio = 'Proposta'; mudanca = true;
-      }
-      if (l.score > 100) l.score = 100; // trava
-    });
-    if (mudanca) {
-      saveState(state); renderAll();
-      alert('Rodada aplicada');
-    } else alert('Sem alterações!');
+    this.value = "";
   };
 
-  // --- HARD RESET
-  el('btn-reset').onclick = ()=>{ dlgReset.showModal(); el('confirm-reset').value=""; el('btn-confirm-reset').disabled=true;}
-  dlgReset = dlg('reset');
+  // ============================================
+  // NOVO LEAD
+  // ============================================
+  const dlgLead = dlg('lead');
+  el('btn-novo-lead').onclick = () => {
+    dlgLead.showModal();
+    const f = dlgLead.querySelector('form');
+    f.reset();
+    f.score.value = 60;
+    f.prioridade.value = "Média";
+    f.estagio.value = "Novo";
+  };
+
+  dlgLead.querySelector('form').onsubmit = function(ev) {
+    ev.preventDefault();
+    const fd = new FormData(this);
+    if (addLead({
+      nome: fd.get('nome'),
+      segmento: fd.get('segmento'),
+      valor: Number(fd.get('valor')),
+      score: Number(fd.get('score')),
+      prioridade: fd.get('prioridade'),
+      estagio: fd.get('estagio')
+    })) {
+      dlgLead.close();
+    }
+    return false;
+  };
+
+  // ============================================
+  // RODADA DIÁRIA
+  // ============================================
+  el('btn-rodada-diaria').onclick = () => {
+    let mudanca = false;
+    const agora = Date.now();
+    state.leads.forEach(l => {
+      const last = new Date(l.dt).getTime();
+      const horasDiff = (agora - last) / (3600 * 1000);
+      
+      if (horasDiff > 48) {
+        l.score = Math.min(100, Number(l.score || 60) + 2);
+        l.dt = nowISO();
+        mudanca = true;
+      }
+      
+      if (l.score >= 80 && l.valor > 10000 && !['Proposta', 'Ganho'].includes(l.estagio)) {
+        l.estagio = 'Proposta';
+        mudanca = true;
+      }
+    });
+    
+    if (mudanca) {
+      saveState(state);
+      renderAll();
+      alert('✓ Rodada diária aplicada!');
+    } else {
+      alert('ℹ Sem alterações nesta rodada.');
+    }
+  };
+
+  // ============================================
+  // HARD RESET
+  // ============================================
+  const dlgReset = dlg('reset');
+  el('btn-reset').onclick = () => {
+    dlgReset.showModal();
+    el('confirm-reset').value = "";
+    el('btn-confirm-reset').disabled = true;
+  };
+
   el('confirm-reset').oninput = function() {
     el('btn-confirm-reset').disabled = this.value !== "RESET";
-  }
-  el('form-reset').onsubmit = function(e) {
+  };
+
+  dlgReset.querySelector('form').onsubmit = function(e) {
     e.preventDefault();
     state = {leads: []};
     saveState(state);
     renderAll();
     dlgReset.close();
-    alert('Todos os leads foram apagados!');
+    alert('⚠️ Todos os leads foram apagados permanentemente!');
     return false;
-  }
-
-  // --- Tema (claro/escuro)
-  el('btn-theme').onclick = () => {
-    document.documentElement.setAttribute('data-theme', document.documentElement.getAttribute('data-theme') === 'careka-light' ? 'careka-dark' : 'careka-light' );
-    saveTheme(document.documentElement.getAttribute('data-theme'));
-    updateTheme();
   };
+
+  // ============================================
+  // TEMA (CLARO/ESCURO)
+  // ============================================
   function updateTheme() {
-    let t = getTheme();
+    const t = getTheme();
     document.documentElement.setAttribute('data-theme', t);
   }
-  updateTheme();
 
-  // --- Teste Persistência
-  el('btn-test-pers').onclick = ()=> {
+  el('btn-theme').onclick = () => {
+    const current = document.documentElement.getAttribute('data-theme');
+    const novo = current === 'careka-light' ? 'careka-dark' : 'careka-light';
+    document.documentElement.setAttribute('data-theme', novo);
+    saveTheme(novo);
+    updateTheme();
+  };
+
+  // ============================================
+  // TESTE DE PERSISTÊNCIA
+  // ============================================
+  const dlgTeste = dlg('teste');
+  el('btn-test-pers').onclick = () => {
     dlgTeste.showModal();
-    el('tamanho-local').textContent = (localStorage.getItem(STATE_KEY)||"").length + " bytes";
-  }
-  dlgTeste = dlg('teste');
-  el('btn-salvar').onclick = ()=> {
-    persistTestSet(); alert('Estado salvo no slot de teste.');
-  }
-  el('btn-restaurar').onclick = ()=> {
-    persistTestGet(); state = loadState(); renderAll(); alert('Restaurado do slot teste.');
-  }
+    const size = (localStorage.getItem(STATE_KEY) || "").length;
+    el('tamanho-local').textContent = size + " bytes";
+  };
 
-  // Inicialização
-  document.addEventListener("DOMContentLoaded",()=>{ renderAll(); });
+  el('btn-salvar').onclick = () => {
+    localStorage.setItem(STORAGE_TEST, localStorage.getItem(STATE_KEY) || '');
+    alert('✓ Estado salvo no slot de teste.');
+  };
+
+  el('btn-restaurar').onclick = () => {
+    const backup = localStorage.getItem(STORAGE_TEST);
+    if (backup) {
+      localStorage.setItem(STATE_KEY, backup);
+      state = loadState();
+      renderAll();
+      alert('✓ Estado restaurado do backup de teste.');
+    } else {
+      alert('ℹ Nenhum backup salvo no slot de teste.');
+    }
+  };
+
+  // ============================================
+  // INICIALIZAÇÃO
+  // ============================================
+  const dlgImport = dlg('import');
+  const dlgBackup = dlg('backup');
+
+  document.addEventListener("DOMContentLoaded", () => {
+    updateTheme();
+    renderAll();
+  });
+
+  // Sincronizar tema ao trocar preferência do SO
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+    if (!localStorage.getItem(THEME_KEY)) {
+      updateTheme();
+      renderAll();
+    }
+  });
   </script>
 </body>
 </html>
