@@ -372,12 +372,18 @@
         const saved = localStorage.getItem(STATE_KEY);
         return saved ? JSON.parse(saved) : null;
       } catch (e) {
+        console.error('Erro ao carregar estado:', e);
         return null;
       }
     }
 
     function saveState() {
-      localStorage.setItem(STATE_KEY, JSON.stringify(state));
+      try {
+        localStorage.setItem(STATE_KEY, JSON.stringify(state));
+      } catch (e) {
+        console.error('Erro ao salvar estado:', e);
+        showToast('Erro ao salvar dados', 'error');
+      }
     }
 
     function showToast(msg, type = 'success') {
@@ -457,7 +463,7 @@
         atividades: [],
         checklist: [],
         anexos: [],
-        historico: [],
+        historico: [{acao: 'criado', data: nowISO()}],
         proximoContato: ''
       };
       state.leads.push(lead);
@@ -473,12 +479,14 @@
       el('btn-confirmar-reset').disabled = e.target.value !== 'RESET';
     });
     el('btn-confirmar-reset').addEventListener('click', () => {
-      state = { leads: [], tarefas: [], eventos: [], propostas: [], interacoes: [] };
-      saveState();
-      renderAll();
-      el('modal-resetar').close();
-      el('input-reset-confirm').value = '';
-      showToast('Base de dados zerada com sucesso!');
+      if (confirm('Tem certeza que deseja resetar toda a base de dados? Esta ação não pode ser desfeita.')) {
+        state = { leads: [], tarefas: [], eventos: [], propostas: [], interacoes: [] };
+        saveState();
+        renderAll();
+        el('modal-resetar').close();
+        el('input-reset-confirm').value = '';
+        showToast('Base de dados zerada com sucesso!');
+      }
     });
 
     el('btn-importar').addEventListener('click', () => {
@@ -519,6 +527,7 @@
           }
         } catch (err) {
           showToast('Erro ao ler arquivo: ' + err.message, 'error');
+          console.error('Erro de importação:', err);
         }
       };
       if (file.name.endsWith('.csv')) {
@@ -559,11 +568,11 @@
           const norm = normalizeColName(col);
           if (norm) newRow[norm] = row[col];
         });
-        if (newRow.nome && newRow.valor) {
+        if (newRow.nome) {
           normalized.push(newRow);
           validos++;
         } else {
-          invalidos.push(`Linha ${idx + 1}: falta nome ou valor`);
+          invalidos.push(`Linha ${idx + 1}: falta nome`);
         }
       });
 
@@ -626,10 +635,10 @@
 
     el('btn-modelo-xlsx').addEventListener('click', () => {
       const data = [{nome: 'Exemplo', empresa: 'Empresa Exemplo', cargo: 'Gerente', email: 'contato@example.com', telefone: '11 99999-9999', segmento: 'Tecnologia', valor: 10000, origem: 'Google', canal: 'Email', score: 75, prioridade: 'Alta', estagio: 'Novo', observacoes: 'Anotações'}];
-      const sheet = XLSX.utils.json_to_sheet(data);
-      const workbook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(workbook, sheet, 'Leads');
-      XLSX.write(workbook, {bookType: 'xlsx', type: 'binary', filename: 'modelo-leads.xlsx'});
+      const ws = XLSX.utils.json_to_sheet(data);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Leads");
+      XLSX.writeFile(wb, 'modelo-leads.xlsx');
     });
 
     el('btn-export-csv').addEventListener('click', () => {
@@ -646,10 +655,10 @@
 
     el('btn-export-xlsx').addEventListener('click', () => {
       const data = state.leads.map(l => ({Nome: l.nome, Empresa: l.empresa, Email: l.email, Telefone: l.telefone, Valor: l.valor, Score: l.score, Estágio: l.estagio, Origem: l.origem}));
-      const sheet = XLSX.utils.json_to_sheet(data);
-      const workbook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(workbook, sheet, 'Leads');
-      XLSX.write(workbook, {bookType: 'xlsx', type: 'binary', filename: `leads-${new Date().toISOString().split('T')[0]}.xlsx`});
+      const ws = XLSX.utils.json_to_sheet(data);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Leads");
+      XLSX.writeFile(wb, `leads-${new Date().toISOString().split('T')[0]}.xlsx`);
     });
 
     el('btn-export-json').addEventListener('click', () => {
@@ -935,6 +944,9 @@
       if (proximo) lead.proximoContato = new Date(proximo).toISOString();
 
       lead.ultimoContato = nowISO();
+      if (!lead.historico) lead.historico = [];
+      lead.historico.push({acao: 'atualizado', data: nowISO()});
+      
       saveState();
       renderAll();
       closeTrello();
@@ -989,7 +1001,7 @@
     function duplicarLead() {
       const lead = state.leads.find(l => l.id === currentLeadId);
       if (!lead) return;
-      const copia = {...lead, id: uuid(), nome: lead.nome + ' (Cópia)', dataCriacao: nowISO(), historico: []};
+      const copia = {...lead, id: uuid(), nome: lead.nome + ' (Cópia)', dataCriacao: nowISO(), historico: [{acao: 'duplicado', data: nowISO()}]};
       state.leads.push(copia);
       saveState();
       renderAll();
