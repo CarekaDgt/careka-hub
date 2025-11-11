@@ -1,3 +1,5 @@
+
+dashboard-crm-v5.html
 <!DOCTYPE html>
 <html lang="pt-BR" data-theme="light">
 <head>
@@ -653,6 +655,7 @@
         <button class="btn btn-primary" id="btn-modelo-xlsx"><i class="fas fa-download"></i> XLSX</button>
         <button class="btn btn-red" id="btn-reset"><i class="fas fa-redo"></i> Reset</button>
         <button class="btn btn-gray" id="btn-theme"><i class="fas fa-moon"></i> Tema</button>
+        <button class="btn btn-primary" id="btn-exemplo" title="Carrega dados de exemplo"><i class="fas fa-refresh"></i> Exemplo</button>
       </div>
     </div>
 
@@ -1049,6 +1052,7 @@
 
   <script>
     const STATE_KEY = 'careka-hub-v5';
+    const INIT_FLAG = 'careka-hub-initialized';
     const DEFAULT_ETAPAS = ['Novo', 'Qualificar', 'Diagnóstico', 'Proposta', 'Ganho', 'Perdido'];
     const ORIGENS_CORES = {
       'Google': '#EA4335',
@@ -1077,25 +1081,50 @@
     function formatData(d) { return new Date(d).toLocaleDateString('pt-BR'); }
     function el(id) { return document.getElementById(id); }
 
+    // STORAGE COM FALLBACK: sessionStorage para iframe
+    function getStorage() {
+      try {
+        localStorage.setItem('test', 'test');
+        localStorage.removeItem('test');
+        return localStorage;
+      } catch (e) {
+        console.log('⚠️ localStorage bloqueado em iframe, usando sessionStorage');
+        return sessionStorage;
+      }
+    }
+
+    const storage = getStorage();
+
     function loadState() {
       try {
-        const saved = localStorage.getItem(STATE_KEY);
-        console.log('localStorage carregado:', saved ? 'OK' : 'VAZIO');
+        const saved = storage.getItem(STATE_KEY);
+        console.log('🔍 Carregando estado:', saved ? 'ENCONTRADO' : 'VAZIO');
         return saved ? JSON.parse(saved) : null;
       } catch (e) {
-        console.error('Erro ao carregar:', e);
+        console.error('❌ Erro ao carregar:', e);
         return null;
       }
     }
 
     function saveState() {
       try {
-        const json = JSON.stringify(state);
-        localStorage.setItem(STATE_KEY, json);
-        console.log('localStorage salvo:', state.leads.length + ' leads');
+        storage.setItem(STATE_KEY, JSON.stringify(state));
+        storage.setItem(INIT_FLAG, 'true');
+        console.log('✅ Estado salvo:', state.leads.length + ' leads');
       } catch (e) {
-        console.error('Erro ao salvar:', e);
+        console.error('❌ Erro ao salvar:', e);
       }
+    }
+
+    function loadExampleData() {
+      state.leads = [
+        {id: uuid(), nome: 'Dr. Martinez', empresa: 'Clínica Sorriso', cargo: 'Diretor', email: 'martinez@clinic.com', telefone: '11 99999-0001', segmento: 'Odontologia', valor: 15000, score: 95, origem: 'LinkedIn', canal: 'Email', prioridade: 'Alta', estagio: 'Novo', observacoes: '', descricao: 'Cliente potencial quente', atividades: [], checklist: [], anexos: [], dataCriacao: nowISO(), ultimoContato: nowISO(), proximoContato: '', historico: []},
+        {id: uuid(), nome: 'Ana Silva', empresa: 'Academia FitMax', cargo: 'Gerente', email: 'ana@fitmax.com', telefone: '11 99999-0002', segmento: 'Academia', valor: 8000, score: 72, origem: 'Indicação', canal: 'WhatsApp', prioridade: 'Média', estagio: 'Qualificar', observacoes: '', descricao: '', atividades: [], checklist: [], anexos: [], dataCriacao: nowISO(), ultimoContato: nowISO(), proximoContato: '', historico: []},
+        {id: uuid(), nome: 'Carlos Oliveira', empresa: 'Studio Slim', cargo: 'Sócio', email: 'carlos@studio.com', telefone: '11 99999-0003', segmento: 'Estética', valor: 12000, score: 88, origem: 'Google', canal: 'Ligação', prioridade: 'Alta', estagio: 'Diagnóstico', observacoes: '', descricao: '', atividades: [], checklist: [], anexos: [], dataCriacao: nowISO(), ultimoContato: nowISO(), proximoContato: '', historico: []},
+        {id: uuid(), nome: 'Mariana Costa', empresa: 'Tech Startup', cargo: 'CTO', email: 'mariana@tech.com', telefone: '11 99999-0004', segmento: 'Tecnologia', valor: 25000, score: 92, origem: 'Instagram', canal: 'Email', prioridade: 'Alta', estagio: 'Proposta', observacoes: '', descricao: '', atividades: [], checklist: [], anexos: [], dataCriacao: nowISO(), ultimoContato: nowISO(), proximoContato: '', historico: []},
+        {id: uuid(), nome: 'Roberto Santos', empresa: 'Consultoria RH', cargo: 'Diretor', email: 'roberto@consultrh.com', telefone: '11 99999-0005', segmento: 'Consultoria', valor: 18000, score: 85, origem: 'Facebook', canal: 'Email', prioridade: 'Média', estagio: 'Proposta', observacoes: '', descricao: '', atividades: [], checklist: [], anexos: [], dataCriacao: nowISO(), ultimoContato: nowISO(), proximoContato: '', historico: []}
+      ];
+      saveState();
     }
 
     function showToast(msg, type = 'success') {
@@ -1128,27 +1157,24 @@
 
     function initializeState() {
       const saved = loadState();
-      if (saved && saved.leads && saved.leads.length > 0) {
+      
+      if (saved && saved.leads) {
         state = saved;
-        if (!state.etapas) state.etapas = DEFAULT_ETAPAS.slice();
-        console.log('Estado carregado:', state.leads.length + ' leads');
+        console.log('✅ Estado restaurado:', state.leads.length + ' leads');
       } else {
         state = {
-          leads: [
-            {id: uuid(), nome: 'Dr. Martinez', empresa: 'Clínica Sorriso', cargo: 'Diretor', email: 'martinez@clinic.com', telefone: '11 99999-0001', segmento: 'Odontologia', valor: 15000, score: 95, origem: 'LinkedIn', canal: 'Email', prioridade: 'Alta', estagio: 'Novo', observacoes: '', descricao: 'Cliente potencial quente', atividades: [], checklist: [], anexos: [], dataCriacao: nowISO(), ultimoContato: nowISO(), proximoContato: '', historico: []},
-            {id: uuid(), nome: 'Ana Silva', empresa: 'Academia FitMax', cargo: 'Gerente', email: 'ana@fitmax.com', telefone: '11 99999-0002', segmento: 'Academia', valor: 8000, score: 72, origem: 'Indicação', canal: 'WhatsApp', prioridade: 'Média', estagio: 'Qualificar', observacoes: '', descricao: '', atividades: [], checklist: [], anexos: [], dataCriacao: nowISO(), ultimoContato: nowISO(), proximoContato: '', historico: []},
-            {id: uuid(), nome: 'Carlos Oliveira', empresa: 'Studio Slim', cargo: 'Sócio', email: 'carlos@studio.com', telefone: '11 99999-0003', segmento: 'Estética', valor: 12000, score: 88, origem: 'Google', canal: 'Ligação', prioridade: 'Alta', estagio: 'Diagnóstico', observacoes: '', descricao: '', atividades: [], checklist: [], anexos: [], dataCriacao: nowISO(), ultimoContato: nowISO(), proximoContato: '', historico: []},
-            {id: uuid(), nome: 'Mariana Costa', empresa: 'Tech Startup', cargo: 'CTO', email: 'mariana@tech.com', telefone: '11 99999-0004', segmento: 'Tecnologia', valor: 25000, score: 92, origem: 'Instagram', canal: 'Email', prioridade: 'Alta', estagio: 'Proposta', observacoes: '', descricao: '', atividades: [], checklist: [], anexos: [], dataCriacao: nowISO(), ultimoContato: nowISO(), proximoContato: '', historico: []},
-            {id: uuid(), nome: 'Roberto Santos', empresa: 'Consultoria RH', cargo: 'Diretor', email: 'roberto@consultrh.com', telefone: '11 99999-0005', segmento: 'Consultoria', valor: 18000, score: 85, origem: 'Facebook', canal: 'Email', prioridade: 'Média', estagio: 'Proposta', observacoes: '', descricao: '', atividades: [], checklist: [], anexos: [], dataCriacao: nowISO(), ultimoContato: nowISO(), proximoContato: '', historico: []}
-          ],
+          leads: [],
           tarefas: [],
           eventos: [],
           propostas: [],
           interacoes: [],
           etapas: DEFAULT_ETAPAS.slice()
         };
+        console.log('📋 Novo estado vazio criado');
         saveState();
       }
+      
+      if (!state.etapas) state.etapas = DEFAULT_ETAPAS.slice();
       applyFilters();
       updateEtagasSelects();
     }
@@ -1187,6 +1213,15 @@
     el('filter-origem').addEventListener('change', applyFilters);
     el('filter-estagio').addEventListener('change', applyFilters);
 
+    // Botão Exemplo
+    el('btn-exemplo').addEventListener('click', () => {
+      if (confirm('Carregar dados de exemplo? (Isso vai adicionar 5 leads)')) {
+        loadExampleData();
+        applyFilters();
+        showToast('Dados de exemplo carregados!');
+      }
+    });
+
     // Sidebar navigation
     document.querySelectorAll('.sidebar-menu li').forEach(item => {
       item.addEventListener('click', () => {
@@ -1206,11 +1241,11 @@
       const isDark = document.body.classList.contains('dark-mode');
       document.body.classList.toggle('dark-mode');
       document.body.classList.toggle('light-mode');
-      localStorage.setItem('careka-theme-v5', isDark ? 'light' : 'dark');
+      storage.setItem('careka-theme-v5', isDark ? 'light' : 'dark');
       updateCharts();
     });
 
-    const savedTheme = localStorage.getItem('careka-theme-v5') || 'light';
+    const savedTheme = storage.getItem('careka-theme-v5') || 'light';
     document.body.classList.remove('dark-mode', 'light-mode');
     document.body.classList.add(savedTheme + '-mode');
 
@@ -1280,7 +1315,7 @@
       showToast('Estágio criado com sucesso!');
     }
 
-    // Reset - CORRIGIDO PARA NÃO VOLTAR
+    // Reset
     el('btn-reset').addEventListener('click', () => {
       el('input-reset').value = '';
       el('btn-confirmar-reset').disabled = true;
@@ -1292,7 +1327,7 @@
     });
 
     el('btn-confirmar-reset').addEventListener('click', () => {
-      console.log('🔴 RESET INICIADO - Apagando TUDO');
+      console.log('🔴 RESET INICIADO');
       
       state.leads = [];
       state.tarefas = [];
@@ -1301,18 +1336,14 @@
       state.interacoes = [];
       
       saveState();
-      
-      localStorage.removeItem(STATE_KEY);
-      console.log('🔴 localStorage deletado');
+      storage.clear();
+      console.log('🔴 Storage zerado');
       
       el('modal-reset').close();
       el('input-reset').value = '';
       el('btn-confirmar-reset').disabled = true;
       
       applyFilters();
-      
-      console.log('🔴 RESET COMPLETO - Estado:', state.leads.length + ' leads');
-      
       showToast('Base de dados zerada com sucesso!');
     });
 
