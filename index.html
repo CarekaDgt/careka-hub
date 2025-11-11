@@ -3,12 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>CAREKA HUB v6.1 - CRM Completo com Cards Editáveis</title>
+  <title>CAREKA HUB - Dashboard CRM v5.0</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <script src="https://cdn.sheetjs.com/xlsx-0.19.3/package/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <script>
     tailwind.config = {
       theme: {
@@ -25,1398 +28,994 @@
       }
     }
   </script>
-  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-  <script src="https://cdn.sheetjs.com/xlsx-0.19.3/package/dist/xlsx.full.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
     * { box-sizing: border-box; }
-    html, body { height: 100%; margin: 0; padding: 0; }
-    body { font-family: 'Inter', sans-serif; min-height: 100vh; }
+    html, body { height: 100%; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
     
     [data-theme='careka-dark'] { background: #0B1220; color: #E5E7EB; }
     [data-theme='careka-dark'] .card, [data-theme='careka-dark'] dialog, [data-theme='careka-dark'] .sidebar {
-      background: #0F172A !important;
-      color: #E5E7EB !important;
+      background: #0F172A !important; color: #E5E7EB !important;
     }
     [data-theme='careka-light'] { background: #F7F7F5; color: #1F2937; }
     [data-theme='careka-light'] .card, [data-theme='careka-light'] dialog, [data-theme='careka-light'] .sidebar {
-      background: #FFFFFF !important;
-      color: #1F2937 !important;
+      background: #FFFFFF !important; color: #1F2937 !important;
     }
     
-    .card { border-radius: 1rem; box-shadow: 0 2px 12px 0 rgba(0,0,0,.04); }
-    dialog::backdrop { background: rgba(0, 0, 0, 0.5); }
-    .sidebar { min-width: 220px; width: 220px; }
-    .active { font-weight: 700; color: #0F766E; }
-    ::selection { background: #0F766E33; }
+    .card { border-radius: 1rem; box-shadow: 0 2px 12px rgba(0,0,0,0.04); }
+    dialog::backdrop { background: rgba(0,0,0,0.5); }
+    .sidebar { min-width: 220px; background: #0F172A; color: white; }
     
-    input, select, textarea { transition: all 0.2s ease; }
-    
+    input, select, textarea { transition: all 0.2s; }
     [data-theme='careka-light'] input, [data-theme='careka-light'] select, [data-theme='careka-light'] textarea {
-      background-color: #FFFFFF; color: #1F2937; border-color: #D1D5DB;
+      background: #FFFFFF; color: #1F2937; border-color: #D1D5DB;
     }
-    
-    [data-theme='careka-light'] input:focus, [data-theme='careka-light'] select:focus, [data-theme='careka-light'] textarea:focus {
-      background-color: #F3F4F6; border-color: #0F766E; outline: none; box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1);
-    }
-    
     [data-theme='careka-dark'] input, [data-theme='careka-dark'] select, [data-theme='careka-dark'] textarea {
-      background-color: #1E293B; color: #E5E7EB; border-color: #475569;
+      background: #1E293B; color: #E5E7EB; border-color: #475569;
     }
+    input:focus, select:focus, textarea:focus { outline: none; border-color: #0F766E; box-shadow: 0 0 0 3px rgba(15,118,110,0.1); }
     
-    [data-theme='careka-dark'] input:focus, [data-theme='careka-dark'] select:focus, [data-theme='careka-dark'] textarea:focus {
-      background-color: #0F172A; border-color: #2DD4BF; outline: none; box-shadow: 0 0 0 3px rgba(45, 212, 191, 0.1);
-    }
+    .chart-container { position: relative; height: 300px; }
+    .kanban-col { min-width: 300px; max-width: 350px; }
+    .lead-card { cursor: pointer; transition: all 0.2s; }
+    [data-theme='careka-light'] .lead-card:hover { background: #F3F4F6; }
+    [data-theme='careka-dark'] .lead-card:hover { background: #1E293B; }
     
-    [data-theme='careka-light'] label { color: #374151; }
-    [data-theme='careka-dark'] label { color: #D1D5DB; }
+    .sidebar-menu { list-style: none; padding: 0; margin: 0; }
+    .sidebar-menu li { padding: 0.75rem 1rem; cursor: pointer; border-left: 3px solid transparent; transition: all 0.2s; }
+    .sidebar-menu li:hover { background: rgba(45,212,191,0.1); border-left-color: #2DD4BF; }
+    .sidebar-menu li.active { background: rgba(45,212,191,0.2); border-left-color: #2DD4BF; color: #2DD4BF; }
     
-    .chart-container { position: relative; height: 300px; margin-bottom: 2rem; width: 100%; }
-    .metric-box { padding: 1.5rem; border-radius: 1rem; }
+    .toast { position: fixed; bottom: 2rem; right: 2rem; padding: 1rem 1.5rem; border-radius: 0.5rem; color: white; z-index: 50; animation: slideIn 0.3s; }
+    .toast-success { background: #10B981; }
+    .toast-error { background: #EF4444; }
+    @keyframes slideIn { from { transform: translateX(400px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
     
-    [data-theme='careka-light'] .metric-box { background: #FFFFFF; border: 1px solid #E5E7EB; }
-    [data-theme='careka-dark'] .metric-box { background: #1E293B; border: 1px solid #334155; }
+    .trello-panel { position: fixed; right: 0; top: 0; width: 100%; max-width: 500px; height: 100vh; background: inherit; z-index: 40; overflow-y: auto; box-shadow: -2px 0 8px rgba(0,0,0,0.2); }
+    .trello-backdrop { position: fixed; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); z-index: 30; }
     
-    .lead-card { padding: 1rem; cursor: pointer; transition: all 0.2s; border-left: 4px solid transparent; user-select: none; }
-    [data-theme='careka-light'] .lead-card { background: #FFFFFF; border: 1px solid #E5E7EB; }
-    [data-theme='careka-dark'] .lead-card { background: #1E293B; border: 1px solid #334155; }
-    
-    [data-theme='careka-light'] .lead-card:hover { background: #F3F4F6; border-left-color: #0F766E; }
-    [data-theme='careka-dark'] .lead-card:hover { background: #111827; border-left-color: #2DD4BF; }
-    
-    .kanban-column { min-width: 300px; max-width: 350px; }
-    .kanban-list { min-height: 100px; }
-    .sortable-ghost { opacity: 0.4; }
-    
-    .badge-alta { background-color: #FEE2E2; color: #7F1D1D; }
-    [data-theme='careka-dark'] .badge-alta { background-color: #7F1D1D; color: #FECACA; }
-    
-    .badge-media { background-color: #FEF3C7; color: #78350F; }
-    [data-theme='careka-dark'] .badge-media { background-color: #78350F; color: #FCD34D; }
-    
-    .badge-baixa { background-color: #DCFCE7; color: #166534; }
-    [data-theme='careka-dark'] .badge-baixa { background-color: #166534; color: #BBF7D0; }
-    
-    .history-entry { padding: 1rem; border-left: 3px solid #0F766E; margin-bottom: 0.75rem; border-radius: 0.25rem; }
-    [data-theme='careka-dark'] .history-entry { border-left-color: #2DD4BF; }
+    .badge-alta { background: #FEE2E2; color: #7F1D1D; }
+    [data-theme='careka-dark'] .badge-alta { background: #7F1D1D; color: #FECACA; }
+    .badge-media { background: #FEF3C7; color: #78350F; }
+    [data-theme='careka-dark'] .badge-media { background: #78350F; color: #FCD34D; }
+    .badge-baixa { background: #DCFCE7; color: #166534; }
+    [data-theme='careka-dark'] .badge-baixa { background: #166534; color: #BBF7D0; }
     
     .hidden { display: none !important; }
     
-    dialog { border: none; border-radius: 1rem; max-height: 90vh; }
-    
-    .label-chip { display: inline-block; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; margin: 0.25rem; font-weight: 500; cursor: pointer; }
-    .label-quente { background: #FEE2E2; color: #7F1D1D; }
-    [data-theme='careka-dark'] .label-quente { background: #7F1D1D; color: #FECACA; }
-    .label-morno { background: #FEF3C7; color: #78350F; }
-    [data-theme='careka-dark'] .label-morno { background: #78350F; color: #FCD34D; }
-    .label-frio { background: #DCFCE7; color: #166534; }
-    [data-theme='careka-dark'] .label-frio { background: #166534; color: #BBF7D0; }
-    
-    .modal-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 2rem; }
-    @media (max-width: 1024px) { .modal-grid { grid-template-columns: 1fr; } }
-    
-    .sidebar-item { cursor: pointer; padding: 0.75rem 1rem; border-radius: 0.5rem; transition: all 0.2s; }
-    [data-theme='careka-light'] .sidebar-item:hover { background: #F3F4F6; }
-    [data-theme='careka-dark'] .sidebar-item:hover { background: #1E293B; }
-    .sidebar-item.active { background: #0F766E; color: #FFFFFF !important; }
+    @media (max-width: 768px) {
+      .sidebar { position: fixed; left: 0; top: 0; height: 100vh; z-index: 20; }
+      main { margin-left: 220px; }
+      .trello-panel { max-width: 100%; }
+    }
   </style>
 </head>
-<body class="w-screen min-h-screen flex overflow-hidden">
-  <!-- Sidebar -->
-  <aside class="sidebar fixed left-0 top-0 h-full z-10 flex flex-col py-6 px-4 card border-r shadow-md transition-all duration-300">
-    <h1 class="text-xl font-bold mb-8 tracking-tight px-2">CAREKA HUB</h1>
-    <nav class="flex-1 flex flex-col gap-1 text-sm">
-      <div class="sidebar-item active" data-page="dashboard"><i class="fas fa-chart-line w-4 mr-2"></i>Dashboard</div>
-      <div class="sidebar-item" data-page="crm"><i class="fas fa-users w-4 mr-2"></i>CRM</div>
-      <div class="sidebar-item" data-page="tarefas"><i class="fas fa-check-square w-4 mr-2"></i>Tarefas</div>
-      <div class="sidebar-item" data-page="relatorios"><i class="fas fa-file-csv w-4 mr-2"></i>Relatórios</div>
-    </nav>
-    <div class="mt-auto space-y-2">
-      <button id="btn-theme" class="w-full text-left sidebar-item"><i class="fas fa-moon w-4 mr-2"></i>Tema</button>
-      <button id="btn-backup" class="w-full text-left sidebar-item"><i class="fas fa-download w-4 mr-2"></i>Backup</button>
-    </div>
+<body class="flex h-screen overflow-hidden">
+  <aside class="sidebar p-4 flex flex-col">
+    <h1 class="text-2xl font-bold mb-8">CAREKA HUB</h1>
+    <ul class="sidebar-menu flex-1 space-y-1">
+      <li class="active" data-page="dashboard"><i class="fas fa-chart-line mr-2"></i>Dashboard</li>
+      <li data-page="crm"><i class="fas fa-users mr-2"></i>CRM</li>
+      <li data-page="relatorios"><i class="fas fa-file-csv mr-2"></i>Relatórios</li>
+    </ul>
+    <div class="text-xs text-gray-400">v5.0 © 2025</div>
   </aside>
 
-  <!-- Main Content -->
-  <main class="flex-1 ml-[220px] flex flex-col h-screen overflow-hidden">
-    <!-- Top Bar -->
-    <div class="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-careka-card-dark p-4 flex justify-between items-center flex-shrink-0">
+  <main class="flex-1 flex flex-col overflow-hidden">
+    <div class="border-b border-gray-300 dark:border-gray-700 p-4 flex justify-between items-center flex-shrink-0">
       <h2 id="page-title" class="text-2xl font-bold">Dashboard</h2>
-      <div class="flex gap-2">
-        <button id="btn-novo-lead" class="bg-careka-primary-light text-white px-4 py-2 rounded font-medium hover:bg-teal-800 flex items-center gap-2">
-          <i class="fas fa-plus"></i>Novo Lead
-        </button>
-        <button id="btn-import-csv" class="bg-gray-200 dark:bg-slate-700 text-gray-900 dark:text-white px-4 py-2 rounded font-medium hover:bg-gray-300 dark:hover:bg-slate-600 flex items-center gap-2">
-          <i class="fas fa-upload"></i>Importar
-        </button>
+      <div class="flex gap-2 flex-wrap">
+        <button id="btn-novo-lead" class="bg-careka-primary-light text-white px-4 py-2 rounded hover:bg-teal-700 font-medium text-sm"><i class="fas fa-plus mr-1"></i>Novo</button>
+        <button id="btn-importar" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 font-medium text-sm"><i class="fas fa-upload mr-1"></i>Importar</button>
+        <button id="btn-modelo-csv" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 font-medium text-sm"><i class="fas fa-download mr-1"></i>Modelo CSV</button>
+        <button id="btn-modelo-xlsx" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 font-medium text-sm"><i class="fas fa-download mr-1"></i>Modelo XLSX</button>
+        <button id="btn-resetar" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 font-medium text-sm"><i class="fas fa-redo mr-1"></i>Reset</button>
+        <button id="btn-theme" class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700 font-medium text-sm"><i class="fas fa-moon mr-1"></i>Tema</button>
       </div>
     </div>
 
-    <!-- Content Area -->
     <div class="flex-1 overflow-y-auto p-6">
-      <!-- DASHBOARD PAGE -->
       <div id="page-dashboard" class="page-content">
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
-          <div class="metric-box card">
-            <div class="text-xs font-medium text-gray-500">Total Leads</div>
-            <div id="kpi-leads" class="text-2xl font-bold mt-2">0</div>
-          </div>
-          <div class="metric-box card">
-            <div class="text-xs font-medium text-gray-500">Conversados</div>
-            <div id="kpi-conversados" class="text-2xl font-bold mt-2">0</div>
-          </div>
-          <div class="metric-box card">
-            <div class="text-xs font-medium text-gray-500">Novos</div>
-            <div id="kpi-novos" class="text-2xl font-bold mt-2">0</div>
-          </div>
-          <div class="metric-box card">
-            <div class="text-xs font-medium text-gray-500">Taxa Conversão</div>
-            <div id="kpi-taxa" class="text-2xl font-bold mt-2">0%</div>
-          </div>
-          <div class="metric-box card">
-            <div class="text-xs font-medium text-gray-500">Pipeline</div>
-            <div id="kpi-pipeline" class="text-2xl font-bold mt-2">R$ 0</div>
-          </div>
-          <div class="metric-box card">
-            <div class="text-xs font-medium text-gray-500">Score Médio</div>
-            <div id="kpi-score" class="text-2xl font-bold mt-2">0</div>
-          </div>
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-6">
+          <div class="card p-4"><div class="text-xs text-gray-500">Total Leads</div><div id="kpi-leads" class="text-3xl font-bold mt-2">0</div></div>
+          <div class="card p-4"><div class="text-xs text-gray-500">Conversados</div><div id="kpi-conv" class="text-3xl font-bold mt-2">0</div></div>
+          <div class="card p-4"><div class="text-xs text-gray-500">Novos</div><div id="kpi-novos" class="text-3xl font-bold mt-2">0</div></div>
+          <div class="card p-4"><div class="text-xs text-gray-500">Taxa Conv.</div><div id="kpi-taxa" class="text-3xl font-bold mt-2">0%</div></div>
+          <div class="card p-4"><div class="text-xs text-gray-500">Pipeline</div><div id="kpi-pipe" class="text-3xl font-bold mt-2">R$ 0</div></div>
+          <div class="card p-4"><div class="text-xs text-gray-500">Score Médio</div><div id="kpi-score" class="text-3xl font-bold mt-2">0</div></div>
         </div>
-
-        <!-- Gráficos -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div class="card p-4">
-            <h3 class="font-bold mb-4">Leads por Período</h3>
-            <div class="chart-container">
-              <canvas id="chart-leads-periodo"></canvas>
-            </div>
-          </div>
-
-          <div class="card p-4">
-            <h3 class="font-bold mb-4">Origem dos Leads</h3>
-            <div class="chart-container">
-              <canvas id="chart-origem"></canvas>
-            </div>
-          </div>
-
-          <div class="card p-4">
-            <h3 class="font-bold mb-4">Conversão por Estágio</h3>
-            <div class="chart-container">
-              <canvas id="chart-conversao"></canvas>
-            </div>
-          </div>
-
-          <div class="card p-4">
-            <h3 class="font-bold mb-4">Distribuição de Score</h3>
-            <div class="chart-container">
-              <canvas id="chart-score"></canvas>
-            </div>
-          </div>
-
-          <div class="card p-4">
-            <h3 class="font-bold mb-4">Pipeline por Estágio</h3>
-            <div class="chart-container">
-              <canvas id="chart-pipeline"></canvas>
-            </div>
-          </div>
-
-          <div class="card p-4">
-            <h3 class="font-bold mb-4">Propostas (Enviadas vs Ganhas)</h3>
-            <div class="chart-container">
-              <canvas id="chart-propostas"></canvas>
-            </div>
-          </div>
-
-          <div class="card p-4">
-            <h3 class="font-bold mb-4">Tarefas (Pendentes vs Concluídas)</h3>
-            <div class="chart-container">
-              <canvas id="chart-tarefas"></canvas>
-            </div>
-          </div>
-
-          <div class="card p-4">
-            <h3 class="font-bold mb-4">Interações por Canal</h3>
-            <div class="chart-container">
-              <canvas id="chart-canal"></canvas>
-            </div>
-          </div>
-
-          <div class="card p-4 lg:col-span-2">
-            <h3 class="font-bold mb-4">Evolução do Pipeline (30 dias)</h3>
-            <div class="chart-container" style="height: 350px;">
-              <canvas id="chart-evolucao"></canvas>
-            </div>
-          </div>
+          <div class="card p-4"><h3 class="font-bold mb-4">Leads por Período</h3><div class="chart-container"><canvas id="chart-periodo"></canvas></div></div>
+          <div class="card p-4"><h3 class="font-bold mb-4">Origem dos Leads</h3><div class="chart-container"><canvas id="chart-origem"></canvas></div></div>
+          <div class="card p-4"><h3 class="font-bold mb-4">Conversão por Estágio</h3><div class="chart-container"><canvas id="chart-estagio"></canvas></div></div>
+          <div class="card p-4"><h3 class="font-bold mb-4">Score Distribuição</h3><div class="chart-container"><canvas id="chart-score"></canvas></div></div>
+          <div class="card p-4"><h3 class="font-bold mb-4">Pipeline por Estágio</h3><div class="chart-container"><canvas id="chart-pipeline"></canvas></div></div>
+          <div class="card p-4"><h3 class="font-bold mb-4">Propostas</h3><div class="chart-container"><canvas id="chart-propostas"></canvas></div></div>
+          <div class="card p-4"><h3 class="font-bold mb-4">Tarefas</h3><div class="chart-container"><canvas id="chart-tarefas"></canvas></div></div>
+          <div class="card p-4"><h3 class="font-bold mb-4">Canal de Interação</h3><div class="chart-container"><canvas id="chart-canal"></canvas></div></div>
+          <div class="card p-4 lg:col-span-2"><h3 class="font-bold mb-4">Evolução 30 Dias</h3><div class="chart-container" style="height: 350px;"><canvas id="chart-evolucao"></canvas></div></div>
         </div>
       </div>
 
-      <!-- CRM PAGE -->
       <div id="page-crm" class="page-content hidden">
-        <div class="mb-4">
-          <h3 class="text-lg font-bold">CRM - Funis de Vendas</h3>
-        </div>
-        <div id="kanban-container" class="flex gap-4 overflow-x-auto pb-4">
-          <!-- Inserido por JS -->
-        </div>
+        <h3 class="text-2xl font-bold mb-4">Kanban - Funis de Vendas</h3>
+        <div id="kanban" class="flex gap-4 overflow-x-auto pb-4"></div>
       </div>
 
-      <!-- TAREFAS PAGE -->
-      <div id="page-tarefas" class="page-content hidden">
-        <div class="card p-6">
-          <div class="flex justify-between items-center mb-4">
-            <h3 class="font-bold text-lg">Tarefas</h3>
-            <button id="btn-nova-tarefa" class="bg-careka-primary-light text-white px-4 py-2 rounded font-medium hover:bg-teal-800">+ Nova</button>
-          </div>
-          <div id="tarefas-list"></div>
-        </div>
-      </div>
-
-      <!-- RELATÓRIOS PAGE -->
       <div id="page-relatorios" class="page-content hidden">
         <div class="card p-6">
-          <h3 class="font-bold text-lg mb-4">Relatórios & Exportação</h3>
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <button id="btn-export-csv" class="bg-careka-primary-light text-white px-4 py-2 rounded font-medium hover:bg-teal-800 flex items-center gap-2">
-              <i class="fas fa-file-csv"></i>CSV
-            </button>
-            <button id="btn-export-xlsx" class="bg-blue-600 text-white px-4 py-2 rounded font-medium hover:bg-blue-700 flex items-center gap-2">
-              <i class="fas fa-file-excel"></i>XLSX
-            </button>
-            <button id="btn-export-json" class="bg-cyan-600 text-white px-4 py-2 rounded font-medium hover:bg-cyan-700 flex items-center gap-2">
-              <i class="fas fa-file-json"></i>JSON
-            </button>
-            <button id="btn-print" class="bg-purple-600 text-white px-4 py-2 rounded font-medium hover:bg-purple-700 flex items-center gap-2">
-              <i class="fas fa-print"></i>Imprimir
-            </button>
+          <h3 class="text-2xl font-bold mb-4">Exportação de Dados</h3>
+          <div class="flex flex-wrap gap-4">
+            <button id="btn-export-csv" class="bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-700 font-medium"><i class="fas fa-file-csv mr-2"></i>Exportar CSV</button>
+            <button id="btn-export-xlsx" class="bg-green-600 text-white px-6 py-3 rounded hover:bg-green-700 font-medium"><i class="fas fa-file-excel mr-2"></i>Exportar XLSX</button>
+            <button id="btn-export-json" class="bg-purple-600 text-white px-6 py-3 rounded hover:bg-purple-700 font-medium"><i class="fas fa-file-json mr-2"></i>Backup JSON</button>
           </div>
         </div>
       </div>
     </div>
   </main>
 
-  <!-- BEGIN CHANGE: Novo Modal de Card Trello -->
-  <dialog id="dlg-card-trello" class="card p-0 w-[95vw] max-w-6xl">
-    <div class="flex flex-col h-full max-h-[90vh]">
-      <!-- Header -->
-      <div class="border-b border-gray-200 dark:border-slate-700 p-4 flex justify-between items-center flex-shrink-0">
-        <div class="flex items-center gap-2 flex-1">
-          <input type="text" id="card-nome" placeholder="Nome do Lead" class="text-xl font-bold border-0 bg-transparent rounded px-2 focus:bg-gray-100 dark:focus:bg-slate-800" />
-          <select id="card-estagio" class="rounded border py-1 px-2 text-sm">
-            <option value="Novo">Novo</option>
-            <option value="Qualificar">Qualificar</option>
-            <option value="Diagnóstico">Diagnóstico</option>
-            <option value="Proposta">Proposta</option>
-            <option value="Ganho">Ganho</option>
-            <option value="Perdido">Perdido</option>
-          </select>
-        </div>
-        <div class="flex gap-2">
-          <button id="card-btn-mover" class="text-gray-600 hover:bg-gray-100 dark:hover:bg-slate-800 px-3 py-1 rounded" title="Mover">
-            <i class="fas fa-arrow-right"></i>
-          </button>
-          <button id="card-btn-arquivar" class="text-gray-600 hover:bg-gray-100 dark:hover:bg-slate-800 px-3 py-1 rounded" title="Arquivar">
-            <i class="fas fa-archive"></i>
-          </button>
-          <button id="card-btn-excluir" class="text-red-600 hover:bg-red-50 dark:hover:bg-red-900 px-3 py-1 rounded" title="Excluir">
-            <i class="fas fa-trash"></i>
-          </button>
-          <button onclick="document.getElementById('dlg-card-trello').close()" class="text-gray-500 hover:text-gray-700 px-3 py-1">
-            <i class="fas fa-times"></i>
-          </button>
-        </div>
-      </div>
-
-      <!-- Body -->
-      <div class="flex-1 overflow-y-auto p-4">
-        <div class="modal-grid">
-          <!-- Coluna Principal -->
-          <div>
-            <!-- Descrição -->
-            <div class="mb-6">
-              <h4 class="font-bold mb-2">Descrição</h4>
-              <textarea id="card-observacoes" placeholder="Adicione uma descrição..." rows="4" class="w-full rounded border py-2 px-3"></textarea>
-              <button id="card-btn-salvar-desc" class="mt-2 text-sm bg-careka-primary-light text-white px-3 py-1 rounded hover:bg-teal-800">Salvar</button>
-            </div>
-
-            <!-- Atividade/Histórico -->
-            <div class="mb-6">
-              <h4 class="font-bold mb-3">Atividade</h4>
-              <div id="card-historico" class="max-h-64 overflow-y-auto mb-3 bg-gray-50 dark:bg-slate-800 p-3 rounded">
-                <!-- Preenchido por JS -->
-              </div>
-              <div class="flex gap-2">
-                <input type="text" id="card-historico-input" placeholder="Adicionar atividade (Enter para salvar)" class="flex-1 rounded border py-2 px-3" />
-              </div>
-            </div>
-          </div>
-
-          <!-- Painel Lateral -->
-          <div class="space-y-6">
-            <!-- Contato -->
-            <div class="bg-gray-50 dark:bg-slate-800 p-4 rounded">
-              <h4 class="font-bold mb-3">Contato</h4>
-              <div class="space-y-2">
-                <input type="text" id="card-email" placeholder="Email" class="w-full rounded border py-2 px-3 text-sm" />
-                <input type="text" id="card-telefone" placeholder="Telefone" class="w-full rounded border py-2 px-3 text-sm" />
-                <input type="text" id="card-empresa" placeholder="Empresa" class="w-full rounded border py-2 px-3 text-sm" />
-                <input type="text" id="card-cargo" placeholder="Cargo" class="w-full rounded border py-2 px-3 text-sm" />
-                <input type="text" id="card-site" placeholder="Site" class="w-full rounded border py-2 px-3 text-sm" />
-                <input type="text" id="card-whatsapp" placeholder="WhatsApp" class="w-full rounded border py-2 px-3 text-sm" />
-                <input type="text" id="card-instagram" placeholder="Instagram" class="w-full rounded border py-2 px-3 text-sm" />
-                <input type="text" id="card-linkedin" placeholder="LinkedIn" class="w-full rounded border py-2 px-3 text-sm" />
-                <input type="text" id="card-cidade" placeholder="Cidade" class="w-full rounded border py-2 px-3 text-sm" />
-                <input type="text" id="card-uf" placeholder="UF" class="w-full rounded border py-2 px-3 text-sm" />
-              </div>
-            </div>
-
-            <!-- Dados Comerciais -->
-            <div class="bg-gray-50 dark:bg-slate-800 p-4 rounded">
-              <h4 class="font-bold mb-3">Comercial</h4>
-              <div class="space-y-2">
-                <div>
-                  <label class="text-xs text-gray-600">Valor (R$)</label>
-                  <input type="number" id="card-valor" min="0" step="100" class="w-full rounded border py-2 px-3 text-sm" />
-                </div>
-                <div>
-                  <label class="text-xs text-gray-600">Score (0-100)</label>
-                  <input type="number" id="card-score" min="0" max="100" class="w-full rounded border py-2 px-3 text-sm" />
-                </div>
-                <div>
-                  <label class="text-xs text-gray-600">Prioridade</label>
-                  <select id="card-prioridade" class="w-full rounded border py-2 px-3 text-sm">
-                    <option value="Baixa">Baixa</option>
-                    <option value="Média">Média</option>
-                    <option value="Alta">Alta</option>
-                  </select>
-                </div>
-                <div>
-                  <label class="text-xs text-gray-600">Origem</label>
-                  <select id="card-origem" class="w-full rounded border py-2 px-3 text-sm">
-                    <!-- BEGIN CHANGE: Novas Origens -->
-                    <option value="LinkedIn">LinkedIn</option>
-                    <option value="Indicação">Indicação</option>
-                    <option value="Google">Google</option>
-                    <option value="Direto">Direto</option>
-                    <option value="Instagram">Instagram</option>
-                    <option value="Facebook">Facebook</option>
-                    <option value="YouTube">YouTube</option>
-                    <option value="TikTok">TikTok</option>
-                    <option value="WhatsApp">WhatsApp</option>
-                    <option value="Tráfego Pago">Tráfego Pago</option>
-                    <option value="Evento">Evento</option>
-                    <option value="Site">Site</option>
-                    <option value="E-mail">E-mail</option>
-                    <option value="Outro">Outro</option>
-                    <!-- END CHANGE -->
-                  </select>
-                </div>
-                <input type="text" id="card-responsavel" placeholder="Responsável" class="w-full rounded border py-2 px-3 text-sm" />
-                <div>
-                  <label class="text-xs text-gray-600">Próximo Follow-up</label>
-                  <input type="datetime-local" id="card-proximoFollowup" class="w-full rounded border py-2 px-3 text-sm" />
-                </div>
-              </div>
-            </div>
-
-            <!-- Etiquetas -->
-            <div class="bg-gray-50 dark:bg-slate-800 p-4 rounded">
-              <h4 class="font-bold mb-3">Etiquetas</h4>
-              <div>
-                <label class="label-chip label-quente" onclick="toggleLabel(this, 'Quente')">Quente</label>
-                <label class="label-chip label-morno" onclick="toggleLabel(this, 'Morno')">Morno</label>
-                <label class="label-chip label-frio" onclick="toggleLabel(this, 'Frio')">Frio</label>
-              </div>
-              <input type="hidden" id="card-labels" value="" />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Footer -->
-      <div class="border-t border-gray-200 dark:border-slate-700 p-4 flex justify-end gap-2 flex-shrink-0">
-        <button onclick="saveCardChanges()" class="bg-careka-primary-light text-white px-4 py-2 rounded font-medium hover:bg-teal-800">
-          Salvar Tudo
-        </button>
-        <button onclick="document.getElementById('dlg-card-trello').close()" class="text-gray-600 dark:text-gray-400 px-4 py-2">
-          Fechar
-        </button>
-      </div>
-    </div>
-  </dialog>
-  <!-- END CHANGE -->
-
-  <!-- Novo Lead Modal -->
-  <dialog id="dlg-novo-lead" class="card p-0 w-[90vw] max-w-2xl">
-    <form class="p-6 flex flex-col gap-4" id="form-novo-lead">
-      <h2 class="text-xl font-bold">Novo Lead</h2>
+  <dialog id="modal-novo-lead" class="card p-0 w-11/12 max-w-2xl mx-auto">
+    <form id="form-novo-lead" class="p-6 flex flex-col gap-4">
+      <h2 class="text-2xl font-bold">Novo Lead</h2>
       <div class="grid grid-cols-2 gap-4">
-        <input type="text" placeholder="Nome *" name="nome" required class="rounded border py-2 px-3"/>
-        <input type="email" placeholder="Email" name="email" class="rounded border py-2 px-3"/>
-        <input type="tel" placeholder="Telefone" name="telefone" class="rounded border py-2 px-3"/>
-        <input type="text" placeholder="Empresa" name="empresa" class="rounded border py-2 px-3"/>
-        <input type="text" placeholder="Segmento" name="segmento" required class="rounded border py-2 px-3"/>
-        <input type="number" placeholder="Valor (R$) *" name="valor" min="0" step="100" required class="rounded border py-2 px-3"/>
-        <!-- BEGIN CHANGE: Novas Origens no Formulário -->
-        <select name="origem" class="col-span-2 rounded border py-2 px-3">
-          <option value="">Selecione Origem</option>
+        <input type="text" name="nome" placeholder="Nome *" required class="rounded p-2 border">
+        <input type="email" name="email" placeholder="Email" class="rounded p-2 border">
+        <input type="tel" name="telefone" placeholder="Telefone" class="rounded p-2 border">
+        <input type="text" name="empresa" placeholder="Empresa" class="rounded p-2 border">
+        <input type="text" name="cargo" placeholder="Cargo" class="rounded p-2 border">
+        <input type="text" name="segmento" placeholder="Segmento" class="rounded p-2 border">
+        <input type="number" name="valor" placeholder="Valor (R$)" min="0" step="100" class="rounded p-2 border">
+        <input type="number" name="score" placeholder="Score (0-100)" min="0" max="100" value="50" class="rounded p-2 border">
+        <select name="origem" class="col-span-2 rounded p-2 border">
+          <option value="Google">Google</option>
           <option value="LinkedIn">LinkedIn</option>
           <option value="Indicação">Indicação</option>
-          <option value="Google">Google</option>
-          <option value="Direto">Direto</option>
           <option value="Instagram">Instagram</option>
           <option value="Facebook">Facebook</option>
-          <option value="YouTube">YouTube</option>
-          <option value="TikTok">TikTok</option>
-          <option value="WhatsApp">WhatsApp</option>
           <option value="Tráfego Pago">Tráfego Pago</option>
-          <option value="Evento">Evento</option>
           <option value="Site">Site</option>
-          <option value="E-mail">E-mail</option>
+          <option value="WhatsApp">WhatsApp</option>
+          <option value="Direto">Direto</option>
           <option value="Outro">Outro</option>
         </select>
-        <!-- END CHANGE -->
-        <select name="canal" class="col-span-2 rounded border py-2 px-3">
-          <option value="">Selecione Canal</option>
+        <select name="canal" class="col-span-2 rounded p-2 border">
           <option value="Email">Email</option>
           <option value="WhatsApp">WhatsApp</option>
           <option value="Ligação">Ligação</option>
           <option value="Encontro">Encontro</option>
-          <option value="Outro">Outro</option>
+        </select>
+        <select name="prioridade" class="col-span-2 rounded p-2 border">
+          <option value="Baixa">Prioridade: Baixa</option>
+          <option value="Média">Prioridade: Média</option>
+          <option value="Alta">Prioridade: Alta</option>
         </select>
       </div>
-      <textarea placeholder="Observações" name="observacoes" rows="3" class="rounded border py-2 px-3"></textarea>
+      <textarea name="observacoes" placeholder="Observações" rows="3" class="rounded p-2 border"></textarea>
       <div class="flex gap-2">
-        <button type="submit" class="flex-1 bg-careka-primary-light text-white px-4 py-2 rounded font-medium hover:bg-teal-800">Criar</button>
-        <button type="button" onclick="document.getElementById('dlg-novo-lead').close()" class="flex-1 text-gray-600 dark:text-gray-400 px-4 py-2">Cancelar</button>
+        <button type="submit" class="bg-careka-primary-light text-white px-6 py-2 rounded hover:bg-teal-700 font-medium flex-1">Salvar</button>
+        <button type="button" onclick="document.getElementById('modal-novo-lead').close()" class="bg-gray-400 text-white px-6 py-2 rounded hover:bg-gray-500 font-medium flex-1">Cancelar</button>
       </div>
     </form>
   </dialog>
 
-  <script>
-  // ============ CONFIGURAÇÕES INICIAIS ============
-  const STATE_KEY = "careka-hub-v6";
-  const ETAPAS = ['Novo', 'Qualificar', 'Diagnóstico', 'Proposta', 'Ganho', 'Perdido'];
-  const CORES_ETAPA = {
-    'Novo': '#E0F2FE',
-    'Qualificar': '#FEF3C7',
-    'Diagnóstico': '#DBEAFE',
-    'Proposta': '#F3E8FF',
-    'Ganho': '#DCFCE7',
-    'Perdido': '#FEE2E2'
-  };
-
-  // BEGIN CHANGE: Novas Origens para Seed
-  const ORIGENS_CORES = {
-    'LinkedIn': '#0A66C2',
-    'Indicação': '#F59E0B',
-    'Google': '#EA4335',
-    'Direto': '#0F766E',
-    'Instagram': '#E1306C',
-    'Facebook': '#1877F2',
-    'YouTube': '#FF0000',
-    'TikTok': '#000000',
-    'WhatsApp': '#25D366',
-    'Tráfego Pago': '#6366F1',
-    'Evento': '#8B5CF6',
-    'Site': '#3B82F6',
-    'E-mail': '#F97316',
-    'Outro': '#6B7280'
-  };
-
-  const LEAD_SEED = [
-    {id: 'lead1', nome: 'Dr. Martinez', empresa: 'Clínica Sorriso', valor: 15000, score: 78, segmento: 'Odontologia', estagio: 'Novo', prioridade: 'Alta', origem: 'LinkedIn', canal: 'Email', email: 'martinez@clinicasorriso.com', telefone: '11 99999-0001', dataCriacaoISO: new Date(Date.now() - 7*24*60*60*1000).toISOString(), ultimoContatoISO: new Date().toISOString(), historicos: [{id: 'h1', tipo: 'Contato', conteudo: 'Primeiro contato realizado', dataISO: new Date().toISOString()}], checklists: [], anexos: [], observacoes: '', responsavel: '', proximoFollowupISO: '', labels: []},
-    {id: 'lead2', nome: 'Ana Silva', empresa: 'Academia FitMax', valor: 8000, score: 61, segmento: 'Academia', estagio: 'Qualificar', prioridade: 'Média', origem: 'Indicação', canal: 'WhatsApp', email: 'ana@fitmax.com', telefone: '11 99999-0002', dataCriacaoISO: new Date(Date.now() - 5*24*60*60*1000).toISOString(), ultimoContatoISO: new Date().toISOString(), historicos: [], checklists: [], anexos: [], observacoes: '', responsavel: '', proximoFollowupISO: '', labels: []},
-    {id: 'lead3', nome: 'Carlos Oliveira', empresa: 'Studio Slim', valor: 12000, score: 73, segmento: 'Estética', estagio: 'Diagnóstico', prioridade: 'Alta', origem: 'Google', canal: 'Ligação', email: 'carlos@studioslim.com', telefone: '11 99999-0003', dataCriacaoISO: new Date(Date.now() - 3*24*60*60*1000).toISOString(), ultimoContatoISO: new Date().toISOString(), historicos: [], checklists: [], anexos: [], observacoes: '', responsavel: '', proximoFollowupISO: '', labels: []},
-    {id: 'lead4', nome: 'Mariana Costa', empresa: 'Tech Startup', valor: 25000, score: 85, segmento: 'Tecnologia', estagio: 'Proposta', prioridade: 'Alta', origem: 'Instagram', canal: 'Email', email: 'mariana@tech.com', telefone: '11 99999-0004', dataCriacaoISO: new Date(Date.now() - 10*24*60*60*1000).toISOString(), ultimoContatoISO: new Date().toISOString(), historicos: [], checklists: [], anexos: [], observacoes: '', responsavel: '', proximoFollowupISO: '', labels: []},
-    {id: 'lead5', nome: 'Roberto Santos', empresa: 'Consultoria RH', valor: 18000, score: 72, segmento: 'Consultoria', estagio: 'Proposta', prioridade: 'Média', origem: 'Facebook', canal: 'Email', email: 'roberto@consultrh.com', telefone: '11 99999-0005', dataCriacaoISO: new Date(Date.now() - 15*24*60*60*1000).toISOString(), ultimoContatoISO: new Date().toISOString(), historicos: [], checklists: [], anexos: [], observacoes: '', responsavel: '', proximoFollowupISO: '', labels: []},
-    {id: 'lead6', nome: 'Fernanda Lima', empresa: 'Pet Care', valor: 9000, score: 55, segmento: 'Veterinária', estagio: 'Novo', prioridade: 'Baixa', origem: 'YouTube', canal: 'Email', email: 'fernanda@petcare.com', telefone: '11 99999-0006', dataCriacaoISO: new Date(Date.now() - 2*24*60*60*1000).toISOString(), ultimoContatoISO: new Date().toISOString(), historicos: [], checklists: [], anexos: [], observacoes: '', responsavel: '', proximoFollowupISO: '', labels: []},
-    {id: 'lead7', nome: 'Paulo Mendes', empresa: 'Agência Digital', valor: 30000, score: 90, segmento: 'Marketing', estagio: 'Ganho', prioridade: 'Alta', origem: 'Direto', canal: 'Encontro', email: 'paulo@agenciadigital.com', telefone: '11 99999-0007', dataCriacaoISO: new Date(Date.now() - 30*24*60*60*1000).toISOString(), ultimoContatoISO: new Date().toISOString(), historicos: [], checklists: [], anexos: [], observacoes: 'Cliente convertido', responsavel: '', proximoFollowupISO: '', labels: []},
-    {id: 'lead8', nome: 'Juliana Ribeiro', empresa: 'Fashion Boutique', valor: 6000, score: 40, segmento: 'Moda', estagio: 'Perdido', prioridade: 'Baixa', origem: 'TikTok', canal: 'Email', email: 'juliana@fashionboutique.com', telefone: '11 99999-0008', dataCriacaoISO: new Date(Date.now() - 20*24*60*60*1000).toISOString(), ultimoContatoISO: new Date().toISOString(), historicos: [], checklists: [], anexos: [], observacoes: '', responsavel: '', proximoFollowupISO: '', labels: []},
-    {id: 'lead9', nome: 'Felipe Alves', empresa: 'Restaurante Grill', valor: 11000, score: 68, segmento: 'Gastronomia', estagio: 'Qualificar', prioridade: 'Média', origem: 'Tráfego Pago', canal: 'Email', email: 'felipe@restaurante.com', telefone: '11 99999-0009', dataCriacaoISO: new Date(Date.now() - 8*24*60*60*1000).toISOString(), ultimoContatoISO: new Date().toISOString(), historicos: [], checklists: [], anexos: [], observacoes: '', responsavel: '', proximoFollowupISO: '', labels: []},
-    {id: 'lead10', nome: 'Beatriz Gomes', empresa: 'Imobiliária Premium', valor: 50000, score: 88, segmento: 'Imóveis', estagio: 'Proposta', prioridade: 'Alta', origem: 'Evento', canal: 'Encontro', email: 'beatriz@imobiliaria.com', telefone: '11 99999-0010', dataCriacaoISO: new Date(Date.now() - 12*24*60*60*1000).toISOString(), ultimoContatoISO: new Date().toISOString(), historicos: [], checklists: [], anexos: [], observacoes: '', responsavel: '', proximoFollowupISO: '', labels: []}
-  ];
-  // END CHANGE
-
-  let state = loadState();
-  let charts = {};
-
-  // ============ UTILITÁRIOS ============
-  function el(id) { return document.getElementById(id); }
-  function uuid() { return 'lead_' + Math.random().toString(16).slice(2) + Date.now().toString(16); }
-  function nowISO() { return new Date().toISOString(); }
-  function toReal(v) { return "R$ " + Number(v || 0).toLocaleString('pt-BR'); }
-  function formatData(data) { return new Date(data).toLocaleDateString('pt-BR'); }
-
-  function loadState() {
-    try {
-      const data = JSON.parse(localStorage.getItem(STATE_KEY));
-      if (data && data.leads && data.leads.length > 0) {
-        // Migração: adiciona campos novos se não existirem
-        return migrateState(data);
-      }
-      return { leads: JSON.parse(JSON.stringify(LEAD_SEED)), tarefas: [], interacoes: [] };
-    } catch {
-      return { leads: JSON.parse(JSON.stringify(LEAD_SEED)), tarefas: [], interacoes: [] };
-    }
-  }
-
-  function migrateState(data) {
-    data.leads = data.leads.map(l => ({
-      ...l,
-      site: l.site || '',
-      whatsapp: l.whatsapp || '',
-      instagram: l.instagram || '',
-      facebook: l.facebook || '',
-      linkedin: l.linkedin || '',
-      cidade: l.cidade || '',
-      uf: l.uf || '',
-      responsavel: l.responsavel || '',
-      proximoFollowupISO: l.proximoFollowupISO || '',
-      historicos: l.historicos || [],
-      checklists: l.checklists || [],
-      anexos: l.anexos || [],
-      labels: l.labels || []
-    }));
-    return data;
-  }
-
-  function saveState() {
-    localStorage.setItem(STATE_KEY, JSON.stringify(state));
-  }
-
-  function updateTheme() {
-    const theme = localStorage.getItem('careka-theme-v6') || 
-      (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'careka-dark' : 'careka-light');
-    document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('careka-theme-v6', theme);
-    updateCharts();
-  }
-
-  // ============ NAVEGAÇÃO ============
-  document.querySelectorAll('.sidebar-item').forEach(item => {
-    item.addEventListener('click', () => {
-      const page = item.dataset.page;
-      if (!page) return;
-      
-      document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
-      item.classList.add('active');
-      
-      document.querySelectorAll('.page-content').forEach(p => p.classList.add('hidden'));
-      el(`page-${page}`).classList.remove('hidden');
-      
-      const titles = {
-        dashboard: 'Dashboard',
-        crm: 'CRM - Funis de Vendas',
-        tarefas: 'Tarefas',
-        relatorios: 'Relatórios & Exportação'
-      };
-      el('page-title').textContent = titles[page] || page;
-      
-      if (page === 'dashboard') renderDashboard();
-      if (page === 'crm') renderCRM();
-      if (page === 'tarefas') renderTarefas();
-    });
-  });
-
-  // ============ TEMA ============
-  el('btn-theme').addEventListener('click', () => {
-    const current = document.documentElement.getAttribute('data-theme');
-    const novo = current === 'careka-light' ? 'careka-dark' : 'careka-light';
-    document.documentElement.setAttribute('data-theme', novo);
-    localStorage.setItem('careka-theme-v6', novo);
-    updateCharts();
-  });
-
-  // ============ NOVO LEAD ============
-  const dlgNovoLead = el('dlg-novo-lead');
-  el('btn-novo-lead').addEventListener('click', () => dlgNovoLead.showModal());
-  
-  el('form-novo-lead').addEventListener('submit', (e) => {
-    e.preventDefault();
-    const fd = new FormData(e.target);
-    const lead = {
-      id: uuid(),
-      nome: fd.get('nome'),
-      email: fd.get('email'),
-      telefone: fd.get('telefone'),
-      empresa: fd.get('empresa'),
-      segmento: fd.get('segmento'),
-      valor: Number(fd.get('valor')),
-      origem: fd.get('origem') || 'Outro',
-      canal: fd.get('canal') || 'Email',
-      estagio: 'Novo',
-      score: 50,
-      prioridade: 'Média',
-      observacoes: fd.get('observacoes'),
-      dataCriacaoISO: nowISO(),
-      ultimoContatoISO: nowISO(),
-      historicos: [],
-      checklists: [],
-      anexos: [],
-      responsavel: '',
-      proximoFollowupISO: '',
-      labels: [],
-      site: '',
-      whatsapp: '',
-      instagram: '',
-      facebook: '',
-      linkedin: '',
-      cidade: '',
-      uf: ''
-    };
-    
-    state.leads.push(lead);
-    saveState();
-    renderAll();
-    dlgNovoLead.close();
-    e.target.reset();
-  });
-
-  // BEGIN CHANGE: Funções de Card Trello
-  let currentCardId = null;
-
-  function openCardModal(leadId) {
-    currentCardId = leadId;
-    const lead = state.leads.find(l => l.id === leadId);
-    if (!lead) return;
-
-    el('card-nome').value = lead.nome;
-    el('card-estagio').value = lead.estagio;
-    el('card-email').value = lead.email || '';
-    el('card-telefone').value = lead.telefone || '';
-    el('card-empresa').value = lead.empresa || '';
-    el('card-cargo').value = lead.cargo || '';
-    el('card-site').value = lead.site || '';
-    el('card-whatsapp').value = lead.whatsapp || '';
-    el('card-instagram').value = lead.instagram || '';
-    el('card-linkedin').value = lead.linkedin || '';
-    el('card-cidade').value = lead.cidade || '';
-    el('card-uf').value = lead.uf || '';
-    el('card-valor').value = lead.valor;
-    el('card-score').value = lead.score;
-    el('card-prioridade').value = lead.prioridade;
-    el('card-origem').value = lead.origem || '';
-    el('card-responsavel').value = lead.responsavel || '';
-    el('card-observacoes').value = lead.observacoes || '';
-    el('card-proximoFollowup').value = lead.proximoFollowupISO ? lead.proximoFollowupISO.slice(0, 16) : '';
-    el('card-labels').value = (lead.labels || []).join(',');
-
-    renderHistoricoInModal(lead);
-    renderLabelsInModal(lead.labels || []);
-
-    el('dlg-card-trello').showModal();
-  }
-
-  function renderHistoricoInModal(lead) {
-    const container = el('card-historico');
-    const historicos = lead.historicos || [];
-    container.innerHTML = historicos.map(h => `
-      <div class="history-entry rounded text-sm mb-2">
-        <div class="flex justify-between">
-          <span class="font-medium">${h.tipo}</span>
-          <span class="text-xs text-gray-500">${formatData(h.dataISO)}</span>
-        </div>
-        <div class="mt-1">${h.conteudo}</div>
+  <dialog id="modal-resetar" class="card p-0 w-11/12 max-w-md mx-auto">
+    <div class="p-6 flex flex-col gap-4">
+      <h2 class="text-2xl font-bold text-red-600">RESETAR BASE DE DADOS</h2>
+      <p class="text-sm">Digite <strong>RESET</strong> para confirmar (maiúsculas):</p>
+      <input type="text" id="input-reset-confirm" maxlength="5" placeholder="Digite RESET aqui" class="rounded p-2 border">
+      <div class="flex gap-2">
+        <button id="btn-confirmar-reset" disabled type="button" class="bg-red-600 text-white px-6 py-2 rounded hover:bg-red-700 font-medium flex-1 disabled:opacity-50">Confirmar</button>
+        <button onclick="document.getElementById('modal-resetar').close()" class="bg-gray-400 text-white px-6 py-2 rounded hover:bg-gray-500 font-medium flex-1">Cancelar</button>
       </div>
-    `).join('') || '<div class="text-gray-400 text-xs">Nenhuma atividade</div>';
+    </div>
+  </dialog>
 
-    el('card-historico-input').addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') {
-        const txt = el('card-historico-input').value.trim();
-        if (txt) {
-          if (!lead.historicos) lead.historicos = [];
-          lead.historicos.push({
-            id: uuid(),
-            tipo: 'Atividade',
-            conteudo: txt,
-            dataISO: nowISO()
-          });
-          el('card-historico-input').value = '';
-          renderHistoricoInModal(lead);
-          saveState();
-        }
-        e.preventDefault();
-      }
-    });
-  }
+  <dialog id="modal-importar" class="card p-0 w-11/12 max-w-md mx-auto">
+    <div class="p-6 flex flex-col gap-4">
+      <h2 class="text-2xl font-bold">Importar Arquivo</h2>
+      <div id="drop-zone" class="border-2 border-dashed border-gray-400 rounded p-6 text-center cursor-pointer hover:bg-gray-50 dark:hover:bg-slate-800">
+        <p class="text-sm mb-2">Arraste arquivos aqui ou clique para selecionar</p>
+        <input type="file" id="input-import" accept=".csv,.xlsx,.xls" style="display:none;">
+      </div>
+      <div id="import-preview" class="hidden bg-gray-50 dark:bg-slate-800 p-4 rounded text-sm max-h-48 overflow-y-auto"></div>
+      <div class="flex gap-2">
+        <button id="btn-processar-import" type="button" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 font-medium flex-1 hidden">Processar</button>
+        <button onclick="document.getElementById('modal-importar').close()" class="bg-gray-400 text-white px-6 py-2 rounded hover:bg-gray-500 font-medium flex-1">Fechar</button>
+      </div>
+    </div>
+  </dialog>
 
-  function renderLabelsInModal(labels) {
-    const quente = labels.includes('Quente');
-    const morno = labels.includes('Morno');
-    const frio = labels.includes('Frio');
+  <div id="trello-backdrop" class="trello-backdrop hidden" onclick="closeTrello()"></div>
+  <div id="trello-panel" class="trello-panel hidden">
+    <div class="p-6">
+      <div class="flex justify-between items-center mb-6">
+        <h2 id="trello-title" class="text-2xl font-bold">Lead</h2>
+        <button onclick="closeTrello()" class="text-gray-500 hover:text-gray-700"><i class="fas fa-times text-2xl"></i></button>
+      </div>
 
-    document.querySelectorAll('.label-chip').forEach(chip => {
-      chip.style.opacity = '0.5';
-    });
-    if (quente) document.querySelectorAll('.label-quente')[0].style.opacity = '1';
-    if (morno) document.querySelectorAll('.label-morno')[0].style.opacity = '1';
-    if (frio) document.querySelectorAll('.label-frio')[0].style.opacity = '1';
-  }
-
-  function toggleLabel(el, label) {
-    const lead = state.leads.find(l => l.id === currentCardId);
-    if (!lead) return;
-
-    if (!lead.labels) lead.labels = [];
-
-    if (lead.labels.includes(label)) {
-      lead.labels = lead.labels.filter(l => l !== label);
-    } else {
-      lead.labels.push(label);
-    }
-
-    renderLabelsInModal(lead.labels);
-  }
-
-  function saveCardChanges() {
-    const lead = state.leads.find(l => l.id === currentCardId);
-    if (!lead) return;
-
-    lead.nome = el('card-nome').value || lead.nome;
-    lead.estagio = el('card-estagio').value;
-    lead.email = el('card-email').value;
-    lead.telefone = el('card-telefone').value;
-    lead.empresa = el('card-empresa').value;
-    lead.cargo = el('card-cargo').value;
-    lead.site = el('card-site').value;
-    lead.whatsapp = el('card-whatsapp').value;
-    lead.instagram = el('card-instagram').value;
-    lead.linkedin = el('card-linkedin').value;
-    lead.cidade = el('card-cidade').value;
-    lead.uf = el('card-uf').value;
-    lead.valor = Number(el('card-valor').value);
-    lead.score = Number(el('card-score').value);
-    lead.prioridade = el('card-prioridade').value;
-    lead.origem = el('card-origem').value;
-    lead.responsavel = el('card-responsavel').value;
-    lead.observacoes = el('card-observacoes').value;
-
-    const proximoFollowupStr = el('card-proximoFollowup').value;
-    if (proximoFollowupStr) {
-      lead.proximoFollowupISO = new Date(proximoFollowupStr).toISOString();
-    }
-
-    saveState();
-    renderAll();
-    el('dlg-card-trello').close();
-  }
-
-  el('card-btn-salvar-desc').addEventListener('click', () => {
-    const lead = state.leads.find(l => l.id === currentCardId);
-    if (lead) {
-      lead.observacoes = el('card-observacoes').value;
-      saveState();
-    }
-  });
-
-  el('card-btn-mover').addEventListener('click', () => {
-    const lead = state.leads.find(l => l.id === currentCardId);
-    if (!lead) return;
-
-    const idx = ETAPAS.indexOf(lead.estagio);
-    if (idx < ETAPAS.length - 1) {
-      lead.estagio = ETAPAS[idx + 1];
-      el('card-estagio').value = lead.estagio;
-      saveState();
-    }
-  });
-
-  el('card-btn-excluir').addEventListener('click', () => {
-    if (confirm('Tem certeza que deseja excluir este lead?')) {
-      state.leads = state.leads.filter(l => l.id !== currentCardId);
-      saveState();
-      el('dlg-card-trello').close();
-      renderAll();
-    }
-  });
-
-  el('card-btn-arquivar').addEventListener('click', () => {
-    const lead = state.leads.find(l => l.id === currentCardId);
-    if (lead) {
-      lead.estagio = 'Perdido';
-      el('card-estagio').value = 'Perdido';
-      saveState();
-    }
-  });
-  // END CHANGE
-
-  // ============ DASHBOARD ============
-  function renderDashboard() {
-    updateKPIs();
-    renderCharts();
-  }
-
-  function updateKPIs() {
-    el('kpi-leads').textContent = state.leads.length;
-    
-    const semana = new Date();
-    semana.setDate(semana.getDate() - 7);
-    const conversados = state.leads.filter(l => new Date(l.ultimoContatoISO) >= semana).length;
-    el('kpi-conversados').textContent = conversados;
-    
-    const novos = state.leads.filter(l => new Date(l.dataCriacaoISO) >= semana).length;
-    el('kpi-novos').textContent = novos;
-    
-    const ganhos = state.leads.filter(l => l.estagio === 'Ganho').length;
-    const taxa = state.leads.length ? ((ganhos / state.leads.length) * 100).toFixed(1) : 0;
-    el('kpi-taxa').textContent = taxa + '%';
-    
-    const pipeline = state.leads.filter(l => l.estagio !== 'Ganho' && l.estagio !== 'Perdido')
-      .reduce((a, b) => a + b.valor, 0);
-    el('kpi-pipeline').textContent = toReal(pipeline);
-    
-    const scoreMedio = state.leads.length ? (state.leads.reduce((a, b) => a + b.score, 0) / state.leads.length).toFixed(0) : 0;
-    el('kpi-score').textContent = scoreMedio;
-  }
-
-  function renderCharts() {
-    createChartLeadsPeriodo();
-    createChartOrigem();
-    createChartConversao();
-    createChartScore();
-    createChartPipeline();
-    createChartPropostas();
-    createChartTarefas();
-    createChartCanal();
-    createChartEvolucao();
-  }
-
-  function getChartTheme() {
-    const isDark = document.documentElement.getAttribute('data-theme') === 'careka-dark';
-    return {
-      isDark,
-      textColor: isDark ? '#E5E7EB' : '#1F2937',
-      gridColor: isDark ? '#334155' : '#E5E7EB'
-    };
-  }
-
-  function updateCharts() {
-    Object.values(charts).forEach(chart => {
-      if (chart && chart.destroy) chart.destroy();
-    });
-    charts = {};
-    renderCharts();
-  }
-
-  function createChartLeadsPeriodo() {
-    const ctx = el('chart-leads-periodo')?.getContext('2d');
-    if (!ctx) return;
-    
-    const agora = new Date();
-    const periodos = ['Semana', 'Mês', '3M', '6M', '12M'];
-    const dias = [7, 30, 90, 180, 365];
-    const dados = dias.map(d => {
-      const data = new Date(agora);
-      data.setDate(data.getDate() - d);
-      return state.leads.filter(l => new Date(l.dataCriacaoISO) >= data).length;
-    });
-
-    const theme = getChartTheme();
-    if (charts['leads-periodo']) charts['leads-periodo'].destroy();
-    charts['leads-periodo'] = new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: periodos,
-        datasets: [{label: 'Novos Leads', data: dados, backgroundColor: '#0F766E', borderRadius: 6}]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: { legend: { labels: { color: theme.textColor } } },
-        scales: {
-          y: { ticks: { color: theme.textColor }, grid: { color: theme.gridColor } },
-          x: { ticks: { color: theme.textColor }, grid: { display: false } }
-        }
-      }
-    });
-  }
-
-  function createChartOrigem() {
-    const ctx = el('chart-origem')?.getContext('2d');
-    if (!ctx) return;
-    
-    // BEGIN CHANGE: Atualizar gráfico com novas origens
-    const origens = [...new Set(state.leads.map(l => l.origem || 'Outro'))];
-    const dados = origens.map(o => state.leads.filter(l => (l.origem || 'Outro') === o).length);
-    const cores = origens.map(o => ORIGENS_CORES[o] || '#6B7280');
-    // END CHANGE
-
-    const theme = getChartTheme();
-    if (charts['origem']) charts['origem'].destroy();
-    charts['origem'] = new Chart(ctx, {
-      type: 'doughnut',
-      data: {
-        labels: origens,
-        datasets: [{data: dados, backgroundColor: cores}]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: { legend: { labels: { color: theme.textColor } } }
-      }
-    });
-  }
-
-  function createChartConversao() {
-    const ctx = el('chart-conversao')?.getContext('2d');
-    if (!ctx) return;
-    
-    const etapas = ETAPAS;
-    const dados = etapas.map(e => state.leads.filter(l => l.estagio === e).length);
-    const cores_etapas = etapas.map(e => CORES_ETAPA[e]);
-
-    const theme = getChartTheme();
-    if (charts['conversao']) charts['conversao'].destroy();
-    charts['conversao'] = new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: etapas,
-        datasets: [{label: 'Quantidade', data: dados, backgroundColor: cores_etapas, borderRadius: 6}]
-      },
-      options: {
-        indexAxis: 'y',
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: { legend: { display: false } },
-        scales: {
-          x: { ticks: { color: theme.textColor }, grid: { color: theme.gridColor } },
-          y: { ticks: { color: theme.textColor } }
-        }
-      }
-    });
-  }
-
-  function createChartScore() {
-    const ctx = el('chart-score')?.getContext('2d');
-    if (!ctx) return;
-    
-    const ranges = ['0-20', '21-40', '41-60', '61-80', '81-100'];
-    const dados = ranges.map((r, i) => {
-      const min = i * 20;
-      const max = (i + 1) * 20;
-      return state.leads.filter(l => l.score >= min && l.score < max).length;
-    });
-
-    const theme = getChartTheme();
-    if (charts['score']) charts['score'].destroy();
-    charts['score'] = new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: ranges,
-        datasets: [{label: 'Leads', data: dados, borderColor: '#0F766E', backgroundColor: 'rgba(15, 118, 110, 0.1)', borderWidth: 2, fill: true, tension: 0.4}]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: { legend: { labels: { color: theme.textColor } } },
-        scales: {
-          y: { ticks: { color: theme.textColor }, grid: { color: theme.gridColor } },
-          x: { ticks: { color: theme.textColor }, grid: { display: false } }
-        }
-      }
-    });
-  }
-
-  function createChartPipeline() {
-    const ctx = el('chart-pipeline')?.getContext('2d');
-    if (!ctx) return;
-    
-    const etapas = ETAPAS;
-    const dados = etapas.map(e => state.leads.filter(l => l.estagio === e).reduce((a, b) => a + b.valor, 0));
-    const cores_etapas = etapas.map(e => CORES_ETAPA[e]);
-
-    const theme = getChartTheme();
-    if (charts['pipeline']) charts['pipeline'].destroy();
-    charts['pipeline'] = new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: etapas,
-        datasets: [{label: 'Pipeline (R$)', data: dados, backgroundColor: cores_etapas, borderRadius: 6}]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: { legend: { display: false } },
-        scales: {
-          y: { ticks: { color: theme.textColor }, grid: { color: theme.gridColor } },
-          x: { ticks: { color: theme.textColor }, grid: { display: false } }
-        }
-      }
-    });
-  }
-
-  function createChartPropostas() {
-    const ctx = el('chart-propostas')?.getContext('2d');
-    if (!ctx) return;
-    
-    const enviadas = state.leads.filter(l => l.estagio === 'Proposta').length;
-    const ganhas = state.leads.filter(l => l.estagio === 'Ganho').length;
-
-    const theme = getChartTheme();
-    if (charts['propostas']) charts['propostas'].destroy();
-    charts['propostas'] = new Chart(ctx, {
-      type: 'doughnut',
-      data: {
-        labels: ['Enviadas', 'Ganhas'],
-        datasets: [{data: [enviadas, ganhas], backgroundColor: ['#F59E0B', '#10B981']}]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: { legend: { labels: { color: theme.textColor } } }
-      }
-    });
-  }
-
-  function createChartTarefas() {
-    const ctx = el('chart-tarefas')?.getContext('2d');
-    if (!ctx) return;
-    
-    const pendentes = (state.tarefas || []).filter(t => t.status !== 'Concluído').length;
-    const concluidas = (state.tarefas || []).filter(t => t.status === 'Concluído').length;
-
-    const theme = getChartTheme();
-    if (charts['tarefas']) charts['tarefas'].destroy();
-    charts['tarefas'] = new Chart(ctx, {
-      type: 'doughnut',
-      data: {
-        labels: ['Pendentes', 'Concluídas'],
-        datasets: [{data: [pendentes, concluidas], backgroundColor: ['#EF4444', '#10B981']}]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: { legend: { labels: { color: theme.textColor } } }
-      }
-    });
-  }
-
-  function createChartCanal() {
-    const ctx = el('chart-canal')?.getContext('2d');
-    if (!ctx) return;
-    
-    const canais = ['Email', 'WhatsApp', 'Ligação', 'Encontro'];
-    const dados = canais.map(c => state.leads.filter(l => l.canal === c).length);
-
-    const theme = getChartTheme();
-    if (charts['canal']) charts['canal'].destroy();
-    charts['canal'] = new Chart(ctx, {
-      type: 'radar',
-      data: {
-        labels: canais,
-        datasets: [{label: 'Leads', data: dados, borderColor: '#0F766E', backgroundColor: 'rgba(15, 118, 110, 0.2)', borderWidth: 2}]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: { legend: { labels: { color: theme.textColor } } },
-        scales: { r: { ticks: { color: theme.textColor }, grid: { color: theme.gridColor } } }
-      }
-    });
-  }
-
-  function createChartEvolucao() {
-    const ctx = el('chart-evolucao')?.getContext('2d');
-    if (!ctx) return;
-    
-    const agora = new Date();
-    const dias = Array.from({length: 30}, (_, i) => {
-      const d = new Date(agora);
-      d.setDate(d.getDate() - (29 - i));
-      return d;
-    });
-    
-    const labels = dias.map(d => d.toLocaleDateString('pt-BR', {month: '2-digit', day: '2-digit'}));
-    const dados = dias.map(dia => {
-      return state.leads.reduce((a, l) => {
-        if (new Date(l.dataCriacaoISO) <= dia) return a + l.valor;
-        return a;
-      }, 0);
-    });
-
-    const theme = getChartTheme();
-    if (charts['evolucao']) charts['evolucao'].destroy();
-    charts['evolucao'] = new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: labels,
-        datasets: [{label: 'Pipeline (R$)', data: dados, borderColor: '#0F766E', backgroundColor: 'rgba(15, 118, 110, 0.1)', borderWidth: 2, fill: true, tension: 0.4}]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: { legend: { labels: { color: theme.textColor } } },
-        scales: {
-          y: { ticks: { color: theme.textColor }, grid: { color: theme.gridColor } },
-          x: { ticks: { color: theme.textColor }, grid: { display: false } }
-        }
-      }
-    });
-  }
-
-  // ============ CRM KANBAN ============
-  function renderCRM() {
-    const container = el('kanban-container');
-    container.innerHTML = '';
-    
-    ETAPAS.forEach(etapa => {
-      const leads = state.leads.filter(l => l.estagio === etapa);
-      
-      const coluna = document.createElement('div');
-      coluna.className = 'kanban-column card p-3 rounded';
-      coluna.style.backgroundColor = CORES_ETAPA[etapa];
-      
-      const header = document.createElement('div');
-      header.className = 'font-bold text-sm mb-3 flex justify-between';
-      header.innerHTML = `<span>${etapa}</span><span class="bg-careka-primary-light text-white rounded-full w-6 h-6 flex items-center justify-center text-xs">${leads.length}</span>`;
-      coluna.appendChild(header);
-      
-      const lista = document.createElement('div');
-      lista.id = `kanban-${etapa}`;
-      lista.className = 'kanban-list flex flex-col gap-2';
-      
-      leads.forEach(lead => {
-        const card = document.createElement('div');
-        card.className = 'lead-card card rounded cursor-move';
-        card.draggable = true;
-        card.dataset.id = lead.id;
-        card.innerHTML = `
-          <div class="flex justify-between items-start">
-            <div class="flex-1">
-              <div class="font-medium text-sm">${lead.nome}</div>
-              <div class="text-xs text-gray-500">${lead.empresa || lead.segmento}</div>
+      <div class="space-y-6">
+        <div class="border-b pb-4">
+          <h3 class="font-bold mb-3">Informações</h3>
+          <div class="space-y-3">
+            <input type="text" id="trello-nome" placeholder="Nome do Lead" class="w-full rounded p-2 border font-bold text-lg">
+            <div class="grid grid-cols-2 gap-2">
+              <select id="trello-estagio" class="rounded p-2 border">
+                <option value="Novo">Novo</option>
+                <option value="Qualificar">Qualificar</option>
+                <option value="Diagnóstico">Diagnóstico</option>
+                <option value="Proposta">Proposta</option>
+                <option value="Ganho">Ganho</option>
+                <option value="Perdido">Perdido</option>
+              </select>
+              <select id="trello-prioridade" class="rounded p-2 border">
+                <option value="Baixa">Baixa</option>
+                <option value="Média">Média</option>
+                <option value="Alta">Alta</option>
+              </select>
             </div>
-            <div class="text-xs font-bold text-right">S${lead.score}</div>
+            <input type="text" id="trello-empresa" placeholder="Empresa" class="w-full rounded p-2 border">
+            <input type="text" id="trello-cargo" placeholder="Cargo" class="w-full rounded p-2 border">
+            <input type="email" id="trello-email" placeholder="Email" class="w-full rounded p-2 border">
+            <input type="tel" id="trello-telefone" placeholder="Telefone" class="w-full rounded p-2 border">
+            <input type="text" id="trello-segmento" placeholder="Segmento" class="w-full rounded p-2 border">
+            <input type="number" id="trello-valor" placeholder="Valor (R$)" min="0" step="100" class="w-full rounded p-2 border">
+            <input type="number" id="trello-score" placeholder="Score" min="0" max="100" class="w-full rounded p-2 border">
+            <select id="trello-origem" class="w-full rounded p-2 border">
+              <option value="Google">Google</option>
+              <option value="LinkedIn">LinkedIn</option>
+              <option value="Indicação">Indicação</option>
+              <option value="Instagram">Instagram</option>
+              <option value="Facebook">Facebook</option>
+              <option value="Tráfego Pago">Tráfego Pago</option>
+              <option value="Site">Site</option>
+              <option value="WhatsApp">WhatsApp</option>
+              <option value="Direto">Direto</option>
+              <option value="Outro">Outro</option>
+            </select>
+            <select id="trello-canal" class="w-full rounded p-2 border">
+              <option value="Email">Email</option>
+              <option value="WhatsApp">WhatsApp</option>
+              <option value="Ligação">Ligação</option>
+              <option value="Encontro">Encontro</option>
+            </select>
           </div>
-          <div class="flex justify-between mt-2 text-xs">
-            <span class="badge-${lead.prioridade.toLowerCase()} px-2 py-0.5 rounded">${lead.prioridade}</span>
-            <span class="font-bold text-cyan-600">${toReal(lead.valor)}</span>
-          </div>
-          <div class="mt-1 text-xs text-gray-500">📍 ${lead.origem || 'Outro'}</div>
-        `;
-        card.addEventListener('click', () => openCardModal(lead.id));
-        card.addEventListener('dragstart', (e) => { e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('leadId', lead.id); });
-        lista.appendChild(card);
-      });
-      
-      lista.addEventListener('dragover', (e) => { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; });
-      lista.addEventListener('drop', (e) => {
-        e.preventDefault();
-        const leadId = e.dataTransfer.getData('leadId');
-        const lead = state.leads.find(l => l.id === leadId);
-        if (lead) {
-          lead.estagio = etapa;
-          saveState();
-          renderCRM();
-          renderAll();
-        }
-      });
-      
-      coluna.appendChild(lista);
-      container.appendChild(coluna);
-    });
-  }
-
-  // ============ TAREFAS ============
-  function renderTarefas() {
-    const list = el('tarefas-list');
-    const tarefas = state.tarefas || [];
-    
-    if (!tarefas.length) {
-      list.innerHTML = '<div class="text-center text-gray-400 py-6">Nenhuma tarefa</div>';
-      return;
-    }
-    
-    list.innerHTML = tarefas.map(t => `
-      <div class="flex items-center gap-2 p-3 rounded card">
-        <input type="checkbox" ${t.status === 'Concluído' ? 'checked' : ''} onchange="toggleTarefa('${t.id}')" class="w-4 h-4"/>
-        <div class="flex-1">
-          <div class="font-medium">${t.titulo}</div>
-          ${t.descricao ? `<div class="text-xs text-gray-500">${t.descricao}</div>` : ''}
         </div>
-        <span class="text-xs px-2 py-1 rounded badge-${t.prioridade.toLowerCase()}">${t.prioridade}</span>
+
+        <div class="border-b pb-4">
+          <h3 class="font-bold mb-3">Descrição</h3>
+          <textarea id="trello-descricao" placeholder="Adicione uma descrição..." rows="3" class="w-full rounded p-2 border"></textarea>
+        </div>
+
+        <div class="border-b pb-4">
+          <h3 class="font-bold mb-3">Atividades</h3>
+          <div id="trello-atividades" class="max-h-40 overflow-y-auto mb-3 bg-gray-50 dark:bg-slate-800 p-2 rounded text-sm"></div>
+          <div class="flex gap-2">
+            <input type="text" id="trello-nova-atividade" placeholder="Adicionar nota..." class="flex-1 rounded p-2 border">
+            <button onclick="addAtividade()" class="bg-careka-primary-light text-white px-4 py-2 rounded hover:bg-teal-700 font-medium">+</button>
+          </div>
+        </div>
+
+        <div class="border-b pb-4">
+          <h3 class="font-bold mb-3">Checklist</h3>
+          <div id="trello-checklist" class="mb-3 bg-gray-50 dark:bg-slate-800 p-2 rounded max-h-40 overflow-y-auto text-sm"></div>
+          <div class="flex gap-2">
+            <input type="text" id="trello-novo-item" placeholder="Novo item..." class="flex-1 rounded p-2 border">
+            <button onclick="addItemChecklist()" class="bg-careka-primary-light text-white px-4 py-2 rounded hover:bg-teal-700 font-medium">+</button>
+          </div>
+        </div>
+
+        <div class="border-b pb-4">
+          <h3 class="font-bold mb-3">Próximo Contato</h3>
+          <input type="datetime-local" id="trello-proximo-contato" class="w-full rounded p-2 border">
+        </div>
+
+        <div class="border-b pb-4">
+          <h3 class="font-bold mb-3">Anexos</h3>
+          <div id="trello-anexos" class="mb-3 bg-gray-50 dark:bg-slate-800 p-2 rounded max-h-32 overflow-y-auto text-sm"></div>
+          <div class="flex gap-2">
+            <input type="url" id="trello-nova-url" placeholder="URL do anexo..." class="flex-1 rounded p-2 border">
+            <button onclick="addAnexo()" class="bg-careka-primary-light text-white px-4 py-2 rounded hover:bg-teal-700 font-medium">+</button>
+          </div>
+        </div>
+
+        <div class="border-b pb-4">
+          <h3 class="font-bold mb-3">Histórico</h3>
+          <div id="trello-historico" class="max-h-32 overflow-y-auto bg-gray-50 dark:bg-slate-800 p-2 rounded text-xs"></div>
+        </div>
+
+        <div class="flex gap-2">
+          <button onclick="saveTrello()" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 font-medium flex-1">Salvar</button>
+          <button onclick="duplicarLead()" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 font-medium flex-1">Duplicar</button>
+          <button onclick="deletarLead()" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 font-medium flex-1">Excluir</button>
+        </div>
       </div>
-    `).join('');
-  }
+    </div>
+  </div>
 
-  function toggleTarefa(id) {
-    const tarefa = (state.tarefas || []).find(t => t.id === id);
-    if (tarefa) {
-      tarefa.status = tarefa.status === 'Concluído' ? 'Pendente' : 'Concluído';
-      saveState();
-      renderTarefas();
+  <script>
+    const STATE_KEY = 'careka-hub-v5';
+    const ETAPAS = ['Novo', 'Qualificar', 'Diagnóstico', 'Proposta', 'Ganho', 'Perdido'];
+    const CORES_ETAPA = {
+      'Novo': '#E0F2FE',
+      'Qualificar': '#FEF3C7',
+      'Diagnóstico': '#DBEAFE',
+      'Proposta': '#F3E8FF',
+      'Ganho': '#DCFCE7',
+      'Perdido': '#FEE2E2'
+    };
+    const ORIGENS_CORES = {
+      'Google': '#EA4335',
+      'LinkedIn': '#0A66C2',
+      'Indicação': '#F59E0B',
+      'Instagram': '#E1306C',
+      'Facebook': '#1877F2',
+      'Tráfego Pago': '#6366F1',
+      'Site': '#3B82F6',
+      'WhatsApp': '#25D366',
+      'Direto': '#0F766E',
+      'Outro': '#6B7280'
+    };
+
+    let state = { leads: [], tarefas: [], eventos: [], propostas: [], interacoes: [] };
+    let charts = {};
+    let currentLeadId = null;
+    let importData = null;
+
+    function uuid() { return 'lead_' + Math.random().toString(36).substr(2, 9) + Date.now(); }
+    function nowISO() { return new Date().toISOString(); }
+    function toReal(v) { return 'R$ ' + Number(v || 0).toLocaleString('pt-BR'); }
+    function formatData(d) { return new Date(d).toLocaleDateString('pt-BR'); }
+    function el(id) { return document.getElementById(id); }
+
+    function loadState() {
+      try {
+        const saved = localStorage.getItem(STATE_KEY);
+        return saved ? JSON.parse(saved) : null;
+      } catch (e) {
+        return null;
+      }
     }
-  }
 
-  el('btn-nova-tarefa').addEventListener('click', () => {
-    const titulo = prompt('Título da tarefa:');
-    if (titulo) {
-      if (!state.tarefas) state.tarefas = [];
-      state.tarefas.push({
-        id: uuid(),
-        titulo: titulo,
-        descricao: '',
-        status: 'Pendente',
-        prioridade: 'Média',
-        dataCriacao: nowISO()
+    function saveState() {
+      localStorage.setItem(STATE_KEY, JSON.stringify(state));
+    }
+
+    function showToast(msg, type = 'success') {
+      const toast = document.createElement('div');
+      toast.className = 'toast ' + (type === 'success' ? 'toast-success' : 'toast-error');
+      toast.textContent = msg;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
+    }
+
+    function initializeState() {
+      const saved = loadState();
+      if (saved && saved.leads && saved.leads.length > 0) {
+        state = saved;
+      } else {
+        state = {
+          leads: [
+            {id: uuid(), nome: 'Dr. Martinez', empresa: 'Clínica Sorriso', cargo: 'Diretor', email: 'martinez@clinic.com', telefone: '11 99999-0001', segmento: 'Odontologia', valor: 15000, score: 78, origem: 'LinkedIn', canal: 'Email', prioridade: 'Alta', estagio: 'Novo', dataCriacao: nowISO(), ultimoContato: nowISO(), observacoes: '', descricao: 'Cliente potencial qualificado', atividades: [], checklist: [{id: uuid(), texto: 'Enviar proposta', feito: false}], anexos: [{id: uuid(), url: 'https://example.com', texto: 'Proposta'}], historico: [], proximoContato: new Date(Date.now() + 7*24*60*60*1000).toISOString()},
+            {id: uuid(), nome: 'Ana Silva', empresa: 'Academia FitMax', cargo: 'Gerente', email: 'ana@fitmax.com', telefone: '11 99999-0002', segmento: 'Academia', valor: 8000, score: 61, origem: 'Indicação', canal: 'WhatsApp', prioridade: 'Média', estagio: 'Qualificar', dataCriacao: nowISO(), ultimoContato: nowISO(), observacoes: '', descricao: '', atividades: [{id: uuid(), texto: 'Primeiro contato realizado', data: nowISO()}], checklist: [], anexos: [], historico: [], proximoContato: ''},
+            {id: uuid(), nome: 'Carlos Oliveira', empresa: 'Studio Slim', cargo: 'Sócio', email: 'carlos@studio.com', telefone: '11 99999-0003', segmento: 'Estética', valor: 12000, score: 73, origem: 'Google', canal: 'Ligação', prioridade: 'Alta', estagio: 'Diagnóstico', dataCriacao: nowISO(), ultimoContato: nowISO(), observacoes: '', descricao: '', atividades: [], checklist: [{id: uuid(), texto: 'Agende reunião', feito: false}], anexos: [], historico: [], proximoContato: new Date(Date.now() + 3*24*60*60*1000).toISOString()},
+            {id: uuid(), nome: 'Mariana Costa', empresa: 'Tech Startup', cargo: 'CTO', email: 'mariana@tech.com', telefone: '11 99999-0004', segmento: 'Tecnologia', valor: 25000, score: 85, origem: 'Instagram', canal: 'Email', prioridade: 'Alta', estagio: 'Proposta', dataCriacao: nowISO(), ultimoContato: nowISO(), observacoes: '', descricao: '', atividades: [], checklist: [], anexos: [], historico: [], proximoContato: ''},
+            {id: uuid(), nome: 'Roberto Santos', empresa: 'Consultoria RH', cargo: 'Diretor', email: 'roberto@consultrh.com', telefone: '11 99999-0005', segmento: 'Consultoria', valor: 18000, score: 72, origem: 'Facebook', canal: 'Email', prioridade: 'Média', estagio: 'Proposta', dataCriacao: nowISO(), ultimoContato: nowISO(), observacoes: '', descricao: '', atividades: [], checklist: [], anexos: [], historico: [], proximoContato: ''}
+          ],
+          tarefas: [],
+          eventos: [],
+          propostas: [],
+          interacoes: []
+        };
+        saveState();
+      }
+    }
+
+    document.querySelectorAll('.sidebar-menu li').forEach(li => {
+      li.addEventListener('click', () => {
+        document.querySelectorAll('.sidebar-menu li').forEach(el => el.classList.remove('active'));
+        li.classList.add('active');
+        const page = li.dataset.page;
+        document.querySelectorAll('.page-content').forEach(el => el.classList.add('hidden'));
+        el('page-' + page).classList.remove('hidden');
+        el('page-title').textContent = {dashboard: 'Dashboard', crm: 'CRM', relatorios: 'Relatórios'}[page];
+        if (page === 'crm') renderCRM();
+        else renderDashboard();
       });
-      saveState();
-      renderTarefas();
-    }
-  });
+    });
 
-  // ============ IMPORTAÇÃO/EXPORTAÇÃO ============
-  el('btn-import-csv').addEventListener('click', () => {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = '.csv';
-    input.onchange = (e) => {
-      const file = e.target.files[0];
-      Papa.parse(file, {
-        header: true,
-        complete: (res) => {
-          let importados = 0;
-          res.data.forEach(row => {
-            if (row.nome && row.valor) {
-              state.leads.push({
-                id: uuid(),
-                nome: row.nome,
-                email: row.email || '',
-                telefone: row.telefone || '',
-                empresa: row.empresa || '',
-                segmento: row.segmento || '',
-                valor: Number(row.valor),
-                origem: row.origem || 'Outro',
-                canal: row.canal || 'Email',
-                estagio: row.estagio || 'Novo',
-                score: Number(row.score) || 50,
-                prioridade: row.prioridade || 'Média',
-                dataCriacaoISO: nowISO(),
-                ultimoContatoISO: nowISO(),
-                historicos: [],
-                checklists: [],
-                anexos: [],
-                observacoes: row.observacoes || '',
-                responsavel: row.responsavel || '',
-                proximoFollowupISO: '',
-                labels: [],
-                site: row.site || '',
-                whatsapp: row.whatsapp || '',
-                instagram: row.instagram || '',
-                facebook: row.facebook || '',
-                linkedin: row.linkedin || '',
-                cidade: row.cidade || '',
-                uf: row.uf || ''
-              });
-              importados++;
-            }
-          });
-          saveState();
-          renderAll();
-          alert(`✓ ${importados} leads importados!`);
+    el('btn-theme').addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme');
+      const novo = current === 'careka-light' ? 'careka-dark' : 'careka-light';
+      document.documentElement.setAttribute('data-theme', novo);
+      localStorage.setItem('careka-theme-v5', novo);
+      updateCharts();
+    });
+    document.documentElement.setAttribute('data-theme', localStorage.getItem('careka-theme-v5') || 'careka-light');
+
+    el('btn-novo-lead').addEventListener('click', () => el('modal-novo-lead').showModal());
+    el('form-novo-lead').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const fd = new FormData(e.target);
+      const lead = {
+        id: uuid(),
+        nome: fd.get('nome'),
+        email: fd.get('email'),
+        telefone: fd.get('telefone'),
+        empresa: fd.get('empresa'),
+        cargo: fd.get('cargo'),
+        segmento: fd.get('segmento'),
+        valor: Number(fd.get('valor')) || 0,
+        score: Number(fd.get('score')) || 50,
+        origem: fd.get('origem'),
+        canal: fd.get('canal'),
+        prioridade: fd.get('prioridade'),
+        estagio: 'Novo',
+        dataCriacao: nowISO(),
+        ultimoContato: nowISO(),
+        observacoes: fd.get('observacoes'),
+        descricao: '',
+        atividades: [],
+        checklist: [],
+        anexos: [],
+        historico: [],
+        proximoContato: ''
+      };
+      state.leads.push(lead);
+      saveState();
+      renderAll();
+      el('modal-novo-lead').close();
+      el('form-novo-lead').reset();
+      showToast('Lead criado com sucesso!');
+    });
+
+    el('btn-resetar').addEventListener('click', () => el('modal-resetar').showModal());
+    el('input-reset-confirm').addEventListener('input', (e) => {
+      el('btn-confirmar-reset').disabled = e.target.value !== 'RESET';
+    });
+    el('btn-confirmar-reset').addEventListener('click', () => {
+      state = { leads: [], tarefas: [], eventos: [], propostas: [], interacoes: [] };
+      saveState();
+      renderAll();
+      el('modal-resetar').close();
+      el('input-reset-confirm').value = '';
+      showToast('Base de dados zerada com sucesso!');
+    });
+
+    el('btn-importar').addEventListener('click', () => {
+      importData = null;
+      el('import-preview').classList.add('hidden');
+      el('btn-processar-import').classList.add('hidden');
+      el('modal-importar').showModal();
+    });
+
+    el('drop-zone').addEventListener('click', () => el('input-import').click());
+    el('drop-zone').addEventListener('dragover', (e) => {e.preventDefault(); e.dataTransfer.dropEffect = 'copy';});
+    el('drop-zone').addEventListener('drop', (e) => {
+      e.preventDefault();
+      const files = e.dataTransfer.files;
+      if (files.length > 0) processImportFile(files[0]);
+    });
+
+    el('input-import').addEventListener('change', (e) => {
+      if (e.target.files.length > 0) processImportFile(e.target.files[0]);
+    });
+
+    function processImportFile(file) {
+      const reader = new FileReader();
+      reader.onload = (evt) => {
+        try {
+          if (file.name.endsWith('.csv')) {
+            Papa.parse(evt.target.result, {
+              header: true,
+              skipEmptyLines: true,
+              complete: (res) => previewImport(res.data)
+            });
+          } else {
+            const data = new Uint8Array(evt.target.result);
+            const workbook = XLSX.read(data, {type: 'array'});
+            const sheet = workbook.Sheets[workbook.SheetNames[0]];
+            const jsonData = XLSX.utils.sheet_to_json(sheet);
+            previewImport(jsonData);
+          }
+        } catch (err) {
+          showToast('Erro ao ler arquivo: ' + err.message, 'error');
+        }
+      };
+      if (file.name.endsWith('.csv')) {
+        reader.readAsText(file);
+      } else {
+        reader.readAsArrayBuffer(file);
+      }
+    }
+
+    function normalizeColName(col) {
+      const lower = col.toLowerCase().trim();
+      const map = {
+        'nome': 'nome', 'name': 'nome',
+        'email': 'email',
+        'telefone': 'telefone', 'phone': 'telefone',
+        'empresa': 'empresa', 'company': 'empresa',
+        'cargo': 'cargo', 'role': 'cargo', 'position': 'cargo',
+        'segmento': 'segmento', 'segment': 'segmento',
+        'valor': 'valor', 'amount': 'valor', 'deal_value': 'valor',
+        'origem': 'origem', 'source': 'origem',
+        'canal': 'canal', 'channel': 'canal',
+        'score': 'score',
+        'prioridade': 'prioridade', 'priority': 'prioridade',
+        'estagio': 'estagio', 'stage': 'estagio',
+        'observacoes': 'observacoes', 'notes': 'observacoes'
+      };
+      return map[lower] || null;
+    }
+
+    function previewImport(dados) {
+      if (!Array.isArray(dados)) dados = [dados];
+      let validos = 0, invalidos = [];
+      const normalized = [];
+
+      dados.forEach((row, idx) => {
+        const newRow = {};
+        Object.keys(row).forEach(col => {
+          const norm = normalizeColName(col);
+          if (norm) newRow[norm] = row[col];
+        });
+        if (newRow.nome && newRow.valor) {
+          normalized.push(newRow);
+          validos++;
+        } else {
+          invalidos.push(`Linha ${idx + 1}: falta nome ou valor`);
         }
       });
-    };
-    input.click();
-  });
 
-  el('btn-export-csv').addEventListener('click', () => {
-    const csv = Papa.unparse(state.leads.map(l => ({
-      nome: l.nome, email: l.email, telefone: l.telefone, empresa: l.empresa, segmento: l.segmento,
-      valor: l.valor, score: l.score, estagio: l.estagio, prioridade: l.prioridade, origem: l.origem, canal: l.canal,
-      responsavel: l.responsavel, cidade: l.cidade, uf: l.uf
-    })));
-    const blob = new Blob([csv], {type: 'text/csv;charset=utf-8;'});
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = `leads-${new Date().toISOString().split('T')[0]}.csv`;
-    link.click();
-  });
+      importData = normalized;
+      const preview = invalidos.length > 0 ? 
+        `Válidos: ${validos}<br/>Inválidos: ${invalidos.slice(0, 3).join('<br/>')}${invalidos.length > 3 ? '...' : ''}` :
+        `Válidos: ${validos}`;
+      el('import-preview').innerHTML = preview;
+      el('import-preview').classList.remove('hidden');
+      el('btn-processar-import').classList.remove('hidden');
+    }
 
-  el('btn-export-xlsx').addEventListener('click', () => {
-    const ws = XLSX.utils.json_to_sheet(state.leads.map(l => ({
-      Nome: l.nome, Email: l.email, Telefone: l.telefone, Empresa: l.empresa, Segmento: l.segmento,
-      Valor: l.valor, Score: l.score, Estágio: l.estagio, Prioridade: l.prioridade, Origem: l.origem
-    })));
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Leads');
-    XLSX.write(wb, {bookType: 'xlsx', type: 'binary', filename: `leads-${new Date().toISOString().split('T')[0]}.xlsx`});
-  });
+    el('btn-processar-import').addEventListener('click', () => {
+      if (!importData) return;
+      let imported = 0;
+      importData.forEach(row => {
+        const lead = {
+          id: uuid(),
+          nome: row.nome || '',
+          email: row.email || '',
+          telefone: row.telefone || '',
+          empresa: row.empresa || '',
+          cargo: row.cargo || '',
+          segmento: row.segmento || '',
+          valor: Number(row.valor) || 0,
+          score: Number(row.score) || 50,
+          origem: row.origem || 'Outro',
+          canal: row.canal || 'Email',
+          prioridade: row.prioridade || 'Média',
+          estagio: row.estagio || 'Novo',
+          dataCriacao: nowISO(),
+          ultimoContato: nowISO(),
+          observacoes: row.observacoes || '',
+          descricao: '',
+          atividades: [],
+          checklist: [],
+          anexos: [],
+          historico: [{acao: 'importado', data: nowISO()}],
+          proximoContato: ''
+        };
+        state.leads.push(lead);
+        imported++;
+      });
+      saveState();
+      renderAll();
+      el('modal-importar').close();
+      showToast(`Importados: ${imported} leads`);
+    });
 
-  el('btn-export-json').addEventListener('click', () => {
-    const blob = new Blob([JSON.stringify(state, null, 2)], {type: 'application/json'});
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = `careka-hub-${new Date().toISOString().split('T')[0]}.json`;
-    link.click();
-  });
+    el('btn-modelo-csv').addEventListener('click', () => {
+      const header = 'nome,empresa,cargo,email,telefone,segmento,valor,origem,canal,score,prioridade,estagio,observacoes';
+      const csv = header + '\nExemplo,Empresa Exemplo,Gerente,contato@example.com,11 99999-9999,Tecnologia,10000,Google,Email,75,Alta,Novo,Anotações aqui';
+      const blob = new Blob([csv], {type: 'text/csv;charset=utf-8;'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'modelo-leads.csv';
+      a.click();
+    });
 
-  el('btn-backup').addEventListener('click', () => {
-    const blob = new Blob([JSON.stringify(state, null, 2)], {type: 'application/json'});
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = `careka-hub-backup-${new Date().toISOString().split('T')[0]}.json`;
-    link.click();
-  });
+    el('btn-modelo-xlsx').addEventListener('click', () => {
+      const data = [{nome: 'Exemplo', empresa: 'Empresa Exemplo', cargo: 'Gerente', email: 'contato@example.com', telefone: '11 99999-9999', segmento: 'Tecnologia', valor: 10000, origem: 'Google', canal: 'Email', score: 75, prioridade: 'Alta', estagio: 'Novo', observacoes: 'Anotações'}];
+      const sheet = XLSX.utils.json_to_sheet(data);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, sheet, 'Leads');
+      XLSX.write(workbook, {bookType: 'xlsx', type: 'binary', filename: 'modelo-leads.xlsx'});
+    });
 
-  el('btn-print').addEventListener('click', () => {
-    const printWindow = window.open('', '', 'width=900,height=600');
-    printWindow.document.write(`
-      <html>
-      <head>
-        <title>Relatório - CAREKA HUB</title>
-        <style>
-          body { font-family: Arial, sans-serif; margin: 20px; }
-          table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-          th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-          th { background-color: #0F766E; color: white; }
-          tr:nth-child(even) { background-color: #f2f2f2; }
-        </style>
-      </head>
-      <body>
-        <h1>Relatório de Leads</h1>
-        <p>Gerado em: ${new Date().toLocaleDateString('pt-BR')}</p>
-        <table>
-          <tr>
-            <th>Nome</th>
-            <th>Empresa</th>
-            <th>Valor</th>
-            <th>Score</th>
-            <th>Estágio</th>
-            <th>Origem</th>
-          </tr>
-          ${state.leads.map(l => `
-            <tr>
-              <td>${l.nome}</td>
-              <td>${l.empresa || l.segmento}</td>
-              <td>${toReal(l.valor)}</td>
-              <td>${l.score}</td>
-              <td>${l.estagio}</td>
-              <td>${l.origem}</td>
-            </tr>
-          `).join('')}
-        </table>
-      </body>
-      </html>
-    `);
-    printWindow.document.close();
-    printWindow.print();
-  });
+    el('btn-export-csv').addEventListener('click', () => {
+      const header = 'nome,empresa,email,telefone,valor,score,estagio,origem';
+      const rows = state.leads.map(l => `"${l.nome}","${l.empresa}","${l.email}","${l.telefone}",${l.valor},${l.score},${l.estagio},${l.origem}`);
+      const csv = header + '\n' + rows.join('\n');
+      const blob = new Blob([csv], {type: 'text/csv;charset=utf-8;'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `leads-${new Date().toISOString().split('T')[0]}.csv`;
+      a.click();
+    });
 
-  // ============ INICIALIZAÇÃO ============
-  function renderAll() {
-    updateKPIs();
-    updateCharts();
-  }
+    el('btn-export-xlsx').addEventListener('click', () => {
+      const data = state.leads.map(l => ({Nome: l.nome, Empresa: l.empresa, Email: l.email, Telefone: l.telefone, Valor: l.valor, Score: l.score, Estágio: l.estagio, Origem: l.origem}));
+      const sheet = XLSX.utils.json_to_sheet(data);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, sheet, 'Leads');
+      XLSX.write(workbook, {bookType: 'xlsx', type: 'binary', filename: `leads-${new Date().toISOString().split('T')[0]}.xlsx`});
+    });
 
-  document.addEventListener('DOMContentLoaded', () => {
-    updateTheme();
-    renderDashboard();
-    document.querySelectorAll('.sidebar-item')[0].classList.add('active');
-  });
+    el('btn-export-json').addEventListener('click', () => {
+      const blob = new Blob([JSON.stringify(state, null, 2)], {type: 'application/json'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `careka-backup-${new Date().toISOString().split('T')[0]}.json`;
+      a.click();
+    });
 
-  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateTheme);
+    function updateKPIs() {
+      const semana = new Date(Date.now() - 7*24*60*60*1000);
+      el('kpi-leads').textContent = state.leads.length;
+      el('kpi-conv').textContent = state.leads.filter(l => new Date(l.ultimoContato) >= semana).length;
+      el('kpi-novos').textContent = state.leads.filter(l => new Date(l.dataCriacao) >= semana).length;
+      const ganhos = state.leads.filter(l => l.estagio === 'Ganho').length;
+      el('kpi-taxa').textContent = state.leads.length ? Math.round((ganhos / state.leads.length) * 100) + '%' : '0%';
+      const pipe = state.leads.filter(l => l.estagio !== 'Ganho' && l.estagio !== 'Perdido').reduce((a, b) => a + b.valor, 0);
+      el('kpi-pipe').textContent = toReal(pipe);
+      const score = state.leads.length ? Math.round(state.leads.reduce((a, b) => a + b.score, 0) / state.leads.length) : 0;
+      el('kpi-score').textContent = score;
+    }
+
+    function renderDashboard() {
+      updateKPIs();
+      renderCharts();
+    }
+
+    function getChartTheme() {
+      const dark = document.documentElement.getAttribute('data-theme') === 'careka-dark';
+      return {
+        text: dark ? '#E5E7EB' : '#1F2937',
+        grid: dark ? '#334155' : '#E5E7EB'
+      };
+    }
+
+    function renderCharts() {
+      Object.values(charts).forEach(c => c?.destroy?.());
+      charts = {};
+      const theme = getChartTheme();
+
+      const ctx1 = el('chart-periodo')?.getContext('2d');
+      if (ctx1) {
+        const agora = new Date();
+        const periodos = ['Semana', 'Mês', '3M', '6M', '12M'];
+        const dias = [7, 30, 90, 180, 365];
+        const dados = dias.map(d => {
+          const data = new Date(agora);
+          data.setDate(data.getDate() - d);
+          return state.leads.filter(l => new Date(l.dataCriacao) >= data).length;
+        });
+        charts['periodo'] = new Chart(ctx1, {
+          type: 'bar',
+          data: {labels: periodos, datasets: [{label: 'Novos Leads', data: dados, backgroundColor: '#0F766E'}]},
+          options: {responsive: true, maintainAspectRatio: false, plugins: {legend: {labels: {color: theme.text}}}, scales: {y: {ticks: {color: theme.text}, grid: {color: theme.grid}}, x: {ticks: {color: theme.text}, grid: {display: false}}}}
+        });
+      }
+
+      const ctx2 = el('chart-origem')?.getContext('2d');
+      if (ctx2) {
+        const origens = [...new Set(state.leads.map(l => l.origem || 'Outro'))];
+        const dados = origens.map(o => state.leads.filter(l => (l.origem || 'Outro') === o).length);
+        const cores = origens.map(o => ORIGENS_CORES[o] || '#6B7280');
+        charts['origem'] = new Chart(ctx2, {
+          type: 'doughnut',
+          data: {labels: origens, datasets: [{data: dados, backgroundColor: cores}]},
+          options: {responsive: true, maintainAspectRatio: false, plugins: {legend: {labels: {color: theme.text}}}}
+        });
+      }
+
+      const ctx3 = el('chart-estagio')?.getContext('2d');
+      if (ctx3) {
+        const dados = ETAPAS.map(e => state.leads.filter(l => l.estagio === e).length);
+        const cores = ETAPAS.map(e => CORES_ETAPA[e]);
+        charts['estagio'] = new Chart(ctx3, {
+          type: 'bar',
+          data: {labels: ETAPAS, datasets: [{label: 'Quantidade', data: dados, backgroundColor: cores}]},
+          options: {indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: {legend: {display: false}}, scales: {x: {ticks: {color: theme.text}, grid: {color: theme.grid}}, y: {ticks: {color: theme.text}}}}
+        });
+      }
+
+      const ctx4 = el('chart-score')?.getContext('2d');
+      if (ctx4) {
+        const ranges = ['0-20', '21-40', '41-60', '61-80', '81-100'];
+        const dados = ranges.map((r, i) => {
+          const min = i * 20;
+          const max = (i + 1) * 20;
+          return state.leads.filter(l => l.score >= min && l.score < max).length;
+        });
+        charts['score'] = new Chart(ctx4, {
+          type: 'line',
+          data: {labels: ranges, datasets: [{label: 'Leads', data: dados, borderColor: '#0F766E', backgroundColor: 'rgba(15, 118, 110, 0.1)', borderWidth: 2, fill: true}]},
+          options: {responsive: true, maintainAspectRatio: false, plugins: {legend: {labels: {color: theme.text}}}, scales: {y: {ticks: {color: theme.text}, grid: {color: theme.grid}}, x: {ticks: {color: theme.text}, grid: {display: false}}}}
+        });
+      }
+
+      const ctx5 = el('chart-pipeline')?.getContext('2d');
+      if (ctx5) {
+        const dados = ETAPAS.map(e => state.leads.filter(l => l.estagio === e).reduce((a, b) => a + b.valor, 0));
+        const cores = ETAPAS.map(e => CORES_ETAPA[e]);
+        charts['pipeline'] = new Chart(ctx5, {
+          type: 'bar',
+          data: {labels: ETAPAS, datasets: [{label: 'R$', data: dados, backgroundColor: cores}]},
+          options: {responsive: true, maintainAspectRatio: false, plugins: {legend: {display: false}}, scales: {y: {ticks: {color: theme.text}, grid: {color: theme.grid}}, x: {ticks: {color: theme.text}, grid: {display: false}}}}
+        });
+      }
+
+      const ctx6 = el('chart-propostas')?.getContext('2d');
+      if (ctx6) {
+        const dados = [state.leads.filter(l => l.estagio === 'Proposta').length, state.leads.filter(l => l.estagio === 'Ganho').length];
+        charts['propostas'] = new Chart(ctx6, {
+          type: 'doughnut',
+          data: {labels: ['Enviadas', 'Ganhas'], datasets: [{data: dados, backgroundColor: ['#F59E0B', '#10B981']}]},
+          options: {responsive: true, maintainAspectRatio: false, plugins: {legend: {labels: {color: theme.text}}}}
+        });
+      }
+
+      const ctx7 = el('chart-tarefas')?.getContext('2d');
+      if (ctx7) {
+        const dados = [state.tarefas.filter(t => t.status !== 'Concluído').length, state.tarefas.filter(t => t.status === 'Concluído').length];
+        charts['tarefas'] = new Chart(ctx7, {
+          type: 'doughnut',
+          data: {labels: ['Pendentes', 'Concluídas'], datasets: [{data: dados, backgroundColor: ['#EF4444', '#10B981']}]},
+          options: {responsive: true, maintainAspectRatio: false, plugins: {legend: {labels: {color: theme.text}}}}
+        });
+      }
+
+      const ctx8 = el('chart-canal')?.getContext('2d');
+      if (ctx8) {
+        const canais = [...new Set(state.leads.map(l => l.canal))];
+        const dados = canais.map(c => state.leads.filter(l => l.canal === c).length);
+        charts['canal'] = new Chart(ctx8, {
+          type: 'radar',
+          data: {labels: canais, datasets: [{label: 'Leads', data: dados, borderColor: '#0F766E', backgroundColor: 'rgba(15, 118, 110, 0.2)'}]},
+          options: {responsive: true, maintainAspectRatio: false, plugins: {legend: {labels: {color: theme.text}}}, scales: {r: {ticks: {color: theme.text}, grid: {color: theme.grid}}}}
+        });
+      }
+
+      const ctx9 = el('chart-evolucao')?.getContext('2d');
+      if (ctx9) {
+        const agora = new Date();
+        const labels = [];
+        const dados = [];
+        for (let i = 29; i >= 0; i--) {
+          const d = new Date(agora);
+          d.setDate(d.getDate() - i);
+          labels.push(d.toLocaleDateString('pt-BR', {month: '2-digit', day: '2-digit'}));
+          dados.push(state.leads.filter(l => new Date(l.dataCriacao) <= d && l.estagio !== 'Ganho' && l.estagio !== 'Perdido').reduce((a, b) => a + b.valor, 0));
+        }
+        charts['evolucao'] = new Chart(ctx9, {
+          type: 'line',
+          data: {labels: labels, datasets: [{label: 'Pipeline Aberto (R$)', data: dados, borderColor: '#0F766E', backgroundColor: 'rgba(15, 118, 110, 0.1)', borderWidth: 2, fill: true}]},
+          options: {responsive: true, maintainAspectRatio: false, plugins: {legend: {labels: {color: theme.text}}}, scales: {y: {ticks: {color: theme.text}, grid: {color: theme.grid}}, x: {ticks: {color: theme.text}, grid: {display: false}}}}
+        });
+      }
+    }
+
+    function updateCharts() {
+      renderCharts();
+    }
+
+    function renderCRM() {
+      const kanban = el('kanban');
+      kanban.innerHTML = '';
+      ETAPAS.forEach(etapa => {
+        const leads = state.leads.filter(l => l.estagio === etapa);
+        const col = document.createElement('div');
+        col.className = 'kanban-col card p-3 rounded';
+        col.style.backgroundColor = CORES_ETAPA[etapa];
+
+        const header = document.createElement('div');
+        header.className = 'font-bold text-sm mb-3 flex justify-between';
+        header.innerHTML = `<span>${etapa}</span><span style="background: #0F766E; color: white; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 0.75rem;">${leads.length}</span>`;
+        col.appendChild(header);
+
+        const list = document.createElement('div');
+        list.id = `col-${etapa}`;
+        list.className = 'flex flex-col gap-2 min-h-[100px]';
+        
+        leads.forEach(lead => {
+          const card = document.createElement('div');
+          card.className = 'lead-card card p-3 rounded';
+          card.draggable = true;
+          card.dataset.id = lead.id;
+          card.innerHTML = `
+            <div class="font-bold text-sm">${lead.nome}</div>
+            <div class="text-xs text-gray-500">${lead.empresa}</div>
+            <div class="flex justify-between mt-2 text-xs">
+              <span class="badge-${lead.prioridade.toLowerCase()} px-2 py-1 rounded">${lead.prioridade}</span>
+              <span class="font-bold">S${lead.score}</span>
+            </div>
+            <div class="text-xs mt-1 font-bold text-cyan-600">${toReal(lead.valor)}</div>
+          `;
+          card.addEventListener('click', () => openTrello(lead.id));
+          card.addEventListener('dragstart', (e) => {e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('leadId', lead.id);});
+          list.appendChild(card);
+        });
+
+        list.addEventListener('dragover', (e) => {e.preventDefault(); e.dataTransfer.dropEffect = 'move';});
+        list.addEventListener('drop', (e) => {
+          e.preventDefault();
+          const leadId = e.dataTransfer.getData('leadId');
+          const lead = state.leads.find(l => l.id === leadId);
+          if (lead) {
+            const oldStage = lead.estagio;
+            lead.estagio = etapa;
+            lead.ultimoContato = nowISO();
+            if (!lead.historico) lead.historico = [];
+            lead.historico.push({acao: `movido de ${oldStage} para ${etapa}`, data: nowISO()});
+            saveState();
+            renderCRM();
+            renderDashboard();
+          }
+        });
+
+        col.appendChild(list);
+        kanban.appendChild(col);
+      });
+    }
+
+    function openTrello(leadId) {
+      currentLeadId = leadId;
+      const lead = state.leads.find(l => l.id === leadId);
+      if (!lead) return;
+
+      el('trello-nome').value = lead.nome;
+      el('trello-estagio').value = lead.estagio;
+      el('trello-prioridade').value = lead.prioridade;
+      el('trello-empresa').value = lead.empresa;
+      el('trello-cargo').value = lead.cargo || '';
+      el('trello-email').value = lead.email;
+      el('trello-telefone').value = lead.telefone;
+      el('trello-segmento').value = lead.segmento;
+      el('trello-valor').value = lead.valor;
+      el('trello-score').value = lead.score;
+      el('trello-origem').value = lead.origem;
+      el('trello-canal').value = lead.canal;
+      el('trello-descricao').value = lead.descricao || '';
+      el('trello-proximo-contato').value = lead.proximoContato ? lead.proximoContato.slice(0, 16) : '';
+
+      const ativHtml = (lead.atividades || []).map(a => `<div class="mb-2"><strong>${formatData(a.data)}</strong>: ${a.texto}</div>`).join('') || 'Nenhuma atividade';
+      el('trello-atividades').innerHTML = ativHtml;
+
+      const checkHtml = (lead.checklist || []).map(item => `<div class="flex items-center gap-2"><input type="checkbox" ${item.feito ? 'checked' : ''} onchange="updateChecklistItem('${lead.id}', '${item.id}', this.checked)"><span class="${item.feito ? 'line-through' : ''}">${item.texto}</span></div>`).join('') || 'Nenhum item';
+      el('trello-checklist').innerHTML = checkHtml;
+
+      const anexosHtml = (lead.anexos || []).map(a => `<div><a href="${a.url}" target="_blank" class="text-blue-600 hover:underline text-xs">${a.texto}</a></div>`).join('') || 'Nenhum anexo';
+      el('trello-anexos').innerHTML = anexosHtml;
+
+      const histHtml = (lead.historico || []).map(h => `<div class="mb-1"><strong>${formatData(h.data)}</strong>: ${h.acao}</div>`).join('') || 'Nenhuma alteração';
+      el('trello-historico').innerHTML = histHtml;
+
+      el('trello-title').textContent = lead.nome;
+      el('trello-backdrop').classList.remove('hidden');
+      el('trello-panel').classList.remove('hidden');
+    }
+
+    function closeTrello() {
+      el('trello-backdrop').classList.add('hidden');
+      el('trello-panel').classList.add('hidden');
+    }
+
+    function saveTrello() {
+      const lead = state.leads.find(l => l.id === currentLeadId);
+      if (!lead) return;
+      
+      lead.nome = el('trello-nome').value;
+      lead.estagio = el('trello-estagio').value;
+      lead.prioridade = el('trello-prioridade').value;
+      lead.empresa = el('trello-empresa').value;
+      lead.cargo = el('trello-cargo').value;
+      lead.email = el('trello-email').value;
+      lead.telefone = el('trello-telefone').value;
+      lead.segmento = el('trello-segmento').value;
+      lead.valor = Number(el('trello-valor').value);
+      lead.score = Number(el('trello-score').value);
+      lead.origem = el('trello-origem').value;
+      lead.canal = el('trello-canal').value;
+      lead.descricao = el('trello-descricao').value;
+      
+      const proximo = el('trello-proximo-contato').value;
+      if (proximo) lead.proximoContato = new Date(proximo).toISOString();
+
+      lead.ultimoContato = nowISO();
+      saveState();
+      renderAll();
+      closeTrello();
+      showToast('Lead atualizado com sucesso!');
+    }
+
+    function addAtividade() {
+      const lead = state.leads.find(l => l.id === currentLeadId);
+      if (!lead) return;
+      const texto = el('trello-nova-atividade').value.trim();
+      if (!texto) return;
+      if (!lead.atividades) lead.atividades = [];
+      lead.atividades.push({id: uuid(), texto: texto, data: nowISO()});
+      el('trello-nova-atividade').value = '';
+      saveState();
+      openTrello(currentLeadId);
+    }
+
+    function addItemChecklist() {
+      const lead = state.leads.find(l => l.id === currentLeadId);
+      if (!lead) return;
+      const texto = el('trello-novo-item').value.trim();
+      if (!texto) return;
+      if (!lead.checklist) lead.checklist = [];
+      lead.checklist.push({id: uuid(), texto: texto, feito: false});
+      el('trello-novo-item').value = '';
+      saveState();
+      openTrello(currentLeadId);
+    }
+
+    function updateChecklistItem(leadId, itemId, feito) {
+      const lead = state.leads.find(l => l.id === leadId);
+      if (!lead) return;
+      const item = (lead.checklist || []).find(i => i.id === itemId);
+      if (item) item.feito = feito;
+      saveState();
+    }
+
+    function addAnexo() {
+      const lead = state.leads.find(l => l.id === currentLeadId);
+      if (!lead) return;
+      const url = el('trello-nova-url').value.trim();
+      if (!url) return;
+      if (!lead.anexos) lead.anexos = [];
+      const texto = url.split('/').pop() || 'Link';
+      lead.anexos.push({id: uuid(), url: url, texto: texto});
+      el('trello-nova-url').value = '';
+      saveState();
+      openTrello(currentLeadId);
+    }
+
+    function duplicarLead() {
+      const lead = state.leads.find(l => l.id === currentLeadId);
+      if (!lead) return;
+      const copia = {...lead, id: uuid(), nome: lead.nome + ' (Cópia)', dataCriacao: nowISO(), historico: []};
+      state.leads.push(copia);
+      saveState();
+      renderAll();
+      closeTrello();
+      showToast('Lead duplicado!');
+    }
+
+    function deletarLead() {
+      if (!confirm('Tem certeza que deseja deletar este lead?')) return;
+      state.leads = state.leads.filter(l => l.id !== currentLeadId);
+      saveState();
+      renderAll();
+      closeTrello();
+      showToast('Lead deletado!');
+    }
+
+    function renderAll() {
+      updateKPIs();
+      renderCharts();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initializeState();
+      renderDashboard();
+      document.querySelectorAll('.sidebar-menu li')[0].classList.add('active');
+    });
   </script>
 </body>
 </html>
