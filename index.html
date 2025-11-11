@@ -14,7 +14,6 @@
     * { box-sizing: border-box; }
     html, body { margin: 0; padding: 0; height: 100%; font-family: 'Inter', sans-serif; }
     
-    /* PALETA CAREKA - Cores únicas */
     :root {
       --careka-primary: #0F766E;
       --careka-primary-light: #2DD4BF;
@@ -22,8 +21,15 @@
       --careka-light: #F7F7F5;
     }
     
-    body.dark-mode { background: var(--careka-dark); color: #E5E7EB; }
-    body.light-mode { background: var(--careka-light); color: #1F2937; }
+    body.dark-mode {
+      background: #0B1220;
+      color: #F0F0F0;
+    }
+    
+    body.light-mode {
+      background: #F7F7F5;
+      color: #1F2937;
+    }
     
     .card {
       border-radius: 8px;
@@ -33,11 +39,13 @@
     body.light-mode .card {
       background: #FFFFFF;
       color: #1F2937;
+      border: 1px solid #E5E7EB;
     }
     
     body.dark-mode .card {
-      background: #0F172A;
-      color: #E5E7EB;
+      background: #1A2332;
+      color: #F0F0F0;
+      border: 1px solid #2A3F52;
     }
     
     body.light-mode input, body.light-mode select, body.light-mode textarea {
@@ -47,15 +55,15 @@
     }
     
     body.dark-mode input, body.dark-mode select, body.dark-mode textarea {
-      background: #1E293B;
-      color: #E5E7EB;
-      border: 1px solid #475569;
+      background: #0F1820;
+      color: #F0F0F0;
+      border: 1px solid #2A3F52;
     }
     
     input:focus, select:focus, textarea:focus {
       outline: none;
-      border-color: var(--careka-primary);
-      box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1);
+      border-color: var(--careka-primary-light);
+      box-shadow: 0 0 0 3px rgba(45, 212, 191, 0.2);
     }
     
     .sidebar {
@@ -72,6 +80,7 @@
       font-size: 24px;
       font-weight: bold;
       margin: 0;
+      color: var(--careka-primary-light);
     }
     
     .sidebar-menu {
@@ -122,7 +131,8 @@
     }
     
     body.dark-mode .topbar {
-      border-bottom-color: #334155;
+      border-bottom-color: #2A3F52;
+      background: #0F172A;
     }
     
     .topbar h2 {
@@ -151,24 +161,6 @@
     }
     
     .btn-primary:hover {
-      background: #065A52;
-    }
-    
-    .btn-blue {
-      background: var(--careka-primary);
-      color: white;
-    }
-    
-    .btn-blue:hover {
-      background: #065A52;
-    }
-    
-    .btn-green {
-      background: var(--careka-primary);
-      color: white;
-    }
-    
-    .btn-green:hover {
       background: #065A52;
     }
     
@@ -201,6 +193,26 @@
       padding: 24px;
     }
     
+    .filter-bar {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+    
+    .filter-bar input, .filter-bar select {
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: 1px solid #D1D5DB;
+      font-size: 14px;
+    }
+    
+    body.dark-mode .filter-bar input, body.dark-mode .filter-bar select {
+      background: #0F1820;
+      color: #F0F0F0;
+      border-color: #2A3F52;
+    }
+    
     .chart-container {
       position: relative;
       height: 300px;
@@ -229,7 +241,7 @@
     .kpi-value {
       font-size: 28px;
       font-weight: bold;
-      color: var(--careka-primary);
+      color: var(--careka-primary-light);
     }
     
     .charts-grid {
@@ -237,6 +249,50 @@
       grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
       gap: 24px;
     }
+    
+    .heatmap-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+    }
+    
+    .heatmap-table th, .heatmap-table td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #E5E7EB;
+    }
+    
+    body.dark-mode .heatmap-table th, body.dark-mode .heatmap-table td {
+      border-bottom-color: #2A3F52;
+    }
+    
+    .heatmap-table th {
+      background: var(--careka-primary);
+      color: white;
+      font-weight: bold;
+    }
+    
+    .heat-0 { background: #E8F5E9; }
+    .heat-1 { background: #C8E6C9; }
+    .heat-2 { background: #A5D6A7; }
+    .heat-3 { background: #81C784; }
+    .heat-4 { background: #66BB6A; }
+    .heat-5 { background: #4CAF50; }
+    .heat-6 { background: #43A047; }
+    .heat-7 { background: #388E3C; }
+    .heat-8 { background: #2E7D32; }
+    .heat-9 { background: #1B5E20; }
+    
+    body.dark-mode .heat-0 { background: #1B3A1B; color: #C8E6C9; }
+    body.dark-mode .heat-1 { background: #1E4620; color: #A5D6A7; }
+    body.dark-mode .heat-2 { background: #245129; color: #81C784; }
+    body.dark-mode .heat-3 { background: #2E6D3D; color: #66BB6A; }
+    body.dark-mode .heat-4 { background: #366847; color: #4CAF50; }
+    body.dark-mode .heat-5 { background: #3F6B4C; }
+    body.dark-mode .heat-6 { background: #4D7A52; }
+    body.dark-mode .heat-7 { background: #5C8962; }
+    body.dark-mode .heat-8 { background: #6B9873; }
+    body.dark-mode .heat-9 { background: #7AA885; }
     
     .kanban {
       display: flex;
@@ -297,8 +353,8 @@
     }
     
     body.dark-mode .lead-card {
-      background: #1E293B;
-      border: 1px solid #334155;
+      background: #0F1820;
+      border: 1px solid #2A3F52;
     }
     
     body.light-mode .lead-card:hover {
@@ -307,7 +363,7 @@
     }
     
     body.dark-mode .lead-card:hover {
-      background: #111827;
+      background: #172938;
       box-shadow: 0 4px 12px rgba(45, 212, 191, 0.2);
     }
     
@@ -371,7 +427,7 @@
     
     .lead-card-value {
       font-weight: bold;
-      color: var(--careka-primary);
+      color: var(--careka-primary-light);
     }
     
     dialog {
@@ -387,8 +443,8 @@
     }
     
     body.dark-mode dialog {
-      background: #0F172A;
-      color: #E5E7EB;
+      background: #1A2332;
+      color: #F0F0F0;
     }
     
     dialog::backdrop {
@@ -420,7 +476,7 @@
     }
     
     body.dark-mode .modal-footer {
-      border-top-color: #334155;
+      border-top-color: #2A3F52;
     }
     
     .form-grid {
@@ -467,12 +523,8 @@
     }
     
     @keyframes slideIn {
-      from {
-        transform: translateX(100%);
-      }
-      to {
-        transform: translateX(0);
-      }
+      from { transform: translateX(100%); }
+      to { transform: translateX(0); }
     }
     
     .trello-panel.hidden {
@@ -485,8 +537,8 @@
     }
     
     body.dark-mode .trello-panel {
-      background: #0F172A;
-      color: #E5E7EB;
+      background: #1A2332;
+      color: #F0F0F0;
     }
     
     .trello-header {
@@ -513,7 +565,7 @@
     }
     
     body.dark-mode .trello-footer {
-      border-top-color: #334155;
+      border-top-color: #2A3F52;
     }
     
     .section {
@@ -523,7 +575,7 @@
     }
     
     body.dark-mode .section {
-      border-bottom-color: #334155;
+      border-bottom-color: #2A3F52;
     }
     
     .section-title {
@@ -556,14 +608,8 @@
     }
     
     @keyframes slideUp {
-      from {
-        transform: translateY(100px);
-        opacity: 0;
-      }
-      to {
-        transform: translateY(0);
-        opacity: 1;
-      }
+      from { transform: translateY(100px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
     }
     
     .toast-success {
@@ -574,34 +620,15 @@
       background: #EF4444;
     }
     
-    .hidden {
-      display: none !important;
-    }
+    .hidden { display: none !important; }
     
-    .page-content.hidden {
-      display: none;
-    }
+    .page-content.hidden { display: none; }
     
     @media (max-width: 768px) {
-      .sidebar {
-        position: fixed;
-        left: 0;
-        top: 0;
-        height: 100vh;
-        z-index: 100;
-      }
-      
-      .main-content {
-        margin-left: 220px;
-      }
-      
-      .trello-panel {
-        max-width: 100%;
-      }
-      
-      .charts-grid {
-        grid-template-columns: 1fr;
-      }
+      .sidebar { position: fixed; left: 0; top: 0; height: 100vh; z-index: 100; }
+      .main-content { margin-left: 220px; }
+      .trello-panel { max-width: 100%; }
+      .charts-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -631,6 +658,34 @@
 
     <div class="content-area">
       <div id="page-dashboard" class="page-content">
+        <div class="filter-bar">
+          <input type="text" id="filter-search" placeholder="🔍 Buscar por nome..." style="flex: 1; min-width: 200px;">
+          <select id="filter-origem" style="min-width: 150px;">
+            <option value="">Todas as Origens</option>
+            <option value="Google">Google</option>
+            <option value="LinkedIn">LinkedIn</option>
+            <option value="Indicação">Indicação</option>
+            <option value="Instagram">Instagram</option>
+            <option value="Facebook">Facebook</option>
+            <option value="Tráfego Pago">Tráfego Pago</option>
+            <option value="Site">Site</option>
+            <option value="WhatsApp">WhatsApp</option>
+            <option value="Direto">Direto</option>
+            <option value="YouTube">YouTube</option>
+            <option value="Evento">Evento</option>
+          </select>
+          <select id="filter-estagio" style="min-width: 150px;">
+            <option value="">Todos os Estágios</option>
+            <option value="Novo">Novo</option>
+            <option value="Qualificar">Qualificar</option>
+            <option value="Diagnóstico">Diagnóstico</option>
+            <option value="Proposta">Proposta</option>
+            <option value="Ganho">Ganho</option>
+            <option value="Perdido">Perdido</option>
+          </select>
+          <button class="btn btn-primary" onclick="clearFilters()" style="white-space: nowrap;">Limpar</button>
+        </div>
+
         <div class="kpi-grid">
           <div class="card kpi-box">
             <div class="kpi-label">Total Leads</div>
@@ -656,6 +711,23 @@
             <div class="kpi-label">Score Médio</div>
             <div class="kpi-value" id="kpi-score">0</div>
           </div>
+        </div>
+
+        <div class="card" style="padding: 24px; margin-bottom: 24px;">
+          <h3 style="margin: 0 0 16px 0; font-weight: bold; color: var(--careka-primary);">🔥 Top 10 da Semana - Possibilidade de Fechamento</h3>
+          <table class="heatmap-table" id="top10-table">
+            <thead>
+              <tr>
+                <th style="width: 5%;">Rank</th>
+                <th style="width: 30%;">Nome</th>
+                <th style="width: 20%;">Empresa</th>
+                <th style="width: 15%;">Score</th>
+                <th style="width: 15%;">Valor</th>
+                <th style="width: 15%;">Temperatura</th>
+              </tr>
+            </thead>
+            <tbody id="top10-body"></tbody>
+          </table>
         </div>
 
         <div class="charts-grid">
@@ -712,7 +784,7 @@
   <dialog id="modal-novo">
     <div class="modal-header">
       Novo Lead
-      <button onclick="document.getElementById('modal-novo').close()" style="border: none; background: none; cursor: pointer; font-size: 20px;"><i class="fas fa-times"></i></button>
+      <button onclick="document.getElementById('modal-novo').close()" style="border: none; background: none; cursor: pointer; font-size: 20px; color: inherit;"><i class="fas fa-times"></i></button>
     </div>
     <form id="form-novo" class="modal-content">
       <div class="form-grid">
@@ -776,9 +848,7 @@
         </div>
         <div class="form-group" style="grid-column: 1 / -1;">
           <label>Estágio</label>
-          <select id="form-novo-estagio" name="estagio">
-            <!-- Preenchido dinamicamente -->
-          </select>
+          <select id="form-novo-estagio" name="estagio"></select>
         </div>
         <div class="form-group" style="grid-column: 1 / -1;">
           <label>Prioridade</label>
@@ -799,7 +869,7 @@
   <dialog id="modal-novo-stage">
     <div class="modal-header">
       Novo Estágio
-      <button onclick="document.getElementById('modal-novo-stage').close()" style="border: none; background: none; cursor: pointer; font-size: 20px;"><i class="fas fa-times"></i></button>
+      <button onclick="document.getElementById('modal-novo-stage').close()" style="border: none; background: none; cursor: pointer; font-size: 20px; color: inherit;"><i class="fas fa-times"></i></button>
     </div>
     <div class="modal-content">
       <div class="form-group" style="margin-bottom: 16px;">
@@ -816,7 +886,7 @@
   <dialog id="modal-reset">
     <div class="modal-header">
       <span style="color: #DC2626;">RESETAR BASE DE DADOS</span>
-      <button onclick="document.getElementById('modal-reset').close()" style="border: none; background: none; cursor: pointer; font-size: 20px;"><i class="fas fa-times"></i></button>
+      <button onclick="document.getElementById('modal-reset').close()" style="border: none; background: none; cursor: pointer; font-size: 20px; color: inherit;"><i class="fas fa-times"></i></button>
     </div>
     <div class="modal-content">
       <p style="margin: 0 0 16px 0;">Digite <strong>RESET</strong> para confirmar a exclusão de TODOS os leads:</p>
@@ -831,10 +901,10 @@
   <dialog id="modal-importar">
     <div class="modal-header">
       Importar Arquivo
-      <button onclick="document.getElementById('modal-importar').close()" style="border: none; background: none; cursor: pointer; font-size: 20px;"><i class="fas fa-times"></i></button>
+      <button onclick="document.getElementById('modal-importar').close()" style="border: none; background: none; cursor: pointer; font-size: 20px; color: inherit;"><i class="fas fa-times"></i></button>
     </div>
     <div class="modal-content">
-      <div id="drop-zone" style="border: 2px dashed var(--careka-primary); border-radius: 8px; padding: 32px; text-align: center; cursor: pointer; transition: all 0.2s;">
+      <div id="drop-zone" style="border: 2px dashed var(--careka-primary-light); border-radius: 8px; padding: 32px; text-align: center; cursor: pointer; transition: all 0.2s;">
         <p style="margin: 0; font-size: 14px;">Arraste arquivos CSV ou XLSX aqui ou clique para selecionar</p>
         <input type="file" id="input-import" accept=".csv,.xlsx,.xls" style="display: none;">
       </div>
@@ -850,7 +920,7 @@
   <div id="trello-panel" class="trello-panel hidden">
     <div class="trello-header">
       <h2 id="trello-title" style="margin: 0; font-size: 18px;"></h2>
-      <button onclick="closeTrello()" style="border: none; background: none; cursor: pointer; font-size: 20px;"><i class="fas fa-times"></i></button>
+      <button onclick="closeTrello()" style="border: none; background: none; cursor: pointer; font-size: 20px; color: inherit;"><i class="fas fa-times"></i></button>
     </div>
     <div class="trello-body">
       <div class="section">
@@ -861,9 +931,7 @@
           </div>
           <div class="form-group">
             <label>Estágio</label>
-            <select id="trello-estagio">
-              <!-- Preenchido dinamicamente -->
-            </select>
+            <select id="trello-estagio"></select>
           </div>
           <div class="form-group">
             <label>Prioridade</label>
@@ -998,6 +1066,7 @@
     };
 
     let state = { leads: [], tarefas: [], eventos: [], propostas: [], interacoes: [], etapas: DEFAULT_ETAPAS.slice() };
+    let filteredLeads = [];
     let charts = {};
     let currentLeadId = null;
     let importData = null;
@@ -1011,19 +1080,21 @@
     function loadState() {
       try {
         const saved = localStorage.getItem(STATE_KEY);
+        console.log('localStorage carregado:', saved ? 'OK' : 'VAZIO');
         return saved ? JSON.parse(saved) : null;
       } catch (e) {
-        console.error('Erro ao carregar estado:', e);
+        console.error('Erro ao carregar:', e);
         return null;
       }
     }
 
     function saveState() {
       try {
-        localStorage.setItem(STATE_KEY, JSON.stringify(state));
-        console.log('Estado salvo:', state.leads.length + ' leads');
+        const json = JSON.stringify(state);
+        localStorage.setItem(STATE_KEY, json);
+        console.log('localStorage salvo:', state.leads.length + ' leads');
       } catch (e) {
-        console.error('Erro ao salvar estado:', e);
+        console.error('Erro ao salvar:', e);
       }
     }
 
@@ -1060,15 +1131,15 @@
       if (saved && saved.leads && saved.leads.length > 0) {
         state = saved;
         if (!state.etapas) state.etapas = DEFAULT_ETAPAS.slice();
-        console.log('Estado carregado:', state.leads.length + ' leads, etapas:', state.etapas);
+        console.log('Estado carregado:', state.leads.length + ' leads');
       } else {
         state = {
           leads: [
-            {id: uuid(), nome: 'Dr. Martinez', empresa: 'Clínica Sorriso', cargo: 'Diretor', email: 'martinez@clinic.com', telefone: '11 99999-0001', segmento: 'Odontologia', valor: 15000, score: 78, origem: 'LinkedIn', canal: 'Email', prioridade: 'Alta', estagio: 'Novo', observacoes: '', descricao: 'Cliente potencial', atividades: [], checklist: [{id: uuid(), texto: 'Enviar proposta', feito: false}], anexos: [], dataCriacao: nowISO(), ultimoContato: nowISO(), proximoContato: '', historico: []},
-            {id: uuid(), nome: 'Ana Silva', empresa: 'Academia FitMax', cargo: 'Gerente', email: 'ana@fitmax.com', telefone: '11 99999-0002', segmento: 'Academia', valor: 8000, score: 61, origem: 'Indicação', canal: 'WhatsApp', prioridade: 'Média', estagio: 'Qualificar', observacoes: '', descricao: '', atividades: [{id: uuid(), texto: 'Primeiro contato', data: nowISO()}], checklist: [], anexos: [], dataCriacao: nowISO(), ultimoContato: nowISO(), proximoContato: '', historico: []},
-            {id: uuid(), nome: 'Carlos Oliveira', empresa: 'Studio Slim', cargo: 'Sócio', email: 'carlos@studio.com', telefone: '11 99999-0003', segmento: 'Estética', valor: 12000, score: 73, origem: 'Google', canal: 'Ligação', prioridade: 'Alta', estagio: 'Diagnóstico', observacoes: '', descricao: '', atividades: [], checklist: [{id: uuid(), texto: 'Agende reunião', feito: false}], anexos: [], dataCriacao: nowISO(), ultimoContato: nowISO(), proximoContato: new Date(Date.now() + 3*24*60*60*1000).toISOString(), historico: []},
-            {id: uuid(), nome: 'Mariana Costa', empresa: 'Tech Startup', cargo: 'CTO', email: 'mariana@tech.com', telefone: '11 99999-0004', segmento: 'Tecnologia', valor: 25000, score: 85, origem: 'Instagram', canal: 'Email', prioridade: 'Alta', estagio: 'Proposta', observacoes: '', descricao: '', atividades: [], checklist: [], anexos: [], dataCriacao: nowISO(), ultimoContato: nowISO(), proximoContato: '', historico: []},
-            {id: uuid(), nome: 'Roberto Santos', empresa: 'Consultoria RH', cargo: 'Diretor', email: 'roberto@consultrh.com', telefone: '11 99999-0005', segmento: 'Consultoria', valor: 18000, score: 72, origem: 'Facebook', canal: 'Email', prioridade: 'Média', estagio: 'Proposta', observacoes: '', descricao: '', atividades: [], checklist: [], anexos: [], dataCriacao: nowISO(), ultimoContato: nowISO(), proximoContato: '', historico: []}
+            {id: uuid(), nome: 'Dr. Martinez', empresa: 'Clínica Sorriso', cargo: 'Diretor', email: 'martinez@clinic.com', telefone: '11 99999-0001', segmento: 'Odontologia', valor: 15000, score: 95, origem: 'LinkedIn', canal: 'Email', prioridade: 'Alta', estagio: 'Novo', observacoes: '', descricao: 'Cliente potencial quente', atividades: [], checklist: [], anexos: [], dataCriacao: nowISO(), ultimoContato: nowISO(), proximoContato: '', historico: []},
+            {id: uuid(), nome: 'Ana Silva', empresa: 'Academia FitMax', cargo: 'Gerente', email: 'ana@fitmax.com', telefone: '11 99999-0002', segmento: 'Academia', valor: 8000, score: 72, origem: 'Indicação', canal: 'WhatsApp', prioridade: 'Média', estagio: 'Qualificar', observacoes: '', descricao: '', atividades: [], checklist: [], anexos: [], dataCriacao: nowISO(), ultimoContato: nowISO(), proximoContato: '', historico: []},
+            {id: uuid(), nome: 'Carlos Oliveira', empresa: 'Studio Slim', cargo: 'Sócio', email: 'carlos@studio.com', telefone: '11 99999-0003', segmento: 'Estética', valor: 12000, score: 88, origem: 'Google', canal: 'Ligação', prioridade: 'Alta', estagio: 'Diagnóstico', observacoes: '', descricao: '', atividades: [], checklist: [], anexos: [], dataCriacao: nowISO(), ultimoContato: nowISO(), proximoContato: '', historico: []},
+            {id: uuid(), nome: 'Mariana Costa', empresa: 'Tech Startup', cargo: 'CTO', email: 'mariana@tech.com', telefone: '11 99999-0004', segmento: 'Tecnologia', valor: 25000, score: 92, origem: 'Instagram', canal: 'Email', prioridade: 'Alta', estagio: 'Proposta', observacoes: '', descricao: '', atividades: [], checklist: [], anexos: [], dataCriacao: nowISO(), ultimoContato: nowISO(), proximoContato: '', historico: []},
+            {id: uuid(), nome: 'Roberto Santos', empresa: 'Consultoria RH', cargo: 'Diretor', email: 'roberto@consultrh.com', telefone: '11 99999-0005', segmento: 'Consultoria', valor: 18000, score: 85, origem: 'Facebook', canal: 'Email', prioridade: 'Média', estagio: 'Proposta', observacoes: '', descricao: '', atividades: [], checklist: [], anexos: [], dataCriacao: nowISO(), ultimoContato: nowISO(), proximoContato: '', historico: []}
           ],
           tarefas: [],
           eventos: [],
@@ -1078,16 +1149,43 @@
         };
         saveState();
       }
+      applyFilters();
       updateEtagasSelects();
     }
 
     function updateEtagasSelects() {
       const selectNovo = el('form-novo-estagio');
       const selectTrello = el('trello-estagio');
-      
       selectNovo.innerHTML = state.etapas.map(e => `<option value="${e}">${e}</option>`).join('');
       selectTrello.innerHTML = state.etapas.map(e => `<option value="${e}">${e}</option>`).join('');
     }
+
+    function applyFilters() {
+      const search = el('filter-search').value.toLowerCase();
+      const origem = el('filter-origem').value;
+      const estagio = el('filter-estagio').value;
+
+      filteredLeads = state.leads.filter(l => {
+        return (!search || l.nome.toLowerCase().includes(search) || l.empresa.toLowerCase().includes(search)) &&
+               (!origem || l.origem === origem) &&
+               (!estagio || l.estagio === estagio);
+      });
+
+      updateKPIs();
+      updateCharts();
+      renderTop10();
+    }
+
+    function clearFilters() {
+      el('filter-search').value = '';
+      el('filter-origem').value = '';
+      el('filter-estagio').value = '';
+      applyFilters();
+    }
+
+    el('filter-search').addEventListener('input', applyFilters);
+    el('filter-origem').addEventListener('change', applyFilters);
+    el('filter-estagio').addEventListener('change', applyFilters);
 
     // Sidebar navigation
     document.querySelectorAll('.sidebar-menu li').forEach(item => {
@@ -1154,7 +1252,7 @@
       });
       
       saveState();
-      renderAll();
+      applyFilters();
       el('modal-novo').close();
       form.reset();
       showToast('Lead criado com sucesso!');
@@ -1182,7 +1280,7 @@
       showToast('Estágio criado com sucesso!');
     }
 
-    // Reset
+    // Reset - CORRIGIDO PARA NÃO VOLTAR
     el('btn-reset').addEventListener('click', () => {
       el('input-reset').value = '';
       el('btn-confirmar-reset').disabled = true;
@@ -1194,7 +1292,7 @@
     });
 
     el('btn-confirmar-reset').addEventListener('click', () => {
-      console.log('Reset confirmado - apagando todos os leads');
+      console.log('🔴 RESET INICIADO - Apagando TUDO');
       
       state.leads = [];
       state.tarefas = [];
@@ -1202,15 +1300,18 @@
       state.propostas = [];
       state.interacoes = [];
       
-      localStorage.setItem(STATE_KEY, JSON.stringify(state));
+      saveState();
+      
+      localStorage.removeItem(STATE_KEY);
+      console.log('🔴 localStorage deletado');
       
       el('modal-reset').close();
       el('input-reset').value = '';
       el('btn-confirmar-reset').disabled = true;
       
-      renderAll();
+      applyFilters();
       
-      console.log('Estado após reset:', state.leads.length + ' leads');
+      console.log('🔴 RESET COMPLETO - Estado:', state.leads.length + ' leads');
       
       showToast('Base de dados zerada com sucesso!');
     });
@@ -1318,7 +1419,7 @@
         imported++;
       });
       saveState();
-      renderAll();
+      applyFilters();
       el('modal-importar').close();
       showToast(`${imported} leads importados com sucesso!`);
     });
@@ -1382,29 +1483,69 @@
       a.click();
     });
 
+    function getHeatClass(score) {
+      if (score >= 90) return 'heat-9';
+      if (score >= 80) return 'heat-8';
+      if (score >= 70) return 'heat-7';
+      if (score >= 60) return 'heat-6';
+      if (score >= 50) return 'heat-5';
+      if (score >= 40) return 'heat-4';
+      if (score >= 30) return 'heat-3';
+      if (score >= 20) return 'heat-2';
+      if (score >= 10) return 'heat-1';
+      return 'heat-0';
+    }
+
+    function getTemperatura(score) {
+      if (score >= 90) return '🔥🔥🔥';
+      if (score >= 80) return '🔥🔥';
+      if (score >= 70) return '🔥';
+      if (score >= 50) return '✅';
+      return '❄️';
+    }
+
+    function renderTop10() {
+      const semana = new Date(Date.now() - 7*24*60*60*1000);
+      const top10 = filteredLeads
+        .filter(l => new Date(l.dataCriacao) >= semana)
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 10);
+
+      const tbody = el('top10-body');
+      tbody.innerHTML = top10.map((l, i) => `
+        <tr class="${getHeatClass(l.score)}">
+          <td>${i + 1}</td>
+          <td style="font-weight: bold; cursor: pointer;" onclick="openTrello('${l.id}')">${l.nome}</td>
+          <td>${l.empresa}</td>
+          <td>${l.score}</td>
+          <td>${toReal(l.valor)}</td>
+          <td>${getTemperatura(l.score)}</td>
+        </tr>
+      `).join('');
+    }
+
     // KPIs
     function updateKPIs() {
       const semana = new Date(Date.now() - 7*24*60*60*1000);
-      el('kpi-leads').textContent = state.leads.length;
-      el('kpi-conv').textContent = state.leads.filter(l => new Date(l.ultimoContato) >= semana).length;
-      el('kpi-novos').textContent = state.leads.filter(l => new Date(l.dataCriacao) >= semana).length;
-      const ganhos = state.leads.filter(l => l.estagio === 'Ganho').length;
-      el('kpi-taxa').textContent = state.leads.length ? Math.round((ganhos / state.leads.length) * 100) + '%' : '0%';
-      const pipe = state.leads.filter(l => l.estagio !== 'Ganho' && l.estagio !== 'Perdido').reduce((a, b) => a + b.valor, 0);
+      el('kpi-leads').textContent = filteredLeads.length;
+      el('kpi-conv').textContent = filteredLeads.filter(l => new Date(l.ultimoContato) >= semana).length;
+      el('kpi-novos').textContent = filteredLeads.filter(l => new Date(l.dataCriacao) >= semana).length;
+      const ganhos = filteredLeads.filter(l => l.estagio === 'Ganho').length;
+      el('kpi-taxa').textContent = filteredLeads.length ? Math.round((ganhos / filteredLeads.length) * 100) + '%' : '0%';
+      const pipe = filteredLeads.filter(l => l.estagio !== 'Ganho' && l.estagio !== 'Perdido').reduce((a, b) => a + b.valor, 0);
       el('kpi-pipe').textContent = toReal(pipe);
-      const score = state.leads.length ? Math.round(state.leads.reduce((a, b) => a + b.score, 0) / state.leads.length) : 0;
+      const score = filteredLeads.length ? Math.round(filteredLeads.reduce((a, b) => a + b.score, 0) / filteredLeads.length) : 0;
       el('kpi-score').textContent = score;
     }
 
     function renderDashboard() {
-      updateKPIs();
-      renderCharts();
+      applyFilters();
     }
 
     function getChartTheme() {
       const isDark = document.body.classList.contains('dark-mode');
       return {
-        text: isDark ? '#E5E7EB' : '#1F2937',
+        text: isDark ? '#F0F0F0' : '#1F2937',
         grid: isDark ? '#334155' : '#E5E7EB'
       };
     }
@@ -1422,7 +1563,7 @@
         const dados = dias.map(d => {
           const data = new Date(agora);
           data.setDate(data.getDate() - d);
-          return state.leads.filter(l => new Date(l.dataCriacao) >= data).length;
+          return filteredLeads.filter(l => new Date(l.dataCriacao) >= data).length;
         });
         charts['periodo'] = new Chart(ctx1, {
           type: 'bar',
@@ -1444,19 +1585,19 @@
 
       const ctx2 = el('chart-origem')?.getContext('2d');
       if (ctx2) {
-        const origens = [...new Set(state.leads.map(l => l.origem || 'Outro'))];
-        const dados = origens.map(o => state.leads.filter(l => (l.origem || 'Outro') === o).length);
+        const origens = [...new Set(filteredLeads.map(l => l.origem || 'Outro'))].sort();
+        const dados = origens.map(o => filteredLeads.filter(l => (l.origem || 'Outro') === o).length);
         const cores = origens.map(o => ORIGENS_CORES[o] || '#6B7280');
         charts['origem'] = new Chart(ctx2, {
           type: 'doughnut',
           data: {labels: origens, datasets: [{data: dados, backgroundColor: cores}]},
-          options: {responsive: true, maintainAspectRatio: false, plugins: {legend: {labels: {color: theme.text}}}}
+          options: {responsive: true, maintainAspectRatio: false, plugins: {legend: {labels: {color: theme.text}, position: 'right'}}, layout: {padding: 10}}
         });
       }
 
       const ctx3 = el('chart-estagio')?.getContext('2d');
       if (ctx3) {
-        const dados = state.etapas.map(e => state.leads.filter(l => l.estagio === e).length);
+        const dados = state.etapas.map(e => filteredLeads.filter(l => l.estagio === e).length);
         const cores = state.etapas.map((e, i) => {
           const hues = [0, 45, 90, 135, 180, 225, 270, 315];
           const hue = hues[i % hues.length];
@@ -1484,7 +1625,7 @@
         const dados = ranges.map((r, i) => {
           const min = i * 20;
           const max = (i + 1) * 20;
-          return state.leads.filter(l => l.score >= min && l.score < max).length;
+          return filteredLeads.filter(l => l.score >= min && l.score < max).length;
         });
         charts['score'] = new Chart(ctx4, {
           type: 'line',
@@ -1513,7 +1654,7 @@
 
       const ctx5 = el('chart-pipeline')?.getContext('2d');
       if (ctx5) {
-        const dados = state.etapas.map(e => state.leads.filter(l => l.estagio === e).reduce((a, b) => a + b.valor, 0));
+        const dados = state.etapas.map(e => filteredLeads.filter(l => l.estagio === e).reduce((a, b) => a + b.valor, 0));
         const cores = state.etapas.map((e, i) => {
           const hues = [0, 45, 90, 135, 180, 225, 270, 315];
           const hue = hues[i % hues.length];
@@ -1537,8 +1678,8 @@
       const ctx6 = el('chart-propostas')?.getContext('2d');
       if (ctx6) {
         const dados = [
-          state.leads.filter(l => l.estagio === 'Proposta').length,
-          state.leads.filter(l => l.estagio === 'Ganho').length
+          filteredLeads.filter(l => l.estagio === 'Proposta').length,
+          filteredLeads.filter(l => l.estagio === 'Ganho').length
         ];
         charts['propostas'] = new Chart(ctx6, {
           type: 'doughnut',
@@ -1559,8 +1700,6 @@
       const kanban = el('kanban');
       kanban.innerHTML = '';
       
-      console.log('Renderizando Kanban com', state.leads.length, 'leads, etapas:', state.etapas);
-      
       state.etapas.forEach((etapa, idx) => {
         const leads = state.leads.filter(l => l.estagio === etapa);
         const col = document.createElement('div');
@@ -1568,7 +1707,7 @@
         
         const hues = [0, 45, 90, 135, 180, 225, 270, 315];
         const hue = hues[idx % hues.length];
-        const bgColor = `hsl(${hue}, 20%, 95%)`;
+        const bgColor = `hsl(${hue}, 20%, ${document.body.classList.contains('dark-mode') ? '20%' : '95%'})`;
         col.style.backgroundColor = bgColor;
 
         const header = document.createElement('div');
@@ -1622,8 +1761,7 @@
             lead.historico.push({acao: `movido de ${oldStage} para ${etapa}`, data: nowISO()});
             saveState();
             renderCRM();
-            updateKPIs();
-            updateCharts();
+            applyFilters();
           }
         });
 
@@ -1654,7 +1792,7 @@
 
       el('trello-atividades').innerHTML = (lead.atividades || []).map(a => `<div style="margin-bottom: 8px;"><strong>${formatData(a.data)}</strong>: ${a.texto}</div>`).join('') || 'Nenhuma atividade';
       el('trello-checklist').innerHTML = (lead.checklist || []).map(item => `<div style="margin-bottom: 6px;"><input type="checkbox" ${item.feito ? 'checked' : ''} onchange="updateChecklistItem('${lead.id}', '${item.id}', this.checked)"><span style="margin-left: 4px; ${item.feito ? 'text-decoration: line-through;' : ''}">${item.texto}</span></div>`).join('') || 'Nenhum item';
-      el('trello-anexos').innerHTML = (lead.anexos || []).map(a => `<div><a href="${a.url}" target="_blank" style="color: var(--careka-primary); text-decoration: none;">${a.texto}</a></div>`).join('') || 'Nenhum anexo';
+      el('trello-anexos').innerHTML = (lead.anexos || []).map(a => `<div><a href="${a.url}" target="_blank" style="color: var(--careka-primary-light); text-decoration: none;">${a.texto}</a></div>`).join('') || 'Nenhum anexo';
       el('trello-historico').innerHTML = (lead.historico || []).map(h => `<div style="margin-bottom: 6px;"><strong>${formatData(h.data)}</strong>: ${h.acao}</div>`).join('') || 'Nenhuma alteração';
 
       el('trello-title').textContent = lead.nome;
@@ -1690,7 +1828,7 @@
 
       lead.ultimoContato = nowISO();
       saveState();
-      renderAll();
+      applyFilters();
       closeTrello();
       showToast('Lead atualizado!');
     }
@@ -1749,7 +1887,7 @@
       copia.historico = [];
       state.leads.push(copia);
       saveState();
-      renderAll();
+      applyFilters();
       closeTrello();
       showToast('Lead duplicado!');
     }
@@ -1759,28 +1897,11 @@
         return;
       }
       
-      console.log('Excluindo lead:', currentLeadId);
-      
       state.leads = state.leads.filter(l => l.id !== currentLeadId);
-      
       saveState();
-      
       closeTrello();
-      
-      renderAll();
-      
-      console.log('Leads restantes:', state.leads.length);
-      
+      applyFilters();
       showToast('Lead excluído com sucesso!');
-    }
-
-    function renderAll() {
-      updateKPIs();
-      updateCharts();
-      const activePage = document.querySelector('.sidebar-menu li.active')?.dataset.page;
-      if (activePage === 'crm') {
-        renderCRM();
-      }
     }
 
     document.addEventListener('DOMContentLoaded', () => {
