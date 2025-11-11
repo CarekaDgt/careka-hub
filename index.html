@@ -14,8 +14,16 @@
     * { box-sizing: border-box; }
     html, body { margin: 0; padding: 0; height: 100%; font-family: 'Inter', sans-serif; }
     
-    body.dark-mode { background: #0B1220; color: #E5E7EB; }
-    body.light-mode { background: #F7F7F5; color: #1F2937; }
+    /* PALETA CAREKA - Cores únicas */
+    :root {
+      --careka-primary: #0F766E;
+      --careka-primary-light: #2DD4BF;
+      --careka-dark: #0B1220;
+      --careka-light: #F7F7F5;
+    }
+    
+    body.dark-mode { background: var(--careka-dark); color: #E5E7EB; }
+    body.light-mode { background: var(--careka-light); color: #1F2937; }
     
     .card {
       border-radius: 8px;
@@ -46,12 +54,12 @@
     
     input:focus, select:focus, textarea:focus {
       outline: none;
-      border-color: #0F766E;
+      border-color: var(--careka-primary);
       box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1);
     }
     
     .sidebar {
-      background: #0F172A;
+      background: var(--careka-dark);
       color: white;
       width: 220px;
       padding: 20px;
@@ -86,13 +94,13 @@
     
     .sidebar-menu li:hover {
       background: rgba(45, 212, 191, 0.1);
-      border-left-color: #2DD4BF;
+      border-left-color: var(--careka-primary-light);
     }
     
     .sidebar-menu li.active {
       background: rgba(45, 212, 191, 0.2);
-      border-left-color: #2DD4BF;
-      color: #2DD4BF;
+      border-left-color: var(--careka-primary-light);
+      color: var(--careka-primary-light);
     }
     
     .main-content {
@@ -138,7 +146,7 @@
     }
     
     .btn-primary {
-      background: #0F766E;
+      background: var(--careka-primary);
       color: white;
     }
     
@@ -147,21 +155,21 @@
     }
     
     .btn-blue {
-      background: #2563EB;
+      background: var(--careka-primary);
       color: white;
     }
     
     .btn-blue:hover {
-      background: #1D4ED8;
+      background: #065A52;
     }
     
     .btn-green {
-      background: #16A34A;
+      background: var(--careka-primary);
       color: white;
     }
     
     .btn-green:hover {
-      background: #15803D;
+      background: #065A52;
     }
     
     .btn-red {
@@ -209,6 +217,7 @@
     .kpi-box {
       padding: 16px;
       border-radius: 8px;
+      border-left: 4px solid var(--careka-primary);
     }
     
     .kpi-label {
@@ -220,6 +229,7 @@
     .kpi-value {
       font-size: 28px;
       font-weight: bold;
+      color: var(--careka-primary);
     }
     
     .charts-grid {
@@ -242,6 +252,7 @@
       padding: 16px;
       display: flex;
       flex-direction: column;
+      border-left: 4px solid var(--careka-primary);
     }
     
     .kanban-col-header {
@@ -253,7 +264,7 @@
     }
     
     .kanban-col-count {
-      background: #0F766E;
+      background: var(--careka-primary);
       color: white;
       width: 24px;
       height: 24px;
@@ -277,6 +288,7 @@
       border-radius: 6px;
       padding: 12px;
       user-select: none;
+      border-left: 3px solid var(--careka-primary);
     }
     
     body.light-mode .lead-card {
@@ -291,10 +303,12 @@
     
     body.light-mode .lead-card:hover {
       background: #F3F4F6;
+      box-shadow: 0 4px 12px rgba(15, 118, 110, 0.15);
     }
     
     body.dark-mode .lead-card:hover {
       background: #111827;
+      box-shadow: 0 4px 12px rgba(45, 212, 191, 0.2);
     }
     
     .lead-card-title {
@@ -336,13 +350,13 @@
     }
     
     .badge-media {
-      background: #FEF3C7;
-      color: #78350F;
+      background: rgba(15, 118, 110, 0.15);
+      color: var(--careka-primary);
     }
     
     body.dark-mode .badge-media {
-      background: #78350F;
-      color: #FCD34D;
+      background: rgba(45, 212, 191, 0.2);
+      color: var(--careka-primary-light);
     }
     
     .badge-baixa {
@@ -357,7 +371,7 @@
     
     .lead-card-value {
       font-weight: bold;
-      color: #06B6D4;
+      color: var(--careka-primary);
     }
     
     dialog {
@@ -383,16 +397,12 @@
     
     .modal-header {
       padding: 20px;
-      border-bottom: 1px solid #E5E7EB;
+      border-bottom: 2px solid var(--careka-primary);
       font-size: 20px;
       font-weight: bold;
       display: flex;
       justify-content: space-between;
       align-items: center;
-    }
-    
-    body.dark-mode .modal-header {
-      border-bottom-color: #334155;
     }
     
     .modal-content {
@@ -429,6 +439,7 @@
     .form-group label {
       font-size: 12px;
       font-weight: 500;
+      color: var(--careka-primary);
     }
     
     .form-group input,
@@ -480,15 +491,11 @@
     
     .trello-header {
       padding: 20px;
-      border-bottom: 1px solid #E5E7EB;
+      border-bottom: 2px solid var(--careka-primary);
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-shrink: 0;
-    }
-    
-    body.dark-mode .trello-header {
-      border-bottom-color: #334155;
     }
     
     .trello-body {
@@ -523,6 +530,7 @@
       font-weight: bold;
       margin-bottom: 12px;
       font-size: 14px;
+      color: var(--careka-primary);
     }
     
     .backdrop {
@@ -559,7 +567,7 @@
     }
     
     .toast-success {
-      background: #10B981;
+      background: var(--careka-primary);
     }
     
     .toast-error {
@@ -613,9 +621,9 @@
       <h2 id="page-title">Dashboard</h2>
       <div style="display: flex; gap: 8px; flex-wrap: wrap;">
         <button class="btn btn-primary" id="btn-novo"><i class="fas fa-plus"></i> Novo</button>
-        <button class="btn btn-blue" id="btn-importar"><i class="fas fa-upload"></i> Importar</button>
-        <button class="btn btn-green" id="btn-modelo-csv"><i class="fas fa-download"></i> CSV</button>
-        <button class="btn btn-green" id="btn-modelo-xlsx"><i class="fas fa-download"></i> XLSX</button>
+        <button class="btn btn-primary" id="btn-importar"><i class="fas fa-upload"></i> Importar</button>
+        <button class="btn btn-primary" id="btn-modelo-csv"><i class="fas fa-download"></i> CSV</button>
+        <button class="btn btn-primary" id="btn-modelo-xlsx"><i class="fas fa-download"></i> XLSX</button>
         <button class="btn btn-red" id="btn-reset"><i class="fas fa-redo"></i> Reset</button>
         <button class="btn btn-gray" id="btn-theme"><i class="fas fa-moon"></i> Tema</button>
       </div>
@@ -652,34 +660,37 @@
 
         <div class="charts-grid">
           <div class="card" style="padding: 16px;">
-            <h3 style="margin: 0 0 12px 0; font-weight: bold;">Leads por Período</h3>
+            <h3 style="margin: 0 0 12px 0; font-weight: bold; color: var(--careka-primary);">Leads por Período</h3>
             <div class="chart-container"><canvas id="chart-periodo"></canvas></div>
           </div>
           <div class="card" style="padding: 16px;">
-            <h3 style="margin: 0 0 12px 0; font-weight: bold;">Origem dos Leads</h3>
+            <h3 style="margin: 0 0 12px 0; font-weight: bold; color: var(--careka-primary);">Origem dos Leads</h3>
             <div class="chart-container"><canvas id="chart-origem"></canvas></div>
           </div>
           <div class="card" style="padding: 16px;">
-            <h3 style="margin: 0 0 12px 0; font-weight: bold;">Conversão por Estágio</h3>
+            <h3 style="margin: 0 0 12px 0; font-weight: bold; color: var(--careka-primary);">Conversão por Estágio</h3>
             <div class="chart-container"><canvas id="chart-estagio"></canvas></div>
           </div>
           <div class="card" style="padding: 16px;">
-            <h3 style="margin: 0 0 12px 0; font-weight: bold;">Score Distribuição</h3>
+            <h3 style="margin: 0 0 12px 0; font-weight: bold; color: var(--careka-primary);">Score Distribuição</h3>
             <div class="chart-container"><canvas id="chart-score"></canvas></div>
           </div>
           <div class="card" style="padding: 16px;">
-            <h3 style="margin: 0 0 12px 0; font-weight: bold;">Pipeline por Estágio</h3>
+            <h3 style="margin: 0 0 12px 0; font-weight: bold; color: var(--careka-primary);">Pipeline por Estágio</h3>
             <div class="chart-container"><canvas id="chart-pipeline"></canvas></div>
           </div>
           <div class="card" style="padding: 16px;">
-            <h3 style="margin: 0 0 12px 0; font-weight: bold;">Propostas</h3>
+            <h3 style="margin: 0 0 12px 0; font-weight: bold; color: var(--careka-primary);">Propostas</h3>
             <div class="chart-container"><canvas id="chart-propostas"></canvas></div>
           </div>
         </div>
       </div>
 
       <div id="page-crm" class="page-content hidden">
-        <h3 style="margin-top: 0; margin-bottom: 16px; font-weight: bold; font-size: 18px;">Kanban - Funis de Vendas</h3>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+          <h3 style="margin: 0; font-weight: bold; font-size: 18px;">Kanban - Funis de Vendas</h3>
+          <button class="btn btn-primary" id="btn-novo-stage"><i class="fas fa-plus"></i> Novo Estágio</button>
+        </div>
         <div class="kanban" id="kanban"></div>
       </div>
 
@@ -687,9 +698,9 @@
         <div class="card" style="padding: 24px;">
           <h3 style="margin: 0 0 16px 0; font-weight: bold; font-size: 18px;">Exportação de Dados</h3>
           <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-            <button class="btn btn-blue" id="btn-export-csv"><i class="fas fa-file-csv"></i> CSV</button>
-            <button class="btn btn-green" id="btn-export-xlsx"><i class="fas fa-file-excel"></i> XLSX</button>
-            <button class="btn" style="background: #7C3AED; color: white;" id="btn-export-json"><i class="fas fa-file-json"></i> JSON</button>
+            <button class="btn btn-primary" id="btn-export-csv"><i class="fas fa-file-csv"></i> CSV</button>
+            <button class="btn btn-primary" id="btn-export-xlsx"><i class="fas fa-file-excel"></i> XLSX</button>
+            <button class="btn btn-primary" id="btn-export-json"><i class="fas fa-file-json"></i> JSON</button>
           </div>
         </div>
       </div>
@@ -764,6 +775,12 @@
           </select>
         </div>
         <div class="form-group" style="grid-column: 1 / -1;">
+          <label>Estágio</label>
+          <select id="form-novo-estagio" name="estagio">
+            <!-- Preenchido dinamicamente -->
+          </select>
+        </div>
+        <div class="form-group" style="grid-column: 1 / -1;">
           <label>Prioridade</label>
           <select name="prioridade">
             <option value="Baixa">Baixa</option>
@@ -776,6 +793,23 @@
     <div class="modal-footer">
       <button type="button" class="btn btn-primary" onclick="submitFormNovo()">Salvar</button>
       <button type="button" class="btn btn-gray" onclick="document.getElementById('modal-novo').close()">Cancelar</button>
+    </div>
+  </dialog>
+
+  <dialog id="modal-novo-stage">
+    <div class="modal-header">
+      Novo Estágio
+      <button onclick="document.getElementById('modal-novo-stage').close()" style="border: none; background: none; cursor: pointer; font-size: 20px;"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-content">
+      <div class="form-group" style="margin-bottom: 16px;">
+        <label>Nome do Estágio *</label>
+        <input type="text" id="input-stage-nome" placeholder="Ex: Nutrir, Futuro, Ajuste">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-primary" onclick="addNovoStage()">Criar</button>
+      <button type="button" class="btn btn-gray" onclick="document.getElementById('modal-novo-stage').close()">Cancelar</button>
     </div>
   </dialog>
 
@@ -800,14 +834,14 @@
       <button onclick="document.getElementById('modal-importar').close()" style="border: none; background: none; cursor: pointer; font-size: 20px;"><i class="fas fa-times"></i></button>
     </div>
     <div class="modal-content">
-      <div id="drop-zone" style="border: 2px dashed #D1D5DB; border-radius: 8px; padding: 32px; text-align: center; cursor: pointer; transition: all 0.2s;">
+      <div id="drop-zone" style="border: 2px dashed var(--careka-primary); border-radius: 8px; padding: 32px; text-align: center; cursor: pointer; transition: all 0.2s;">
         <p style="margin: 0; font-size: 14px;">Arraste arquivos CSV ou XLSX aqui ou clique para selecionar</p>
         <input type="file" id="input-import" accept=".csv,.xlsx,.xls" style="display: none;">
       </div>
       <div id="import-preview" style="margin-top: 16px; padding: 12px; border-radius: 6px; font-size: 14px; display: none;"></div>
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-blue" id="btn-processar-import" style="display: none;">Processar</button>
+      <button type="button" class="btn btn-primary" id="btn-processar-import" style="display: none;">Processar</button>
       <button type="button" class="btn btn-gray" onclick="document.getElementById('modal-importar').close()">Fechar</button>
     </div>
   </dialog>
@@ -828,12 +862,7 @@
           <div class="form-group">
             <label>Estágio</label>
             <select id="trello-estagio">
-              <option value="Novo">Novo</option>
-              <option value="Qualificar">Qualificar</option>
-              <option value="Diagnóstico">Diagnóstico</option>
-              <option value="Proposta">Proposta</option>
-              <option value="Ganho">Ganho</option>
-              <option value="Perdido">Perdido</option>
+              <!-- Preenchido dinamicamente -->
             </select>
           </div>
           <div class="form-group">
@@ -944,23 +973,15 @@
       </div>
     </div>
     <div class="trello-footer">
-      <button type="button" onclick="saveTrello()" class="btn btn-green" style="flex: 1;">Salvar</button>
-      <button type="button" onclick="duplicarLead()" class="btn btn-blue" style="flex: 1;">Duplicar</button>
+      <button type="button" onclick="saveTrello()" class="btn btn-primary" style="flex: 1;">Salvar</button>
+      <button type="button" onclick="duplicarLead()" class="btn btn-primary" style="flex: 1;">Duplicar</button>
       <button type="button" onclick="confirmDeleteLead()" class="btn btn-red" style="flex: 1;">Excluir</button>
     </div>
   </div>
 
   <script>
     const STATE_KEY = 'careka-hub-v5';
-    const ETAPAS = ['Novo', 'Qualificar', 'Diagnóstico', 'Proposta', 'Ganho', 'Perdido'];
-    const CORES_ETAPA = {
-      'Novo': '#E0F2FE',
-      'Qualificar': '#FEF3C7',
-      'Diagnóstico': '#DBEAFE',
-      'Proposta': '#F3E8FF',
-      'Ganho': '#DCFCE7',
-      'Perdido': '#FEE2E2'
-    };
+    const DEFAULT_ETAPAS = ['Novo', 'Qualificar', 'Diagnóstico', 'Proposta', 'Ganho', 'Perdido'];
     const ORIGENS_CORES = {
       'Google': '#EA4335',
       'LinkedIn': '#0A66C2',
@@ -976,7 +997,7 @@
       'Outro': '#6B7280'
     };
 
-    let state = { leads: [], tarefas: [], eventos: [], propostas: [], interacoes: [] };
+    let state = { leads: [], tarefas: [], eventos: [], propostas: [], interacoes: [], etapas: DEFAULT_ETAPAS.slice() };
     let charts = {};
     let currentLeadId = null;
     let importData = null;
@@ -1038,7 +1059,8 @@
       const saved = loadState();
       if (saved && saved.leads && saved.leads.length > 0) {
         state = saved;
-        console.log('Estado carregado:', state.leads.length + ' leads');
+        if (!state.etapas) state.etapas = DEFAULT_ETAPAS.slice();
+        console.log('Estado carregado:', state.leads.length + ' leads, etapas:', state.etapas);
       } else {
         state = {
           leads: [
@@ -1051,10 +1073,20 @@
           tarefas: [],
           eventos: [],
           propostas: [],
-          interacoes: []
+          interacoes: [],
+          etapas: DEFAULT_ETAPAS.slice()
         };
         saveState();
       }
+      updateEtagasSelects();
+    }
+
+    function updateEtagasSelects() {
+      const selectNovo = el('form-novo-estagio');
+      const selectTrello = el('trello-estagio');
+      
+      selectNovo.innerHTML = state.etapas.map(e => `<option value="${e}">${e}</option>`).join('');
+      selectTrello.innerHTML = state.etapas.map(e => `<option value="${e}">${e}</option>`).join('');
     }
 
     // Sidebar navigation
@@ -1109,7 +1141,7 @@
         origem: fd.get('origem'),
         canal: fd.get('canal'),
         prioridade: fd.get('prioridade'),
-        estagio: 'Novo',
+        estagio: fd.get('estagio') || state.etapas[0],
         observacoes: '',
         descricao: '',
         atividades: [],
@@ -1128,7 +1160,29 @@
       showToast('Lead criado com sucesso!');
     }
 
-    // Reset - CORRIGIDO
+    // Novo Estágio
+    el('btn-novo-stage').addEventListener('click', () => el('modal-novo-stage').showModal());
+    
+    function addNovoStage() {
+      const nome = el('input-stage-nome').value.trim();
+      if (!nome) {
+        showToast('Nome do estágio é obrigatório!', 'error');
+        return;
+      }
+      if (state.etapas.includes(nome)) {
+        showToast('Este estágio já existe!', 'error');
+        return;
+      }
+      state.etapas.push(nome);
+      saveState();
+      updateEtagasSelects();
+      renderCRM();
+      el('modal-novo-stage').close();
+      el('input-stage-nome').value = '';
+      showToast('Estágio criado com sucesso!');
+    }
+
+    // Reset
     el('btn-reset').addEventListener('click', () => {
       el('input-reset').value = '';
       el('btn-confirmar-reset').disabled = true;
@@ -1142,27 +1196,20 @@
     el('btn-confirmar-reset').addEventListener('click', () => {
       console.log('Reset confirmado - apagando todos os leads');
       
-      // Limpa COMPLETAMENTE o estado
-      state = { 
-        leads: [], 
-        tarefas: [], 
-        eventos: [], 
-        propostas: [], 
-        interacoes: [] 
-      };
+      state.leads = [];
+      state.tarefas = [];
+      state.eventos = [];
+      state.propostas = [];
+      state.interacoes = [];
       
-      // Salva estado vazio no localStorage
       localStorage.setItem(STATE_KEY, JSON.stringify(state));
       
-      // Fecha modal
       el('modal-reset').close();
       el('input-reset').value = '';
       el('btn-confirmar-reset').disabled = true;
       
-      // Re-renderiza TUDO
       renderAll();
       
-      // Verifica se realmente limpou
       console.log('Estado após reset:', state.leads.length + ' leads');
       
       showToast('Base de dados zerada com sucesso!');
@@ -1177,9 +1224,9 @@
     });
 
     el('drop-zone').addEventListener('click', () => el('input-import').click());
-    el('drop-zone').addEventListener('dragover', (e) => { e.preventDefault(); el('drop-zone').style.background = 'rgba(15, 118, 110, 0.1)'; });
-    el('drop-zone').addEventListener('dragleave', () => { el('drop-zone').style.background = 'transparent'; });
-    el('drop-zone').addEventListener('drop', (e) => { e.preventDefault(); el('drop-zone').style.background = 'transparent'; processImportFile(e.dataTransfer.files[0]); });
+    el('drop-zone').addEventListener('dragover', (e) => { e.preventDefault(); el('drop-zone').style.opacity = '0.7'; });
+    el('drop-zone').addEventListener('dragleave', () => { el('drop-zone').style.opacity = '1'; });
+    el('drop-zone').addEventListener('drop', (e) => { e.preventDefault(); el('drop-zone').style.opacity = '1'; processImportFile(e.dataTransfer.files[0]); });
     el('input-import').addEventListener('change', (e) => { if (e.target.files.length > 0) processImportFile(e.target.files[0]); });
 
     function processImportFile(file) {
@@ -1257,7 +1304,7 @@
           origem: row.origem || 'Outro',
           canal: row.canal || 'Email',
           prioridade: row.prioridade || 'Média',
-          estagio: row.estagio || 'Novo',
+          estagio: row.estagio || state.etapas[0],
           observacoes: row.observacoes || '',
           descricao: '',
           atividades: [],
@@ -1349,7 +1396,6 @@
       el('kpi-score').textContent = score;
     }
 
-    // Charts
     function renderDashboard() {
       updateKPIs();
       renderCharts();
@@ -1410,11 +1456,15 @@
 
       const ctx3 = el('chart-estagio')?.getContext('2d');
       if (ctx3) {
-        const dados = ETAPAS.map(e => state.leads.filter(l => l.estagio === e).length);
-        const cores = ETAPAS.map(e => CORES_ETAPA[e]);
+        const dados = state.etapas.map(e => state.leads.filter(l => l.estagio === e).length);
+        const cores = state.etapas.map((e, i) => {
+          const hues = [0, 45, 90, 135, 180, 225, 270, 315];
+          const hue = hues[i % hues.length];
+          return `hsl(${hue}, 70%, 50%)`;
+        });
         charts['estagio'] = new Chart(ctx3, {
           type: 'bar',
-          data: {labels: ETAPAS, datasets: [{label: 'Quantidade', data: dados, backgroundColor: cores}]},
+          data: {labels: state.etapas, datasets: [{label: 'Quantidade', data: dados, backgroundColor: cores}]},
           options: {
             indexAxis: 'y',
             responsive: true,
@@ -1463,11 +1513,15 @@
 
       const ctx5 = el('chart-pipeline')?.getContext('2d');
       if (ctx5) {
-        const dados = ETAPAS.map(e => state.leads.filter(l => l.estagio === e).reduce((a, b) => a + b.valor, 0));
-        const cores = ETAPAS.map(e => CORES_ETAPA[e]);
+        const dados = state.etapas.map(e => state.leads.filter(l => l.estagio === e).reduce((a, b) => a + b.valor, 0));
+        const cores = state.etapas.map((e, i) => {
+          const hues = [0, 45, 90, 135, 180, 225, 270, 315];
+          const hue = hues[i % hues.length];
+          return `hsl(${hue}, 70%, 50%)`;
+        });
         charts['pipeline'] = new Chart(ctx5, {
           type: 'bar',
-          data: {labels: ETAPAS, datasets: [{label: 'R$', data: dados, backgroundColor: cores}]},
+          data: {labels: state.etapas, datasets: [{label: 'R$', data: dados, backgroundColor: cores}]},
           options: {
             responsive: true,
             maintainAspectRatio: false,
@@ -1501,18 +1555,21 @@
       renderCharts();
     }
 
-    // CRM - Kanban - CORRIGIDO
     function renderCRM() {
       const kanban = el('kanban');
       kanban.innerHTML = '';
       
-      console.log('Renderizando Kanban com', state.leads.length, 'leads');
+      console.log('Renderizando Kanban com', state.leads.length, 'leads, etapas:', state.etapas);
       
-      ETAPAS.forEach(etapa => {
+      state.etapas.forEach((etapa, idx) => {
         const leads = state.leads.filter(l => l.estagio === etapa);
         const col = document.createElement('div');
         col.className = 'kanban-col card';
-        col.style.backgroundColor = CORES_ETAPA[etapa];
+        
+        const hues = [0, 45, 90, 135, 180, 225, 270, 315];
+        const hue = hues[idx % hues.length];
+        const bgColor = `hsl(${hue}, 20%, 95%)`;
+        col.style.backgroundColor = bgColor;
 
         const header = document.createElement('div');
         header.className = 'kanban-col-header';
@@ -1575,7 +1632,6 @@
       });
     }
 
-    // Trello Panel
     function openTrello(leadId) {
       currentLeadId = leadId;
       const lead = state.leads.find(l => l.id === leadId);
@@ -1598,7 +1654,7 @@
 
       el('trello-atividades').innerHTML = (lead.atividades || []).map(a => `<div style="margin-bottom: 8px;"><strong>${formatData(a.data)}</strong>: ${a.texto}</div>`).join('') || 'Nenhuma atividade';
       el('trello-checklist').innerHTML = (lead.checklist || []).map(item => `<div style="margin-bottom: 6px;"><input type="checkbox" ${item.feito ? 'checked' : ''} onchange="updateChecklistItem('${lead.id}', '${item.id}', this.checked)"><span style="margin-left: 4px; ${item.feito ? 'text-decoration: line-through;' : ''}">${item.texto}</span></div>`).join('') || 'Nenhum item';
-      el('trello-anexos').innerHTML = (lead.anexos || []).map(a => `<div><a href="${a.url}" target="_blank" style="color: #0F766E; text-decoration: none;">${a.texto}</a></div>`).join('') || 'Nenhum anexo';
+      el('trello-anexos').innerHTML = (lead.anexos || []).map(a => `<div><a href="${a.url}" target="_blank" style="color: var(--careka-primary); text-decoration: none;">${a.texto}</a></div>`).join('') || 'Nenhum anexo';
       el('trello-historico').innerHTML = (lead.historico || []).map(h => `<div style="margin-bottom: 6px;"><strong>${formatData(h.data)}</strong>: ${h.acao}</div>`).join('') || 'Nenhuma alteração';
 
       el('trello-title').textContent = lead.nome;
@@ -1698,7 +1754,6 @@
       showToast('Lead duplicado!');
     }
 
-    // Excluir Lead - CORRIGIDO
     function confirmDeleteLead() {
       if (!confirm('Tem certeza que deseja EXCLUIR este lead permanentemente?')) {
         return;
@@ -1706,19 +1761,14 @@
       
       console.log('Excluindo lead:', currentLeadId);
       
-      // Remove o lead do array
       state.leads = state.leads.filter(l => l.id !== currentLeadId);
       
-      // Salva no localStorage
       saveState();
       
-      // Fecha o painel
       closeTrello();
       
-      // Re-renderiza TUDO (Dashboard + CRM)
       renderAll();
       
-      // Verifica estado após exclusão
       console.log('Leads restantes:', state.leads.length);
       
       showToast('Lead excluído com sucesso!');
@@ -1727,24 +1777,22 @@
     function renderAll() {
       updateKPIs();
       updateCharts();
-      // Se estiver na página CRM, re-renderiza o Kanban
       const activePage = document.querySelector('.sidebar-menu li.active')?.dataset.page;
       if (activePage === 'crm') {
         renderCRM();
       }
     }
 
-    // Initialize
     document.addEventListener('DOMContentLoaded', () => {
       initializeState();
       renderDashboard();
     });
 
-    // Keyboard shortcuts
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         closeTrello();
         el('modal-novo').close();
+        el('modal-novo-stage').close();
         el('modal-reset').close();
         el('modal-importar').close();
       }
