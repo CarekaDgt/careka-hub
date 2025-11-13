@@ -1,4 +1,4 @@
-!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR" data-theme="light">
 <head>
   <meta charset="UTF-8">
@@ -144,35 +144,10 @@
       border-left: 4px solid var(--careka-primary); 
       border: 1px solid #E5E7EB;
     }
-    body.light-mode .kanban-col { 
-      background: #FFFFFF;
-      border: 1px solid #D1D5DB;
-      color: #1A1A1A;
-    }
-    body.dark-mode .kanban-col { 
-      background: #1A2F3F;
-      border-color: #2A3F52;
-      color: #FFFFFF;
-    }
+    body.light-mode .kanban-col { background: #F3F4F6; }
+    body.dark-mode .kanban-col { background: #0F1820; border-color: #2A3F52; }
 
-    .kanban-col-header { 
-      font-weight: bold; 
-      margin-bottom: 12px; 
-      display: flex; 
-      justify-content: space-between; 
-      align-items: center;
-    }
-
-    /* Light Mode: Teal escuro */
-    body.light-mode .kanban-col-header {
-      color: #003D38 !important;
-    }
-
-    /* Dark Mode: Azul escuro (NOVO) */
-    body.dark-mode .kanban-col-header {
-      color: #0369A1 !important;
-    }
-
+    .kanban-col-header { font-weight: bold; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
     .kanban-col-count { background: var(--careka-primary); color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; }
 
     .lead-card {
@@ -187,16 +162,8 @@
       flex-direction: column;
       gap: 8px;
     }
-    body.light-mode .lead-card { 
-      background: #FFFFFF;
-      color: #1A1A1A;
-      border: 1px solid #E5E7EB;
-    }
-    body.dark-mode .lead-card { 
-      background: #172938;
-      border-color: #2A3F52;
-      color: #FFFFFF;
-    }
+    body.light-mode .lead-card { background: #FFFFFF; }
+    body.dark-mode .lead-card { background: #172938; border-color: #2A3F52; }
     body.light-mode .lead-card:hover { background: #F3F4F6; box-shadow: 0 4px 12px rgba(15, 118, 110, 0.15); }
     body.dark-mode .lead-card:hover { background: #1A3A48; box-shadow: 0 4px 12px rgba(45, 212, 191, 0.2); }
 
@@ -365,77 +332,7 @@
       .form-grid { grid-template-columns: 1fr; }
       .trello-panel { max-width: 100%; }
     }
-  
-    /* ========== BOTÕES COM CONTRASTE ========== */
-    .btn { 
-      color: white !important; 
-      font-weight: 500;
-    }
-
-    .btn-primary { 
-      background: #0F766E;
-      color: white !important;
-    }
-
-    .btn-primary:hover { 
-      background: #065A52;
-    }
-
-    .btn-secondary { 
-      background: #6B7280;
-      color: white !important;
-    }
-
-    .btn-secondary:hover { 
-      background: #4B5563;
-    }
-
-    .btn-red { 
-      background: #DC2626;
-      color: white !important;
-    }
-
-    /* ========== SIDEBAR ========== */
-    body.light-mode .sidebar {
-      background: #F7F7F5;
-      color: #1A1A1A;
-      border-right: 1px solid #D1D5DB;
-    }
-
-    body.light-mode .sidebar h1 {
-      color: #0F766E;
-      font-size: 20px;
-      font-weight: bold;
-    }
-
-    body.light-mode .sidebar-menu li {
-      color: #1A1A1A;
-    }
-
-    body.light-mode .sidebar-menu li:hover {
-      background: rgba(15, 118, 110, 0.1);
-      border-left-color: #0F766E;
-    }
-
-    body.dark-mode .sidebar {
-      background: var(--careka-dark);
-      color: #FFFFFF;
-      border-right: 1px solid #2A3F52;
-    }
-
-    body.dark-mode .sidebar h1 {
-      color: #2DD4BF;
-    }
-
-    body.dark-mode .sidebar-menu li {
-      color: #FFFFFF;
-    }
-
-    body.dark-mode .sidebar-menu li:hover {
-      background: rgba(45, 212, 191, 0.1);
-      border-left-color: #2DD4BF;
-    }
-</style>
+  </style>
 </head>
 <body class="light-mode">
   <div class="container-flex">
@@ -833,16 +730,8 @@
             <input type="number" id="trello-score" placeholder="50" min="0" max="100" value="50">
           </div>
           <div class="form-group">
-            <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 8px;">
-              <label style="margin: 0;">Origem</label>
-              <button type="button" class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;" onclick="toggleNewOrigemInput()">+ Nova</button>
-            </div>
+            <label>Origem</label>
             <select id="trello-origem"></select>
-            <input type="text" id="trello-origem-novo" placeholder="Digite nova origem..." style="display: none; margin-top: 8px; padding: 8px; border: 1px solid #D1D5DB; border-radius: 4px; font-size: 14px;">
-            <div style="display: none; gap: 6px; margin-top: 6px;" id="origem-buttons">
-              <button type="button" class="btn btn-primary" style="padding: 6px 12px; font-size: 12px;" onclick="addNewOrigem()">Confirmar</button>
-              <button type="button" class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;" onclick="cancelNewOrigem()">Cancelar</button>
-            </div>
           </div>
           <div class="form-group">
             <label>Próximo Contato</label>
@@ -951,7 +840,6 @@
         if (data) {
           appState = JSON.parse(data);
           if (!appState.etapas) appState.etapas = DEFAULT_ETAPAS.slice();
-          if (!appState.origens) appState.origens = ['Google', 'LinkedIn', 'Indicação', 'Instagram', 'Facebook', 'Tráfego Pago', 'Site', 'WhatsApp', 'Direto', 'Outro'];
           return true;
         }
       } catch (e) {
@@ -971,81 +859,7 @@
       document.body.classList.add(savedTheme + '-mode');
     }
 
-    
-    function deleteEtapa(etapa) {
-      if (!confirm(`Tem certeza que deseja deletar o estágio "${etapa}"? Os leads serão movidos para o primeiro estágio.`)) return;
-      const idx = appState.etapas.indexOf(etapa);
-      if (idx === -1) return;
-      const firstEtapa = appState.etapas[0];
-      const now_val = now();
-      appState.leads.forEach(lead => {
-        if (lead.estagio === etapa) {
-          lead.estagio = firstEtapa;
-          lead.ultimoContato = now_val;
-          lead.historico.push({ acao: `Estágio deletado: ${etapa}. Lead movido para ${firstEtapa}`, data: now_val });
-        }
-      });
-      appState.etapas.splice(idx, 1);
-      saveState();
-      updateEtagasSelects();
-      renderCRM();
-      applyFilters();
-      showToast(`Estágio "${etapa}" deletado com sucesso!`);
-    }
-
-    function populateOrigemSelects() {
-      const origens = appState.origens || ['Google', 'LinkedIn', 'Indicação', 'Instagram', 'Facebook', 'Tráfego Pago', 'Site', 'WhatsApp', 'Direto', 'Outro'];
-      const html = origens.map(o => `<option value="${o}">${o}</option>`).join('');
-      if (el('trello-origem')) el('trello-origem').innerHTML = html;
-    }
-
-    function toggleNewOrigemInput() {
-      const input = el('trello-origem-novo');
-      const buttons = el('origem-buttons');
-      if (!input || !buttons) return;
-      if (input.style.display === 'none') {
-        input.style.display = 'block';
-        buttons.style.display = 'flex';
-        input.focus();
-      } else {
-        input.style.display = 'none';
-        buttons.style.display = 'none';
-        input.value = '';
-      }
-    }
-
-    function addNewOrigem() {
-      const input = el('trello-origem-novo');
-      const valor = input ? input.value.trim() : '';
-      if (!valor) return;
-      if (!appState.origens) appState.origens = ['Google', 'LinkedIn', 'Indicação', 'Instagram', 'Facebook', 'Tráfego Pago', 'Site', 'WhatsApp', 'Direto', 'Outro'];
-      if (!appState.origens.includes(valor)) {
-        appState.origens.push(valor);
-        saveState();
-        populateOrigemSelects();
-        if (el('trello-origem')) el('trello-origem').value = valor;
-      }
-      cancelNewOrigem();
-    }
-
-    function cancelNewOrigem() {
-      const input = el('trello-origem-novo');
-      const buttons = el('origem-buttons');
-      if (input) input.style.display = 'none';
-      if (buttons) buttons.style.display = 'none';
-      if (input) input.value = '';
-    }
-
-    function confirmDeleteLead() {
-      if (!confirm('ATENÇÃO: Tem certeza que deseja EXCLUIR este lead permanentemente?')) return;
-      appState.leads = appState.leads.filter(l => l.id !== currentLeadId);
-      saveState();
-      closeTrello();
-      applyFilters();
-      showToast('Lead excluído com sucesso!');
-    }
-
-function updateEtagasSelects() {
+    function updateEtagasSelects() {
       const html = appState.etapas.map(e => `<option value="${e}">${e}</option>`).join('');
       el('form-novo-estagio').innerHTML = html;
       el('trello-estagio').innerHTML = html;
@@ -1704,32 +1518,7 @@ function updateEtagasSelects() {
           }
         });
 
-        
-        col.addEventListener('dragstart', (e) => {
-          e.dataTransfer.effectAllowed = 'move';
-          e.dataTransfer.setData('colEtapa', etapa);
-          col.style.opacity = '0.6';
-        });
-        col.addEventListener('dragend', (e) => { col.style.opacity = '1'; });
-        col.addEventListener('dragover', (e) => {
-          if (e.dataTransfer.types.includes('colEtapa')) { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; }
-        });
-        col.addEventListener('drop', (e) => {
-          const sourceEtapa = e.dataTransfer.getData('colEtapa');
-          if (sourceEtapa && sourceEtapa !== etapa) {
-            const sourceIdx = appState.etapas.indexOf(sourceEtapa);
-            const targetIdx = appState.etapas.indexOf(etapa);
-            if (sourceIdx !== -1 && targetIdx !== -1) {
-              [appState.etapas[sourceIdx], appState.etapas[targetIdx]] = [appState.etapas[targetIdx], appState.etapas[sourceIdx]];
-              saveState();
-              renderCRM();
-            }
-          }
-          e.preventDefault();
-        });
-
         kanban.appendChild(col);
-
       });
     }
 
@@ -1737,8 +1526,6 @@ function updateEtagasSelects() {
     function openTrello(leadId) {
       const lead = appState.leads.find(l => l.id === leadId);
       if (!lead) return;
-
-      populateOrigemSelects();
 
       currentLeadId = leadId;
 
